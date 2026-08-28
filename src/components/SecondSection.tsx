@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView, useReducedMotion, type Variants } from "motion/react";
 import svgPaths from "../imports/2ndSection/svg-49ujxxcd0l";
+import SolaceEmblem from "./SolaceEmblem";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -80,9 +81,14 @@ export default function SecondSection() {
   const state = reduce ? "show" : inView ? "show" : "hidden";
 
   return (
-    <section ref={ref} className="relative bg-white py-28">
+    <section ref={ref} className="relative bg-white py-20 md:py-24 overflow-hidden">
+      {/* Decorative floating Solace Logo Emblem */}
+      <div className="absolute right-[-20px] md:right-[3%] top-[12%] pointer-events-none z-0 hidden sm:block opacity-70">
+        <SolaceEmblem size={135} tilt={14} />
+      </div>
+
       <motion.div
-        className="mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-16 px-6 lg:grid-cols-[minmax(0,1fr)_384px] lg:gap-24"
+        className="mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-16 px-6 lg:grid-cols-[minmax(0,1fr)_384px] lg:gap-24 relative z-10"
         variants={container}
         initial="hidden"
         animate={state}

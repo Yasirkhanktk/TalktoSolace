@@ -15,6 +15,7 @@ import imgChairBg from "../imports/Section3-1/90f354a9a06e95c6f4115c3e72de97f16f
 import imgChairFg from "../imports/Section3-1/357e6fa693eebbf6f9fb3555348fd2b13af72fb4.png";
 import imgAthBg from "../imports/Section3-1/c5a297d0252bc641d8d543cdb0db6fe7d2290e57.png";
 import imgAthFg from "../imports/Section3-1/bc07016c8c4e3f240776b464f9521d286372372f.png";
+import SolaceEmblem from "./SolaceEmblem";
 
 const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -199,7 +200,12 @@ export default function FourthSection() {
   return (
     <section ref={sectionRef} className="relative h-[440vh] bg-white">
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <div className="mx-auto grid w-full max-w-[1360px] grid-cols-1 items-center gap-10 px-6 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:gap-16">
+        {/* Floating Solace Emblem in background */}
+        <div className="absolute right-[4%] top-[8%] pointer-events-none z-0 hidden xl:block opacity-55">
+          <SolaceEmblem size={135} tilt={15} />
+        </div>
+
+        <div className="mx-auto grid w-full max-w-[1360px] grid-cols-1 items-center gap-10 px-6 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:gap-16 relative z-10">
           {/* Left column */}
           <div className="relative hidden h-[560px] lg:block">
             {/* Top: eyebrow + heading — drifts upward on scroll */}

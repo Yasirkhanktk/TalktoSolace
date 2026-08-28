@@ -4,6 +4,11 @@ import ThirdSection from "./components/ThirdSection";
 import FourthSection from "./components/FourthSection";
 import FifthSection from "./components/FifthSection";
 import SixthSection from "./components/SixthSection";
+import JourneySection from "./components/JourneySection";
+import FounderSection from "./components/FounderSection";
+import SupportSection from "./components/SupportSection";
+import FaqSection from "./components/FaqSection";
+import Footer from "./components/Footer";
 
 export default function App() {
   return (
@@ -14,6 +19,11 @@ export default function App() {
       <FourthSection />
       <FifthSection />
       <SixthSection />
+      <JourneySection />
+      <FounderSection />
+      <SupportSection />
+      <FaqSection />
+      <Footer />
     </div>
   );
 }
