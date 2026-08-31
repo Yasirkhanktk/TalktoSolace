@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview",
-    "format": "oxfmt"
+    "dev": "npx vite --host 0.0.0.0",
+    "build": "npx vite build",
+    "preview": "npx vite preview",
+    "format": "npx oxfmt"
   },
   "dependencies": {
     "motion": "^13.1.1",
