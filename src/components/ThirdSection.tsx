@@ -17,13 +17,17 @@ type Feature = {
 const FEATURES: Feature[] = [
   {
     key: "journel",
-    label: "Journel",
+    label: "Journal",
     screen: imgHome,
     tabs: [
       { side: "left", text: "Capture your thoughts" },
-      { side: "right", text: "Guided prompts daily" },
       { side: "left", text: "Track your moods" },
+      { side: "left", text: "Voice-to-text notes" },
+      { side: "left", text: "Emotional patterns" },
+      { side: "right", text: "Guided daily prompts" },
       { side: "right", text: "Private & secure" },
+      { side: "right", text: "Weekly reflections" },
+      { side: "right", text: "Milestone badges" },
     ],
   },
   {
@@ -32,9 +36,13 @@ const FEATURES: Feature[] = [
     screen: imgTalkItOut,
     tabs: [
       { side: "left", text: "Talk freely, anytime" },
-      { side: "right", text: "Voice or video" },
       { side: "left", text: "Judgement-free space" },
+      { side: "left", text: "Adaptive AI empathy" },
+      { side: "left", text: "Real-time audio sync" },
+      { side: "right", text: "Voice or video mode" },
       { side: "right", text: "Deep reflection" },
+      { side: "right", text: "Personalized pacing" },
+      { side: "right", text: "Instant reassurance" },
     ],
   },
   {
@@ -43,9 +51,13 @@ const FEATURES: Feature[] = [
     screen: imgHome,
     tabs: [
       { side: "left", text: "Breathing exercises" },
-      { side: "right", text: "Sleep & calm" },
       { side: "left", text: "Daily check-ins" },
+      { side: "left", text: "Grounding techniques" },
+      { side: "left", text: "Mindful pauses" },
+      { side: "right", text: "Sleep & calm soundscapes" },
       { side: "right", text: "Build gentle habits" },
+      { side: "right", text: "Stress relief drills" },
+      { side: "right", text: "Energy reset" },
     ],
   },
 ];
@@ -56,39 +68,51 @@ const SLOTS = [
   { key: "wellness", pos: "right", rotate: 360 },
 ] as const;
 
-function TabCard({ side, text }: { side: "left" | "right"; text: string }) {
-  const ring = (
-    <span className="relative flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full border-2 border-[#e91e63] shadow-[0px_0px_22px_-6px_rgba(168,85,247,0.7)]">
-      <span className="h-[22px] w-[22px] rounded-full border border-[#e91e63]/50" />
-    </span>
-  );
-  const pill = (
-    <span
-      className="flex items-center rounded-full border-2 border-white bg-white/80 px-6 py-3.5 shadow-md backdrop-blur-[8px]"
-      style={{ backgroundImage: "linear-gradient(147deg, rgba(233,30,99,0.01) 8%, rgba(156,39,176,0.04) 92%)" }}
-    >
-      <span
-        className="whitespace-nowrap bg-clip-text text-[14px] font-semibold text-transparent"
-        style={{ fontFamily: "'Montserrat', sans-serif", backgroundImage: GRAD }}
-      >
-        {text}
-      </span>
-    </span>
-  );
+// Stagger offsets so cards cascade inward (waterfall / staircase effect)
+const LEFT_OFFSETS = [0, 14, 28, 42]; // each deeper card shifts right
+const RIGHT_OFFSETS = [0, 14, 28, 42]; // each deeper card shifts left
+
+function TabCard({ side, text, index }: { side: "left" | "right"; text: string; index: number }) {
+  const reduce = useReducedMotion();
+  const offset = side === "left" ? LEFT_OFFSETS[index] ?? 0 : RIGHT_OFFSETS[index] ?? 0;
+  const floatY = index % 2 === 0 ? -4 : 4;
+
   return (
-    <div className="flex items-center gap-4">
-      {side === "left" ? (
-        <>
-          {pill}
-          {ring}
-        </>
-      ) : (
-        <>
-          {ring}
-          {pill}
-        </>
-      )}
-    </div>
+    <motion.div
+      className="group relative select-none"
+      style={{ marginLeft: side === "left" ? offset : 0, marginRight: side === "right" ? offset : 0 }}
+      animate={reduce ? undefined : { y: [0, floatY, 0] }}
+      transition={{ duration: 3.0 + index * 0.5, repeat: Infinity, ease: "easeInOut" }}
+    >
+      <div
+        className="relative flex items-center gap-3 overflow-hidden rounded-[16px] border border-white/80 bg-white/95 px-4 py-[11px] shadow-[0_3px_16px_rgba(0,0,0,0.07)] backdrop-blur-[10px] transition-all duration-300 hover:border-[#e91e63]/30 hover:shadow-[0_6px_24px_rgba(233,30,99,0.13)] hover:bg-white"
+        style={{ width: `${256 - offset * 0.5}px` }}
+      >
+        {/* Left glow-accent bar */}
+        <div
+          className="absolute left-0 top-0 h-full w-[3px] rounded-l-[16px] opacity-80 group-hover:opacity-100"
+          style={{ background: GRAD }}
+        />
+
+        {/* Orb dot */}
+        <div className="relative ml-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#e91e63]/25 bg-gradient-to-br from-[#e91e63]/8 to-[#9c27b0]/8">
+          <motion.div
+            className="h-[7px] w-[7px] rounded-full"
+            style={{ background: GRAD }}
+            animate={reduce ? undefined : { scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 2.2 + index * 0.3, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
+
+        {/* Label */}
+        <span
+          className="flex-1 text-[12.5px] font-semibold leading-tight text-[#1a1a1a] group-hover:text-black"
+          style={{ fontFamily: "'Montserrat', sans-serif" }}
+        >
+          {text}
+        </span>
+      </div>
+    </motion.div>
   );
 }
 
@@ -227,74 +251,35 @@ export default function ThirdSection() {
         </div>
 
         {/* Stage */}
-        <div className="relative mt-8 flex w-full max-w-[1340px] h-[480px] items-center justify-center">
-          {/* Left tabs container */}
-          <div className="absolute left-0 top-1/2 z-20 -translate-y-1/2 w-[320px] h-[380px]">
+        <div className="relative mt-4 flex w-full max-w-[1380px] h-[520px] items-center justify-between px-2">
+
+          {/* Left tabs — cascade rightward (deeper = more indented) */}
+          <div className="relative z-20 w-[285px] h-[440px] shrink-0">
             {FEATURES.map((feat, fIdx) => {
               const isActive = activeIdx === fIdx;
               const featLeftTabs = feat.tabs.filter((t) => t.side === "left");
               return (
                 <div
                   key={`${feat.key}-left-group`}
-                  className="absolute inset-0 flex flex-col justify-center gap-6 pointer-events-none"
+                  className="absolute inset-0 flex flex-col items-start justify-center gap-2.5 pointer-events-none"
                 >
                   {featLeftTabs.map((t, i) => (
                     <motion.div
                       key={`${feat.key}-l-${i}`}
-                      initial={{ opacity: 0, scale: 0.8, x: -50 }}
+                      initial={{ opacity: 0, x: -(60 + i * 18) }}
                       animate={{
                         opacity: isActive ? 1 : 0,
-                        scale: isActive ? 1 : 0.8,
-                        x: isActive ? 0 : -50,
+                        x: isActive ? 0 : -(60 + i * 18),
                       }}
                       transition={{
                         type: "spring",
                         stiffness: 90,
-                        damping: 15,
-                        delay: isActive ? i * 0.08 : 0,
+                        damping: 18,
+                        delay: isActive ? i * 0.07 : (3 - i) * 0.03,
                       }}
-                      style={{
-                        pointerEvents: isActive ? "auto" : "none",
-                      }}
+                      style={{ pointerEvents: isActive ? "auto" : "none" }}
                     >
-                      <TabCard side="left" text={t.text} />
-                    </motion.div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Right tabs container */}
-          <div className="absolute right-0 top-1/2 z-20 -translate-y-1/2 w-[320px] h-[380px]">
-            {FEATURES.map((feat, fIdx) => {
-              const isActive = activeIdx === fIdx;
-              const featRightTabs = feat.tabs.filter((t) => t.side === "right");
-              return (
-                <div
-                  key={`${feat.key}-right-group`}
-                  className="absolute inset-y-0 right-0 w-full flex flex-col items-end justify-center gap-6 pointer-events-none"
-                >
-                  {featRightTabs.map((t, i) => (
-                    <motion.div
-                      key={`${feat.key}-r-${i}`}
-                      initial={{ opacity: 0, scale: 0.8, x: 50 }}
-                      animate={{
-                        opacity: isActive ? 1 : 0,
-                        scale: isActive ? 1 : 0.8,
-                        x: isActive ? 0 : 50,
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 90,
-                        damping: 15,
-                        delay: isActive ? i * 0.08 : 0,
-                      }}
-                      style={{
-                        pointerEvents: isActive ? "auto" : "none",
-                      }}
-                    >
-                      <TabCard side="right" text={t.text} />
+                      <TabCard side="left" text={t.text} index={i} />
                     </motion.div>
                   ))}
                 </div>
@@ -303,7 +288,7 @@ export default function ThirdSection() {
           </div>
 
           {/* Central screen */}
-          <div className="relative z-10 w-full max-w-[740px] rounded-[24px] bg-[#0b0b14] p-2.5 shadow-[0px_44px_100px_rgba(20,10,40,0.38)]">
+          <div className="relative z-10 mx-auto w-full max-w-[740px] rounded-[24px] bg-[#0b0b14] p-2.5 shadow-[0px_44px_100px_rgba(20,10,40,0.38)]">
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[16px]">
               {FEATURES.map((feat, i) => {
                 const isActive = activeIdx === i;
@@ -325,6 +310,41 @@ export default function ThirdSection() {
               })}
             </div>
           </div>
+
+          {/* Right tabs — cascade leftward (deeper = more indented from right) */}
+          <div className="relative z-20 w-[285px] h-[440px] shrink-0">
+            {FEATURES.map((feat, fIdx) => {
+              const isActive = activeIdx === fIdx;
+              const featRightTabs = feat.tabs.filter((t) => t.side === "right");
+              return (
+                <div
+                  key={`${feat.key}-right-group`}
+                  className="absolute inset-0 flex flex-col items-end justify-center gap-2.5 pointer-events-none"
+                >
+                  {featRightTabs.map((t, i) => (
+                    <motion.div
+                      key={`${feat.key}-r-${i}`}
+                      initial={{ opacity: 0, x: 60 + i * 18 }}
+                      animate={{
+                        opacity: isActive ? 1 : 0,
+                        x: isActive ? 0 : 60 + i * 18,
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 90,
+                        damping: 18,
+                        delay: isActive ? i * 0.07 : (3 - i) * 0.03,
+                      }}
+                      style={{ pointerEvents: isActive ? "auto" : "none" }}
+                    >
+                      <TabCard side="right" text={t.text} index={i} />
+                    </motion.div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+
         </div>
       </div>
     </section>

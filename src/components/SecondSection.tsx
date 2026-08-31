@@ -41,7 +41,13 @@ function Sparkle() {
 
 function CurvedArrow({ animate }: { animate: boolean }) {
   return (
-    <svg viewBox="0 0 192.752 28.0938" fill="none" className="h-[28px] w-[193px]">
+    <motion.svg
+      viewBox="0 0 192.752 28.0938"
+      fill="none"
+      className="h-[28px] w-[193px]"
+      animate={animate ? { x: [0, 5, 0] } : {}}
+      transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+    >
       <motion.path
         d={svgPaths.p2b5e9b00}
         stroke="url(#arrow_line)"
@@ -70,7 +76,7 @@ function CurvedArrow({ animate }: { animate: boolean }) {
           <stop offset="1" stopColor="#9C27B0" />
         </linearGradient>
       </defs>
-    </svg>
+    </motion.svg>
   );
 }
 

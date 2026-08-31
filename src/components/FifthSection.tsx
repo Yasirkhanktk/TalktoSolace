@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring, useReducedMotion, type MotionValue } from "motion/react";
 import imgPlaceholder from "../imports/MeetSolace/1fabb6006b2b2026a2aa6f647b1aff16b1c50164.png";
+import SolaceEmblem from "./SolaceEmblem";
 
 const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
 
@@ -37,7 +38,7 @@ const MODULES = [
   },
 ];
 
-/* ── Extracted sub-components so hook counts stay stable ── */
+/* ── Sub-components ── */
 
 function TextSlide({
   mod,
@@ -55,13 +56,11 @@ function TextSlide({
 
   const opacity = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0, 1, 1, 0]);
   const y = useTransform(smoothProgress, [start, peakIn, peakOut, end], [30, 0, 0, -30]);
-  const blurVal = useTransform(smoothProgress, [start, peakIn, peakOut, end], [6, 0, 0, 6]);
-  const filterStr = useTransform(blurVal, (v) => `blur(${v}px)`);
 
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-start"
-      style={{ opacity, y, filter: filterStr, pointerEvents: "none" }}
+      style={{ opacity, y, pointerEvents: "none" }}
     >
       <h3
         className="text-[38px] leading-[1.15] tracking-[-1px] lg:text-[46px]"
@@ -119,12 +118,10 @@ function CapsuleTab({
   const fillProgress = useTransform(scrollYProgress, [start, end], [0, 100], { clamp: true });
   const fillWidth = useTransform(fillProgress, (v) => `${v}%`);
 
-  const oStart = index === 0 ? 0 : start - 0.05;
-  const pStart = index === 0 ? 0.001 : start;
-  const fillOpacity = useTransform(
+  const activeOpacity = useTransform(
     scrollYProgress,
-    [oStart, pStart, 1],
-    [index === 0 ? 1 : 0, 1, 1],
+    [Math.max(0, start - 0.05), start, end - 0.02, end],
+    [index === 0 ? 1 : 0.45, 1, 1, 0.45],
     { clamp: true }
   );
 
@@ -135,34 +132,47 @@ function CapsuleTab({
     { clamp: true }
   );
 
-  const capsuleScale = useTransform(
-    scrollYProgress,
-    [start, start + 0.04, start + 0.12],
-    [1, 1.08, 1],
-    { clamp: true }
-  );
+  const stepLabels = ["Talk", "Journal", "Tools"];
 
   return (
     <motion.div
-      className="relative overflow-hidden rounded-full"
-      style={{ scale: capsuleScale, backgroundColor: "#1d1d1f" }}
+      className="relative flex items-center gap-2.5 overflow-hidden rounded-full border border-white/80 bg-white/90 px-4 py-2 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-[12px] transition-all"
+      style={{ opacity: activeOpacity }}
     >
-      {/* Glow behind active capsule */}
+      {/* Ambient glow behind active tab */}
       <motion.div
-        className="pointer-events-none absolute inset-0 -z-10 rounded-full blur-md"
-        style={{ background: GRAD, opacity: glowOpacity, transform: "scale(1.15)" }}
+        className="pointer-events-none absolute -inset-[2px] rounded-full blur-md"
+        style={{
+          background: "linear-gradient(135deg, rgba(233,30,99,0.3), rgba(156,39,176,0.3))",
+          opacity: glowOpacity,
+        }}
       />
-      <div className="relative px-6 py-2.5">
-        <span
-          className="relative z-10 text-[13.7px] font-semibold text-white"
-          style={{ fontFamily: "'Montserrat', sans-serif" }}
-        >
-          {mod.step}
-        </span>
-      </div>
+
+      {/* Step Number Bubble */}
+      <motion.span
+        className="relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white shadow-sm"
+        style={{
+          background: GRAD,
+        }}
+      >
+        {String(index + 1).padStart(2, "0")}
+      </motion.span>
+
+      {/* Step Title */}
+      <span
+        className="relative z-10 text-[13px] font-semibold text-[#1d1d1d]"
+        style={{ fontFamily: "'Montserrat', sans-serif" }}
+      >
+        {stepLabels[index] || mod.step}
+      </span>
+
+      {/* Progress fill along bottom of capsule */}
       <motion.div
-        className="absolute inset-y-0 left-0 z-0 rounded-full"
-        style={{ background: GRAD, width: fillWidth, opacity: fillOpacity }}
+        className="absolute bottom-0 left-0 h-[2.5px] rounded-full"
+        style={{
+          background: GRAD,
+          width: fillWidth,
+        }}
       />
     </motion.div>
   );
@@ -252,6 +262,10 @@ export default function FifthSection() {
   return (
     <section ref={containerRef} className="relative h-[400vh] bg-white">
       <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+        {/* Floating emblem in lower-right empty space */}
+        <div className="pointer-events-none absolute bottom-[6%] right-[3%] z-0 hidden xl:block opacity-35">
+          <SolaceEmblem size={120} tilt={12} />
+        </div>
 
         {/* Header */}
         <div className="flex w-full max-w-[1260px] flex-col items-center px-6 text-center">
@@ -334,3 +348,4 @@ export default function FifthSection() {
     </section>
   );
 }
+

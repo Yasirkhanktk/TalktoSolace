@@ -159,10 +159,12 @@ function StackCard({
 
 function CurvedArrow({ down = true }: { down?: boolean }) {
   return (
-    <svg
+    <motion.svg
       viewBox="0 0 192.752 28.0938"
       fill="none"
       className={`h-[26px] w-[110px] ${down ? "rotate-[74deg]" : ""}`}
+      animate={{ x: [0, 5, 0] }}
+      transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
     >
       <path d={svgPaths.p3bf54f80} fill="url(#moment_ah)" />
       <path d={svgPaths.p2b5e9b00} stroke="url(#moment_al)" strokeLinecap="round" strokeWidth="2.92366" />
@@ -176,7 +178,97 @@ function CurvedArrow({ down = true }: { down?: boolean }) {
           <stop offset="1" stopColor="#9C27B0" />
         </linearGradient>
       </defs>
-    </svg>
+    </motion.svg>
+  );
+}
+
+type SlideInfo = {
+  n: string;
+  heading: string;
+  body: string;
+  window: [number, number];
+};
+
+const SLIDE_TEXTS: SlideInfo[] = [
+  {
+    n: "(01)",
+    heading: "Celebrate every step",
+    body: "Progress doesn't always look dramatic. Solace helps you recognise the wins that often go unspoken.",
+    window: [0.08, 0.31],
+  },
+  {
+    n: "(02)",
+    heading: "Just checking in",
+    body: "Sometimes the best conversations happen on an ordinary afternoon. Solace fits into your everyday, not just your hard days.",
+    window: [0.31, 0.55],
+  },
+  {
+    n: "(03)",
+    heading: "Think it through together",
+    body: "Big decisions can feel isolating. Talk it out with Solace and find the clarity you need before you take the leap.",
+    window: [0.55, 0.75],
+  },
+  {
+    n: "(04)",
+    heading: "Before a big decision...",
+    body: "When the stakes feel highest, Solace is there — a steady, judgment-free presence to help you trust yourself again.",
+    window: [0.75, 1.0],
+  },
+];
+
+function SlideText({
+  item,
+  isLast,
+  progress,
+}: {
+  item: SlideInfo;
+  isLast: boolean;
+  progress: MotionValue<number>;
+}) {
+  const [s, e] = item.window;
+  const mid = (s + e) / 2;
+  const opacity = useTransform(
+    progress,
+    isLast
+      ? [s, Math.min(s + 0.07, 0.75), 1]
+      : [s, Math.min(s + 0.07, mid), Math.max(e - 0.07, mid), e],
+    isLast ? [0, 1, 1] : [0, 1, 1, 0]
+  );
+  const y = useTransform(
+    progress,
+    isLast
+      ? [s, Math.min(s + 0.07, 0.75), 1]
+      : [s, Math.min(s + 0.07, mid), Math.max(e - 0.07, mid), e],
+    isLast ? [22, 0, 0] : [22, 0, 0, -22]
+  );
+
+  return (
+    <motion.div
+      className="absolute inset-0 flex flex-col justify-start pt-6"
+      style={{ opacity, y, pointerEvents: "none" }}
+    >
+      <span
+        className="mb-3 inline-flex self-start rounded-full border border-[#e91e63]/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest"
+        style={{ backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.1), rgba(156,39,176,0.1))", fontFamily: "'Montserrat', sans-serif" }}
+      >
+        <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+          {item.n}
+        </span>
+      </span>
+      <h3
+        className="text-[clamp(28px,3.2vw,40px)] leading-[1.1] tracking-[-1.2px] text-black"
+        style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
+      >
+        {item.heading}
+      </h3>
+      <div className="mt-3 h-[3px] w-[48px] rounded-full" style={{ background: GRAD }} />
+      <p
+        className="mt-4 max-w-[360px] text-[16px] leading-[1.65] text-[#555]"
+        style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
+      >
+        {item.body}
+      </p>
+    </motion.div>
   );
 }
 
@@ -194,8 +286,8 @@ export default function FourthSection() {
   const headOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [1, 0, 0]);
   
   // The CTA fades in right as the final card (card 4) comes into place.
-  const ctaOpacity = useTransform(scrollYProgress, [0, 0.75, 0.87, 1], [0, 0, 1, 1]);
-  const ctaY = useTransform(scrollYProgress, [0, 0.75, 0.87, 1], [24, 24, 0, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0, 0.76, 0.88, 1], [0, 0, 1, 1]);
+  const ctaY = useTransform(scrollYProgress, [0, 0.76, 0.88, 1], [22, 22, 0, 0]);
 
   return (
     <section ref={sectionRef} className="relative h-[440vh] bg-white">
@@ -208,7 +300,7 @@ export default function FourthSection() {
         <div className="mx-auto grid w-full max-w-[1360px] grid-cols-1 items-center gap-10 px-6 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:gap-16 relative z-10">
           {/* Left column */}
           <div className="relative hidden h-[560px] lg:block">
-            {/* Top: eyebrow + heading — drifts upward on scroll */}
+            {/* Persistent top badge */}
             <motion.div
               className="absolute left-0 top-0"
               style={{ y: headY, opacity: headOpacity, pointerEvents: "none" }}
@@ -234,40 +326,32 @@ export default function FourthSection() {
               <div className="mt-4 h-[5px] w-[57px] rounded-full" style={{ background: GRAD }} />
             </motion.div>
 
-            {/* Bottom: closing CTA (fades in on the last card) */}
-            {/* Positioned vertically near the middle to align parallel with the last stacked card */}
+            {/* Per-slide animated text — stacked absolutely, each cross-fades */}
+            <div className="absolute inset-x-0 top-[120px] bottom-[110px]">
+              {SLIDE_TEXTS.map((item, i) => (
+                <SlideText
+                  key={item.n}
+                  item={item}
+                  isLast={i === SLIDE_TEXTS.length - 1}
+                  progress={scrollYProgress}
+                />
+              ))}
+            </div>
+
+            {/* Bottom CTA — fades in on last card */}
             <motion.div
-              className="absolute left-0 top-1/2 -translate-y-1/2"
+              className="absolute bottom-4 left-0"
               style={{ opacity: ctaOpacity, y: ctaY }}
             >
-              <h3
-                className="text-[clamp(38px,4.2vw,56px)] leading-[1] tracking-[-1.7px] text-black"
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
-              >
-                Whatever is on your{" "}
-                <span className="bg-clip-text text-transparent" style={{ fontWeight: 600, backgroundImage: GRAD }}>
-                  mind,
-                </span>
-              </h3>
-              <div
-                className="mt-3 h-px w-[418px] max-w-full"
-                style={{ background: "linear-gradient(90deg, #57c6ca, #7aaddf 52%, #9e92f4)" }}
-              />
-              <p
-                className="mt-6 max-w-[384px] text-[19.85px] leading-[26.25px] text-black"
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
-              >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
-              <div className="mt-6 flex items-center gap-4">
+              <div className="flex items-center gap-4">
                 <a
                   href="#"
-                  className="inline-flex items-center whitespace-nowrap rounded-[14px] px-8 py-[14px] text-[14px] tracking-[0.28px] text-white shadow-[0px_8px_16px_rgba(233,30,99,0.34)]"
+                  className="inline-flex items-center whitespace-nowrap rounded-[14px] px-8 py-[14px] text-[14px] tracking-[0.28px] text-white shadow-[0px_8px_16px_rgba(233,30,99,0.34)] transition-transform hover:scale-105"
                   style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, backgroundImage: GRAD }}
                 >
                   Become a Founding Member
                 </a>
-                <div className="translate-y-[-4px]">
+                <div className="translate-y-[-3px]">
                   <CurvedArrow down={false} />
                 </div>
               </div>

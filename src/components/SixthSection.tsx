@@ -4,6 +4,7 @@ import imgUseCase1 from "../imports/MeetSolace-1/141fdb7bf66120704255629fbd3acc8
 import imgUseCase2 from "../imports/MeetSolace-1/357e6fa693eebbf6f9fb3555348fd2b13af72fb4.png";
 import imgAvatar from "../imports/MeetSolace-1/2ccd8c672594e6da94186349c234e9c6c4b23f45.png";
 import imgContent3 from "../imports/MeetSolace-1/efecd8b2ced1ea351533f05753cd6733910d8c0f.png";
+import SolaceEmblem from "./SolaceEmblem";
 
 const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
 
@@ -33,6 +34,11 @@ export default function SixthSection() {
     <section ref={containerRef} className="relative h-[300vh] bg-white">
       <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden">
         
+        {/* Floating emblem in top-left empty space */}
+        <div className="pointer-events-none absolute left-[4%] top-[10%] z-0 hidden xl:block opacity-40">
+          <SolaceEmblem size={120} tilt={-15} />
+        </div>
+
         {/* Header Area */}
         <div className="flex w-full max-w-[1260px] flex-col items-center px-6 text-center">
           <span

@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from "motion/react"
 import imgBackground from "../imports/image.png";
 import imgDashboard from "../imports/Hero/c5350ce48a92f7054918aeb788bf135d4754965c.png";
 import imgCloud from "../imports/Hero/82bc2a9510c2d24cdb07929392d44c0c9e988f64.png";
+import SolaceEmblem from "./SolaceEmblem";
 
 function Logo() {
   return (
@@ -28,12 +29,18 @@ function Logo() {
 
 function ArrowIcon({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 12 8.3" fill="none" className={className}>
+    <motion.svg
+      viewBox="0 0 12 8.3"
+      fill="none"
+      className={className}
+      animate={{ x: [0, 3, 0] }}
+      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+    >
       <path
         d="M7.7 0.3 11.7 4c0.2 0.2 0.2 0.5 0 0.7L7.7 8c-0.2 0.2-0.6 0.1-0.6-0.2V5.2H0.5c-0.3 0-0.5-0.2-0.5-0.5V3.6c0-0.3 0.2-0.5 0.5-0.5H7.1V0.5C7.1 0.2 7.5 0.1 7.7 0.3Z"
         fill="currentColor"
       />
-    </svg>
+    </motion.svg>
   );
 }
 
@@ -100,9 +107,9 @@ export default function Hero() {
   const textY = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.75, 1], [1, 1, 0.35]);
 
-  // Dashboard starts a little lower, then lifts and enlarges on scroll
-  const screenScale = useTransform(scrollYProgress, [0, 1], [0.9, 1.08]);
-  const screenY = useTransform(scrollYProgress, [0, 1], [90, -30]);
+  // Dashboard starts visible, then lifts and enlarges prominently on scroll
+  const screenScale = useTransform(scrollYProgress, [0, 1], [0.88, 1.28]);
+  const screenY = useTransform(scrollYProgress, [0, 1], [0, -220]);
 
   // Background pans down toward grass level as the user scrolls
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
@@ -124,10 +131,15 @@ export default function Hero() {
         <Cloud className="left-[3%] top-[16%] w-[220px] opacity-80" delay={0} />
         <Cloud className="right-[2%] top-[10%] w-[300px] opacity-90" delay={4} />
 
+        {/* Floating emblem in lower-left empty space */}
+        <div className="pointer-events-none absolute bottom-[8%] left-[3%] z-0 hidden xl:block opacity-40">
+          <SolaceEmblem size={110} tilt={-18} />
+        </div>
+
         <Navbar />
 
         {/* Content */}
-        <div className="relative z-10 mx-auto flex h-full max-w-[1100px] flex-col items-center px-6 pt-[210px] text-center">
+        <div className="relative z-10 mx-auto flex h-full max-w-[1100px] flex-col items-center px-6 pt-[190px] text-center">
           <motion.div
             style={reduce ? undefined : { y: textY, opacity: textOpacity }}
             className="flex flex-col items-center"
@@ -168,8 +180,17 @@ export default function Hero() {
 
           {/* Dashboard screen — sits lower, lifts and enlarges on scroll */}
           <motion.div
-            style={reduce ? undefined : { scale: screenScale, y: screenY, transformOrigin: "center top" }}
-            className="mt-16 w-full max-w-[880px] rounded-[22px] p-[3px]"
+            style={
+              reduce
+                ? undefined
+                : {
+                    scale: screenScale,
+                    y: screenY,
+                    transformOrigin: "center center",
+                    willChange: "transform",
+                  }
+            }
+            className="mt-12 w-full max-w-[960px] shrink-0 rounded-[22px] p-[3px]"
           >
             <div className="rounded-[22px] bg-gradient-to-br from-[#e91e63]/60 to-[#9c27b0]/60 p-[2px] shadow-[0px_40px_90px_rgba(76,20,90,0.35)]">
               <img
