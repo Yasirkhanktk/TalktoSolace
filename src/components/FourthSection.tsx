@@ -1,6 +1,7 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
+  AnimatePresence,
   useScroll,
   useTransform,
   useReducedMotion,
@@ -101,8 +102,6 @@ function StackCard({
   progress: MotionValue<number>;
   enter: [number, number] | null;
 }) {
-  // First card is centered from the start; the rest rise in from fully below
-  // the viewport (vh units guarantee they are off-screen initially).
   const y = useTransform(progress, enter ?? [0, 1], enter ? ["115vh", "0vh"] : ["0vh", "0vh"]);
 
   return (
@@ -113,7 +112,7 @@ function StackCard({
       >
         {card.sparkle ? <Sparkle pos={card.sparkle} /> : null}
 
-        {/* Framed image: blurred fill behind a crisp centered plate */}
+        {/* Framed image */}
         <div className="relative z-10 aspect-[16/10] w-full overflow-hidden rounded-[10px] bg-black">
           <img
             src={card.bg}
@@ -128,8 +127,7 @@ function StackCard({
           />
         </div>
 
-        {/* Caption — opaque white so a stacked card fully hides the one beneath */}
-        {/* Set z-index below the image so the image's shadow falls over this background instead of being cropped */}
+        {/* Caption */}
         <div className="relative -z-10 flex items-start gap-3 bg-white pt-4 pb-2">
           <span
             className="mt-[2px] bg-clip-text text-[14px] text-transparent"
@@ -186,7 +184,6 @@ type SlideInfo = {
   n: string;
   heading: string;
   body: string;
-  window: [number, number];
 };
 
 const SLIDE_TEXTS: SlideInfo[] = [
@@ -194,83 +191,23 @@ const SLIDE_TEXTS: SlideInfo[] = [
     n: "(01)",
     heading: "Celebrate every step",
     body: "Progress doesn't always look dramatic. Solace helps you recognise the wins that often go unspoken.",
-    window: [0.08, 0.31],
   },
   {
     n: "(02)",
     heading: "Just checking in",
     body: "Sometimes the best conversations happen on an ordinary afternoon. Solace fits into your everyday, not just your hard days.",
-    window: [0.31, 0.55],
   },
   {
     n: "(03)",
     heading: "Think it through together",
     body: "Big decisions can feel isolating. Talk it out with Solace and find the clarity you need before you take the leap.",
-    window: [0.55, 0.75],
   },
   {
     n: "(04)",
     heading: "Before a big decision...",
     body: "When the stakes feel highest, Solace is there — a steady, judgment-free presence to help you trust yourself again.",
-    window: [0.75, 1.0],
   },
 ];
-
-function SlideText({
-  item,
-  isLast,
-  progress,
-}: {
-  item: SlideInfo;
-  isLast: boolean;
-  progress: MotionValue<number>;
-}) {
-  const [s, e] = item.window;
-  const mid = (s + e) / 2;
-  const opacity = useTransform(
-    progress,
-    isLast
-      ? [s, Math.min(s + 0.07, 0.75), 1]
-      : [s, Math.min(s + 0.07, mid), Math.max(e - 0.07, mid), e],
-    isLast ? [0, 1, 1] : [0, 1, 1, 0]
-  );
-  const y = useTransform(
-    progress,
-    isLast
-      ? [s, Math.min(s + 0.07, 0.75), 1]
-      : [s, Math.min(s + 0.07, mid), Math.max(e - 0.07, mid), e],
-    isLast ? [22, 0, 0] : [22, 0, 0, -22]
-  );
-
-  return (
-    <motion.div
-      className="absolute inset-0 flex flex-col justify-start pt-6"
-      style={{ opacity, y, pointerEvents: "none" }}
-    >
-      <span
-        className="mb-3 inline-flex self-start rounded-full border border-[#e91e63]/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest"
-        style={{ backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.1), rgba(156,39,176,0.1))", fontFamily: "'Montserrat', sans-serif" }}
-      >
-        <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
-          {item.n}
-        </span>
-      </span>
-      <h3
-        className="text-[clamp(28px,3.2vw,40px)] leading-[1.1] tracking-[-1.2px] text-black"
-        style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
-      >
-        {item.heading}
-      </h3>
-      <div className="mt-3 h-[3px] w-[48px] rounded-full" style={{ background: GRAD }} />
-      <p
-        className="mt-4 max-w-[360px] text-[16px] leading-[1.65] text-[#555]"
-        style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
-      >
-        {item.body}
-      </p>
-    </motion.div>
-  );
-}
 
 export default function FourthSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -281,13 +218,25 @@ export default function FourthSection() {
     offset: ["start start", "end end"],
   });
 
+  const [activeSlide, setActiveSlide] = useState<number | null>(null);
+
+  useEffect(() => {
+    return scrollYProgress.on("change", (v) => {
+      if (v >= 0.82) setActiveSlide(3);
+      else if (v >= 0.58) setActiveSlide(2);
+      else if (v >= 0.32) setActiveSlide(1);
+      else if (v >= 0.08) setActiveSlide(0);
+      else setActiveSlide(null);
+    });
+  }, [scrollYProgress]);
+
   // Map the full 0 -> 1 scroll range explicitly to guarantee it never bounces back or extrapolates.
   const headY = useTransform(scrollYProgress, [0, 0.15, 1], [0, -150, -150]);
   const headOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [1, 0, 0]);
   
   // The CTA fades in right as the final card (card 4) comes into place.
-  const ctaOpacity = useTransform(scrollYProgress, [0, 0.76, 0.88, 1], [0, 0, 1, 1]);
-  const ctaY = useTransform(scrollYProgress, [0, 0.76, 0.88, 1], [22, 22, 0, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0, 0.80, 0.86, 1], [0, 0, 1, 1]);
+  const ctaY = useTransform(scrollYProgress, [0, 0.80, 0.86, 1], [22, 22, 0, 0]);
 
   return (
     <section ref={sectionRef} className="relative h-[440vh] bg-white">
@@ -326,16 +275,45 @@ export default function FourthSection() {
               <div className="mt-4 h-[5px] w-[57px] rounded-full" style={{ background: GRAD }} />
             </motion.div>
 
-            {/* Per-slide animated text — stacked absolutely, each cross-fades */}
-            <div className="absolute inset-x-0 top-[120px] bottom-[110px]">
-              {SLIDE_TEXTS.map((item, i) => (
-                <SlideText
-                  key={item.n}
-                  item={item}
-                  isLast={i === SLIDE_TEXTS.length - 1}
-                  progress={scrollYProgress}
-                />
-              ))}
+            {/* Per-slide animated text — with AnimatePresence so only active slide renders */}
+            <div className="absolute inset-x-0 top-[120px] bottom-[110px] pointer-events-none">
+              <AnimatePresence mode="wait">
+                {activeSlide !== null && (
+                  <motion.div
+                    key={SLIDE_TEXTS[activeSlide].n}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.35, ease: EASE }}
+                    className="absolute inset-0 flex flex-col justify-start pt-6"
+                  >
+                    <span
+                      className="mb-3 inline-flex self-start rounded-full border border-[#e91e63]/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest"
+                      style={{
+                        backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.1), rgba(156,39,176,0.1))",
+                        fontFamily: "'Montserrat', sans-serif",
+                      }}
+                    >
+                      <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+                        {SLIDE_TEXTS[activeSlide].n}
+                      </span>
+                    </span>
+                    <h3
+                      className="text-[clamp(28px,3.2vw,40px)] leading-[1.1] tracking-[-1.2px] text-black"
+                      style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
+                    >
+                      {SLIDE_TEXTS[activeSlide].heading}
+                    </h3>
+                    <div className="mt-3 h-[3px] w-[48px] rounded-full" style={{ background: GRAD }} />
+                    <p
+                      className="mt-4 max-w-[360px] text-[16px] leading-[1.65] text-[#555]"
+                      style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
+                    >
+                      {SLIDE_TEXTS[activeSlide].body}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Bottom CTA — fades in on last card */}
