@@ -1,6 +1,5 @@
-import { useRef } from "react";
-import { motion, useReducedMotion } from "motion/react";
-import { useStrictStepHold } from "../hooks/useStrictStepHold";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useReducedMotion } from "motion/react";
 import svgPaths from "../imports/Section3-1/svg-jmap5htj3m";
 import SolaceEmblem from "./SolaceEmblem";
 
@@ -104,7 +103,20 @@ export default function JourneySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
 
-  const { activeStep } = useStrictStepHold(3, sectionRef, { throttleMs: 650 });
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    return scrollYProgress.on("change", (latest) => {
+      if (latest > 0.72) setActiveStep(2);
+      else if (latest > 0.38) setActiveStep(1);
+      else setActiveStep(0);
+    });
+  }, [scrollYProgress]);
 
   return (
     <section ref={sectionRef} className="relative h-[400vh] bg-white">

@@ -1,10 +1,12 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   AnimatePresence,
+  useScroll,
+  useTransform,
   useReducedMotion,
+  type MotionValue,
 } from "motion/react";
-import { useStrictStepHold } from "../hooks/useStrictStepHold";
 import svgPaths from "../imports/Section3-1/svg-jmap5htj3m";
 import imgManBg from "../imports/Section3-1/45f1bcbe2a295e2466d94f9e694653e00545f002.png";
 import imgManFg from "../imports/Section3-1/285cb81d1803e135c1f00b00eedd9ab25e601b19.png";
@@ -92,21 +94,21 @@ function Sparkle({ pos }: { pos: "tl" | "tr" }) {
 function StackCard({
   card,
   index,
-  activeStep,
+  progress,
+  enter,
 }: {
   card: Card;
   index: number;
-  activeStep: number;
+  progress: MotionValue<number>;
+  enter: [number, number] | null;
 }) {
-  const isEntered = activeStep >= index;
+  const y = useTransform(progress, enter ?? [0, 1], enter ? ["115vh", "0vh"] : ["0vh", "0vh"]);
 
   return (
     <div className="absolute inset-0 flex items-center justify-center" style={{ zIndex: index + 1 }}>
       <motion.div
         className="w-[min(560px,86vw)] will-change-transform bg-white"
-        initial={index === 0 ? { y: 0 } : { y: "115vh" }}
-        animate={{ y: isEntered ? 0 : "115vh" }}
-        transition={{ type: "spring", stiffness: 95, damping: 20 }}
+        style={{ y: !enter ? 0 : y }}
       >
         {card.sparkle ? <Sparkle pos={card.sparkle} /> : null}
 
@@ -211,7 +213,30 @@ export default function FourthSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
 
-  const { activeStep } = useStrictStepHold(4, sectionRef, { throttleMs: 650 });
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+
+  const [activeSlide, setActiveSlide] = useState<number | null>(null);
+
+  useEffect(() => {
+    return scrollYProgress.on("change", (v) => {
+      if (v >= 0.82) setActiveSlide(3);
+      else if (v >= 0.58) setActiveSlide(2);
+      else if (v >= 0.32) setActiveSlide(1);
+      else if (v >= 0.08) setActiveSlide(0);
+      else setActiveSlide(null);
+    });
+  }, [scrollYProgress]);
+
+  // Map the full 0 -> 1 scroll range explicitly to guarantee it never bounces back or extrapolates.
+  const headY = useTransform(scrollYProgress, [0, 0.15, 1], [0, -150, -150]);
+  const headOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [1, 0, 0]);
+  
+  // The CTA fades in right as the final card (card 4) comes into place.
+  const ctaOpacity = useTransform(scrollYProgress, [0, 0.80, 0.86, 1], [0, 0, 1, 1]);
+  const ctaY = useTransform(scrollYProgress, [0, 0.80, 0.86, 1], [22, 22, 0, 0]);
 
   return (
     <section ref={sectionRef} className="relative h-[440vh] bg-white">
@@ -227,9 +252,7 @@ export default function FourthSection() {
             {/* Persistent top badge */}
             <motion.div
               className="absolute left-0 top-0"
-              animate={{ opacity: activeStep === 0 ? 1 : 0.35, y: activeStep === 0 ? 0 : -20 }}
-              transition={{ duration: 0.3 }}
-              style={{ pointerEvents: "none" }}
+              style={{ y: headY, opacity: headOpacity, pointerEvents: "none" }}
             >
               <span
                 className="inline-flex rounded-[12px] border border-[#e91e63] px-3 py-[6px] text-[11.1px] font-semibold uppercase backdrop-blur-[4px]"
@@ -252,51 +275,51 @@ export default function FourthSection() {
               <div className="mt-4 h-[5px] w-[57px] rounded-full" style={{ background: GRAD }} />
             </motion.div>
 
-            {/* Per-slide animated text */}
+            {/* Per-slide animated text — with AnimatePresence so only active slide renders */}
             <div className="absolute inset-x-0 top-[120px] bottom-[110px] pointer-events-none">
               <AnimatePresence mode="wait">
-                <motion.div
-                  key={SLIDE_TEXTS[activeStep].n}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.35, ease: EASE }}
-                  className="absolute inset-0 flex flex-col justify-start pt-6"
-                >
-                  <span
-                    className="mb-3 inline-flex self-start rounded-full border border-[#e91e63]/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest"
-                    style={{
-                      backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.1), rgba(156,39,176,0.1))",
-                      fontFamily: "'Montserrat', sans-serif",
-                    }}
+                {activeSlide !== null && (
+                  <motion.div
+                    key={SLIDE_TEXTS[activeSlide].n}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.35, ease: EASE }}
+                    className="absolute inset-0 flex flex-col justify-start pt-6"
                   >
-                    <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
-                      {SLIDE_TEXTS[activeStep].n}
+                    <span
+                      className="mb-3 inline-flex self-start rounded-full border border-[#e91e63]/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest"
+                      style={{
+                        backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.1), rgba(156,39,176,0.1))",
+                        fontFamily: "'Montserrat', sans-serif",
+                      }}
+                    >
+                      <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+                        {SLIDE_TEXTS[activeSlide].n}
+                      </span>
                     </span>
-                  </span>
-                  <h3
-                    className="text-[clamp(28px,3.2vw,40px)] leading-[1.1] tracking-[-1.2px] text-black"
-                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
-                  >
-                    {SLIDE_TEXTS[activeStep].heading}
-                  </h3>
-                  <div className="mt-3 h-[3px] w-[48px] rounded-full" style={{ background: GRAD }} />
-                  <p
-                    className="mt-4 max-w-[360px] text-[16px] leading-[1.65] text-[#555]"
-                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
-                  >
-                    {SLIDE_TEXTS[activeStep].body}
-                  </p>
-                </motion.div>
+                    <h3
+                      className="text-[clamp(28px,3.2vw,40px)] leading-[1.1] tracking-[-1.2px] text-black"
+                      style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
+                    >
+                      {SLIDE_TEXTS[activeSlide].heading}
+                    </h3>
+                    <div className="mt-3 h-[3px] w-[48px] rounded-full" style={{ background: GRAD }} />
+                    <p
+                      className="mt-4 max-w-[360px] text-[16px] leading-[1.65] text-[#555]"
+                      style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
+                    >
+                      {SLIDE_TEXTS[activeSlide].body}
+                    </p>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
 
             {/* Bottom CTA — fades in on last card */}
             <motion.div
               className="absolute bottom-4 left-0"
-              animate={{ opacity: activeStep === 3 ? 1 : 0, y: activeStep === 3 ? 0 : 20 }}
-              transition={{ duration: 0.35 }}
-              style={{ pointerEvents: activeStep === 3 ? "auto" : "none" }}
+              style={{ opacity: ctaOpacity, y: ctaY }}
             >
               <div className="flex items-center gap-4">
                 <a
@@ -320,7 +343,8 @@ export default function FourthSection() {
                 key={card.n}
                 card={card}
                 index={i}
-                activeStep={activeStep}
+                progress={scrollYProgress}
+                enter={ENTER[i]}
               />
             ))}
           </div>
