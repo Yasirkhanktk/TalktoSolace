@@ -96,8 +96,8 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
     return html.replace(`<!-- ${slotName} -->`, content)
   }
 
-  const title = config.title ?? "TalktoSolace"
-  const description = config.description ?? 'Talk to Solace - Your AI Companion'
+  const title = config.title ?? "Figma Make App"
+  const description = config.description ?? ''
   const favicon = config.icons?.icon ?? ''
   const socialImage = config.openGraph?.image ?? ''
   const language = sanitizeHtmlValue(config.language) || 'en'
