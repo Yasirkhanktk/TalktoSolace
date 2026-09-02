@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll, useSpring } from "motion/react";
+import { useRef } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { useStrictStepHold } from "../hooks/useStrictStepHold";
 import imgHome from "../imports/Hero/c5350ce48a92f7054918aeb788bf135d4754965c.png";
 import imgTalkItOut from "../imports/3NdSection/30e513f7515e0de820633689d8febfe6dea7e482.png";
 import imgWellness from "../imports/MeetSolace-1/efecd8b2ced1ea351533f05753cd6733910d8c0f.png";
@@ -230,26 +231,9 @@ export default function ThirdSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
+  const { activeStep: activeIdx, setStep: setActiveIdx } = useStrictStepHold(5, sectionRef, {
+    throttleMs: 650,
   });
-
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 120, damping: 20 });
-  const [activeIdx, setActiveIdx] = useState(0);
-
-  useEffect(() => {
-    return smoothProgress.on("change", (latest) => {
-      let nextIdx = 0;
-      if (latest >= 0.76) nextIdx = 4;      // Model 5 (Rest) active from 0.76 to 1.00 (generous dwell before next section)
-      else if (latest >= 0.57) nextIdx = 3; // Model 4 (Insights) from 0.57 to 0.76
-      else if (latest >= 0.38) nextIdx = 2; // Model 3 (Wellness) from 0.38 to 0.57
-      else if (latest >= 0.19) nextIdx = 1; // Model 2 (Talk) from 0.19 to 0.38
-      else nextIdx = 0;                     // Model 1 (Journal) from 0.00 to 0.19
-
-      setActiveIdx(nextIdx);
-    });
-  }, [smoothProgress]);
 
   return (
     <section ref={sectionRef} className="relative h-[650vh] bg-white">

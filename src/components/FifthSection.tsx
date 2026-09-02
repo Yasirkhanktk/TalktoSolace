@@ -1,15 +1,17 @@
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring, useReducedMotion, type MotionValue } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { useStrictStepHold } from "../hooks/useStrictStepHold";
 import imgPlaceholder from "../imports/MeetSolace/1fabb6006b2b2026a2aa6f647b1aff16b1c50164.png";
 import SolaceEmblem from "./SolaceEmblem";
 
 const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 const MODULES = [
   {
     step: "Step 01",
     title: "Talk It Out",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo.",
+    desc: "Speak freely without judgment. Solace listens with deep empathy, providing instant reassurance whenever thoughts feel overwhelming.",
     features: [
       { num: "100%", text: "Secure, encrypted\ndata protection" },
       { num: "2 Minutes", text: "Set up to connect\nand begin instantly" },
@@ -19,7 +21,7 @@ const MODULES = [
   {
     step: "Step 02",
     title: "Journal Thoughts",
-    desc: "Reflect on your day, track your moods, and build a healthy habit of self-awareness.",
+    desc: "Reflect on your day, track your moods, and build a healthy habit of self-awareness with gentle AI-guided prompts.",
     features: [
       { num: "Daily", text: "Guided prompts\nand reflections" },
       { num: "Private", text: "Your thoughts are\nfor your eyes only" },
@@ -29,7 +31,7 @@ const MODULES = [
   {
     step: "Step 03",
     title: "Wellness Toolkit",
-    desc: "Access guided meditations, breathing exercises, and mindful practices anywhere.",
+    desc: "Access guided box breathing, mindful sensory grounding, and personalized calming exercises anywhere, anytime.",
     features: [
       { num: "24/7", text: "Access to calming\nresources" },
       { num: "Guided", text: "Routines designed\nfor your needs" },
@@ -40,28 +42,9 @@ const MODULES = [
 
 /* ── Sub-components ── */
 
-function TextSlide({
-  mod,
-  index,
-  smoothProgress,
-}: {
-  mod: (typeof MODULES)[number];
-  index: number;
-  smoothProgress: MotionValue<number>;
-}) {
-  const start = index === 0 ? 0 : (index - 0.1) / MODULES.length;
-  const peakIn = (index + 0.1) / MODULES.length;
-  const peakOut = (index + 0.8) / MODULES.length;
-  const end = (index + 1) / MODULES.length;
-
-  const opacity = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0, 1, 1, 0]);
-  const y = useTransform(smoothProgress, [start, peakIn, peakOut, end], [30, 0, 0, -30]);
-
+function TextSlide({ mod }: { mod: (typeof MODULES)[number] }) {
   return (
-    <motion.div
-      className="absolute inset-0 flex flex-col items-start"
-      style={{ opacity, y, pointerEvents: "none" }}
-    >
+    <div className="flex flex-col items-start">
       <h3
         className="text-[38px] leading-[1.15] tracking-[-1px] lg:text-[46px]"
         style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
@@ -99,118 +82,145 @@ function TextSlide({
           </div>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
-function CapsuleTab({
-  mod,
-  index,
-  scrollYProgress,
+/* ── Unique Liquid Glass Dock Stepper ── */
+function UniqueDockStepper({
+  activeStep,
+  onSelectStep,
 }: {
-  mod: (typeof MODULES)[number];
-  index: number;
-  scrollYProgress: MotionValue<number>;
+  activeStep: number;
+  onSelectStep: (idx: number) => void;
 }) {
-  const start = index / MODULES.length;
-  const end = (index + 1) / MODULES.length;
-
-  const fillProgress = useTransform(scrollYProgress, [start, end], [0, 100], { clamp: true });
-  const fillWidth = useTransform(fillProgress, (v) => `${v}%`);
-
-  const activeOpacity = useTransform(
-    scrollYProgress,
-    [Math.max(0, start - 0.05), start, end - 0.02, end],
-    [index === 0 ? 1 : 0.45, 1, 1, 0.45],
-    { clamp: true }
-  );
-
-  const glowOpacity = useTransform(
-    scrollYProgress,
-    [start, start + 0.05, end - 0.05, end],
-    [0, 0.6, 0.6, 0],
-    { clamp: true }
-  );
-
-  const stepLabels = ["Talk", "Journal", "Tools"];
+  const steps = [
+    {
+      num: "01",
+      label: "Talk",
+      tag: "Voice",
+    },
+    {
+      num: "02",
+      label: "Journal",
+      tag: "Reflect",
+    },
+    {
+      num: "03",
+      label: "Tools",
+      tag: "Habits",
+    },
+  ];
 
   return (
-    <motion.div
-      className="relative flex items-center gap-2.5 overflow-hidden rounded-full border border-white/80 bg-white/90 px-4 py-2 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-[12px] transition-all"
-      style={{ opacity: activeOpacity }}
-    >
-      {/* Ambient glow behind active tab */}
-      <motion.div
-        className="pointer-events-none absolute -inset-[2px] rounded-full blur-md"
-        style={{
-          background: "linear-gradient(135deg, rgba(233,30,99,0.3), rgba(156,39,176,0.3))",
-          opacity: glowOpacity,
-        }}
-      />
+    <div className="relative z-20 flex w-full justify-center">
+      {/* Liquid Glass Capsule Chassis */}
+      <div className="relative flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white/80 p-1.5 shadow-[0_10px_35px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-2xl">
+        {/* Fine background gradient thread */}
+        <div className="pointer-events-none absolute inset-x-8 top-1/2 h-[1.5px] -translate-y-1/2 bg-gradient-to-r from-transparent via-[#e91e63]/20 to-transparent" />
 
-      {/* Step Number Bubble */}
-      <motion.span
-        className="relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white shadow-sm"
-        style={{
-          background: GRAD,
-        }}
-      >
-        {String(index + 1).padStart(2, "0")}
-      </motion.span>
+        {steps.map((s, i) => {
+          const isActive = activeStep === i;
+          return (
+            <button
+              key={s.num}
+              type="button"
+              onClick={() => onSelectStep(i)}
+              className={`group relative flex cursor-pointer items-center gap-2.5 rounded-full px-5 py-2.5 transition-all duration-300 focus:outline-none ${
+                isActive ? "text-[#1d1d1d]" : "text-[#777] hover:text-black"
+              }`}
+            >
+              {/* Magnetic Floating Spotlight Pill */}
+              {isActive && (
+                <motion.div
+                  layoutId="stepperActivePill"
+                  className="absolute inset-0 rounded-full border border-white/90 bg-white shadow-[0_6px_22px_rgba(233,30,99,0.18),0_2px_6px_rgba(0,0,0,0.04)]"
+                  transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                >
+                  {/* Glowing bottom laser accent */}
+                  <div
+                    className="absolute bottom-0 left-1/2 h-[2.5px] w-3/4 -translate-x-1/2 rounded-full"
+                    style={{ background: GRAD }}
+                  />
+                </motion.div>
+              )}
 
-      {/* Step Title */}
-      <span
-        className="relative z-10 text-[13px] font-semibold text-[#1d1d1d]"
-        style={{ fontFamily: "'Montserrat', sans-serif" }}
-      >
-        {stepLabels[index] || mod.step}
-      </span>
+              {/* Number Orb Badge */}
+              <div className="relative z-10 flex items-center">
+                <motion.div
+                  className={`flex h-7 w-7 items-center justify-center rounded-full transition-all duration-300 ${
+                    isActive
+                      ? "shadow-[0_2px_12px_rgba(233,30,99,0.4)]"
+                      : "bg-[#f1f1f4] group-hover:bg-[#e8e8ed]"
+                  }`}
+                  style={isActive ? { background: GRAD } : undefined}
+                  animate={isActive ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <span
+                    className={`text-[11px] font-bold tracking-tight ${
+                      isActive ? "text-white" : "text-[#777]"
+                    }`}
+                  >
+                    {s.num}
+                  </span>
+                </motion.div>
+              </div>
 
-      {/* Progress fill along bottom of capsule */}
-      <motion.div
-        className="absolute bottom-0 left-0 h-[2.5px] rounded-full"
-        style={{
-          background: GRAD,
-          width: fillWidth,
-        }}
-      />
-    </motion.div>
+              {/* Title & Micro-tag */}
+              <div className="relative z-10 flex flex-col items-start text-left">
+                <span
+                  className={`text-[13.5px] font-bold transition-colors ${
+                    isActive ? "text-black" : "text-[#555] group-hover:text-black"
+                  }`}
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
+                  {s.label}
+                </span>
+                <span
+                  className="text-[9.5px] font-semibold tracking-wider uppercase text-[#999]"
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                >
+                  {s.tag}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
 function StepCard({
   mod,
   index,
-  smoothProgress,
+  activeStep,
 }: {
   mod: (typeof MODULES)[number];
   index: number;
-  smoothProgress: MotionValue<number>;
+  activeStep: number;
 }) {
-  const isLast = index === MODULES.length - 1;
-  const start = index === 0 ? 0 : (index - 0.15) / MODULES.length;
-  const peakIn = (index + 0.12) / MODULES.length;
-  const peakOut = (index + 0.85) / MODULES.length;
-  const end = (index + 1) / MODULES.length;
-
-  const y = useTransform(smoothProgress, [start, peakIn, peakOut, end], [80, 0, 0, isLast ? 0 : -50]);
-  const scale = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0.82, 1, 1, isLast ? 1 : 0.92]);
-  const opacity = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0, 1, 1, isLast ? 1 : 0.3]);
-  const rotateX = useTransform(smoothProgress, [start, peakIn, peakOut, end], [8, 0, 0, isLast ? 0 : -4]);
-  const glowVal = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0, 0.25, 0.25, 0]);
-  const borderColor = useTransform(glowVal, (v) => `rgba(233, 30, 99, ${v})`);
+  const isCurrent = activeStep === index;
+  const isPast = index < activeStep;
 
   return (
     <motion.div
-      className="absolute inset-x-0 top-10 flex flex-col items-center overflow-hidden rounded-[30px] p-[2px] shadow-2xl"
+      className="absolute inset-x-0 top-6 flex flex-col items-center overflow-hidden rounded-[30px] p-[2px] shadow-2xl"
+      animate={{
+        scale: isCurrent ? 1 : isPast ? 0.92 : 0.95,
+        y: isCurrent ? 0 : isPast ? -45 : 70,
+        opacity: isCurrent ? 1 : isPast ? 0.25 : 0,
+        rotateX: isCurrent ? 0 : isPast ? -4 : 6,
+        zIndex: isCurrent ? 10 : isPast ? index : 0,
+      }}
+      transition={{ type: "spring", stiffness: 100, damping: 20 }}
       style={{
-        scale,
-        y,
-        opacity,
-        rotateX,
-        zIndex: index + 1,
         transformOrigin: "bottom center",
-        background: borderColor,
+        background: isCurrent
+          ? "linear-gradient(135deg, rgba(233,30,99,0.35), rgba(156,39,176,0.35))"
+          : "rgba(220,220,230,0.5)",
+        pointerEvents: isCurrent ? "auto" : "none",
       }}
     >
       <div className="flex w-full flex-col items-center overflow-hidden rounded-[28px] bg-white">
@@ -251,13 +261,11 @@ function StepCard({
 
 export default function FifthSection() {
   const containerRef = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
+  const { activeStep, setStep } = useStrictStepHold(3, containerRef, {
+    throttleMs: 650,
   });
-
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 80, damping: 22 });
 
   return (
     <section ref={containerRef} className="relative h-[400vh] bg-white">
@@ -303,7 +311,6 @@ export default function FifthSection() {
 
         {/* Main Content */}
         <div className="relative mt-8 flex w-full max-w-[1260px] flex-col gap-16 px-6 lg:mt-12 lg:flex-row lg:items-start lg:gap-20">
-
           {/* Left Column */}
           <div className="flex flex-1 flex-col items-start pt-6 lg:pt-12">
             <div
@@ -320,26 +327,38 @@ export default function FifthSection() {
               </span>
             </div>
 
-            <div className="relative mt-8 min-h-[200px] w-full">
-              {MODULES.map((mod, i) => (
-                <TextSlide key={`text-${i}`} mod={mod} index={i} smoothProgress={smoothProgress} />
-              ))}
+            <div className="relative mt-8 min-h-[220px] w-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={MODULES[activeStep].step}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -18 }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                >
+                  <TextSlide mod={MODULES[activeStep]} />
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
 
           {/* Right Column */}
           <div className="relative w-full max-w-[620px]">
-            {/* Capsule Tabs */}
-            <div className="relative z-20 flex w-full justify-center gap-3">
-              {MODULES.map((mod, i) => (
-                <CapsuleTab key={`tab-${i}`} mod={mod} index={i} scrollYProgress={scrollYProgress} />
-              ))}
-            </div>
+            {/* Unique Liquid Glass Dock Stepper */}
+            <UniqueDockStepper
+              activeStep={activeStep}
+              onSelectStep={(idx) => setStep(idx)}
+            />
 
             {/* Stacking Cards */}
-            <div className="relative mt-[-20px] h-[520px] w-full pt-10">
+            <div className="relative mt-[-10px] h-[520px] w-full pt-6">
               {MODULES.map((mod, i) => (
-                <StepCard key={`card-${i}`} mod={mod} index={i} smoothProgress={smoothProgress} />
+                <StepCard
+                  key={`card-${i}`}
+                  mod={mod}
+                  index={i}
+                  activeStep={activeStep}
+                />
               ))}
             </div>
           </div>
@@ -348,4 +367,3 @@ export default function FifthSection() {
     </section>
   );
 }
-
