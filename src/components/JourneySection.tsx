@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useReducedMotion } from "motion/react";
+import { useRef } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { useDiscreteStepScroll } from "../hooks/useDiscreteStepScroll";
 import svgPaths from "../imports/Section3-1/svg-jmap5htj3m";
 import SolaceEmblem from "./SolaceEmblem";
 
@@ -103,24 +104,17 @@ export default function JourneySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
+  const { activeStep } = useDiscreteStepScroll(3, sectionRef, {
+    throttleMs: 650,
   });
 
-  const [activeStep, setActiveStep] = useState(0);
-
-  useEffect(() => {
-    return scrollYProgress.on("change", (latest) => {
-      if (latest > 0.72) setActiveStep(2);
-      else if (latest > 0.38) setActiveStep(1);
-      else setActiveStep(0);
-    });
-  }, [scrollYProgress]);
-
   return (
-    <section ref={sectionRef} className="relative h-[400vh] bg-white">
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden px-6">
+    <section
+      ref={sectionRef}
+      id="journey-section"
+      className="relative flex h-screen min-h-[720px] w-full items-center justify-center overflow-hidden bg-white px-6"
+    >
+      <div className="flex h-full w-full items-center justify-center">
         {/* Floating emblem in top-right empty space */}
         <div className="pointer-events-none absolute top-[6%] right-[3%] z-0 hidden xl:block opacity-40">
           <SolaceEmblem size={115} tilt={18} />
