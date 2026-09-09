@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useSpring, useReducedMotion, type MotionValue } from "motion/react";
 import imgPlaceholder from "../imports/MeetSolace/1fabb6006b2b2026a2aa6f647b1aff16b1c50164.png";
 import SolaceEmblem from "./SolaceEmblem";
@@ -103,78 +103,105 @@ function TextSlide({
   );
 }
 
-function CapsuleTab({
-  mod,
-  index,
+function UniqueDockStepper({
   scrollYProgress,
+  onSelectStep,
 }: {
-  mod: (typeof MODULES)[number];
-  index: number;
   scrollYProgress: MotionValue<number>;
+  onSelectStep: (idx: number) => void;
 }) {
-  const start = index / MODULES.length;
-  const end = (index + 1) / MODULES.length;
+  const [activeStep, setActiveStep] = useState(0);
 
-  const fillProgress = useTransform(scrollYProgress, [start, end], [0, 100], { clamp: true });
-  const fillWidth = useTransform(fillProgress, (v) => `${v}%`);
+  useEffect(() => {
+    return scrollYProgress.on("change", (latest) => {
+      if (latest >= 0.62) setActiveStep(2);
+      else if (latest >= 0.30) setActiveStep(1);
+      else setActiveStep(0);
+    });
+  }, [scrollYProgress]);
 
-  const activeOpacity = useTransform(
-    scrollYProgress,
-    [Math.max(0, start - 0.05), start, end - 0.02, end],
-    [index === 0 ? 1 : 0.45, 1, 1, 0.45],
-    { clamp: true }
-  );
-
-  const glowOpacity = useTransform(
-    scrollYProgress,
-    [start, start + 0.05, end - 0.05, end],
-    [0, 0.6, 0.6, 0],
-    { clamp: true }
-  );
-
-  const stepLabels = ["Talk", "Journal", "Tools"];
+  const steps = [
+    { num: "01", label: "Talk", tag: "Voice" },
+    { num: "02", label: "Journal", tag: "Reflect" },
+    { num: "03", label: "Tools", tag: "Habits" },
+  ];
 
   return (
-    <motion.div
-      className="relative flex items-center gap-2.5 overflow-hidden rounded-full border border-white/80 bg-white/90 px-4 py-2 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-[12px] transition-all"
-      style={{ opacity: activeOpacity }}
-    >
-      {/* Ambient glow behind active tab */}
-      <motion.div
-        className="pointer-events-none absolute -inset-[2px] rounded-full blur-md"
-        style={{
-          background: "linear-gradient(135deg, rgba(233,30,99,0.3), rgba(156,39,176,0.3))",
-          opacity: glowOpacity,
-        }}
-      />
+    <div className="relative z-20 flex w-full justify-center">
+      {/* Liquid Glass Capsule Chassis */}
+      <div className="relative flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white/85 p-1.5 shadow-[0_10px_35px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-2xl">
+        {/* Ambient gradient track */}
+        <div className="pointer-events-none absolute inset-x-8 top-1/2 h-[1.5px] -translate-y-1/2 bg-gradient-to-r from-transparent via-[#e91e63]/20 to-transparent" />
 
-      {/* Step Number Bubble */}
-      <motion.span
-        className="relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white shadow-sm"
-        style={{
-          background: GRAD,
-        }}
-      >
-        {String(index + 1).padStart(2, "0")}
-      </motion.span>
+        {steps.map((s, i) => {
+          const isActive = activeStep === i;
+          return (
+            <button
+              key={s.num}
+              type="button"
+              onClick={() => onSelectStep(i)}
+              className={`group relative flex cursor-pointer items-center gap-2.5 rounded-full px-5 py-2.5 transition-all duration-300 focus:outline-none ${
+                isActive ? "text-[#1d1d1d]" : "text-[#777] hover:text-black"
+              }`}
+            >
+              {/* Magnetic Floating Spotlight Pill */}
+              {isActive && (
+                <motion.div
+                  layoutId="stepperActivePill"
+                  className="absolute inset-0 rounded-full border border-white/90 bg-white shadow-[0_6px_22px_rgba(233,30,99,0.18),0_2px_6px_rgba(0,0,0,0.04)]"
+                  transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                >
+                  <div
+                    className="absolute bottom-0 left-1/2 h-[2.5px] w-3/4 -translate-x-1/2 rounded-full"
+                    style={{ background: GRAD }}
+                  />
+                </motion.div>
+              )}
 
-      {/* Step Title */}
-      <span
-        className="relative z-10 text-[13px] font-semibold text-[#1d1d1d]"
-        style={{ fontFamily: "'Montserrat', sans-serif" }}
-      >
-        {stepLabels[index] || mod.step}
-      </span>
+              {/* Number Orb Badge */}
+              <div className="relative z-10 flex items-center">
+                <motion.div
+                  className={`flex h-7 w-7 items-center justify-center rounded-full transition-all duration-300 ${
+                    isActive
+                      ? "shadow-[0_2px_12px_rgba(233,30,99,0.4)]"
+                      : "bg-[#f1f1f4] group-hover:bg-[#e8e8ed]"
+                  }`}
+                  style={isActive ? { background: GRAD } : undefined}
+                  animate={isActive ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <span
+                    className={`text-[11px] font-bold tracking-tight ${
+                      isActive ? "text-white" : "text-[#777]"
+                    }`}
+                  >
+                    {s.num}
+                  </span>
+                </motion.div>
+              </div>
 
-      {/* Progress fill along bottom of capsule */}
-      <motion.div
-        className="absolute bottom-0 left-0 h-[2.5px] rounded-full"
-        style={{
-          background: GRAD,
-          width: fillWidth,
-        }}
-      />
-    </motion.div>
+              {/* Title & Micro-tag */}
+              <div className="relative z-10 flex flex-col items-start text-left">
+                <span
+                  className={`text-[13.5px] font-bold transition-colors ${
+                    isActive ? "text-black" : "text-[#555] group-hover:text-black"
+                  }`}
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
+                  {s.label}
+                </span>
+                <span
+                  className="text-[9.5px] font-semibold tracking-wider uppercase text-[#999]"
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                >
+                  {s.tag}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -259,6 +286,16 @@ export default function FifthSection() {
 
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 80, damping: 22 });
 
+  const handleSelectModule = (idx: number) => {
+    const el = containerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const sectionTop = window.scrollY + rect.top;
+    const totalScrollable = el.offsetHeight - window.innerHeight;
+    const targetY = sectionTop + (idx / (MODULES.length - 1)) * (totalScrollable * 0.82);
+    window.scrollTo({ top: targetY, behavior: "smooth" });
+  };
+
   return (
     <section ref={containerRef} className="relative h-[400vh] bg-white">
       <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden">
@@ -329,12 +366,8 @@ export default function FifthSection() {
 
           {/* Right Column */}
           <div className="relative w-full max-w-[620px]">
-            {/* Capsule Tabs */}
-            <div className="relative z-20 flex w-full justify-center gap-3">
-              {MODULES.map((mod, i) => (
-                <CapsuleTab key={`tab-${i}`} mod={mod} index={i} scrollYProgress={scrollYProgress} />
-              ))}
-            </div>
+            {/* Unique Liquid Glass Dock Stepper */}
+            <UniqueDockStepper scrollYProgress={scrollYProgress} onSelectStep={handleSelectModule} />
 
             {/* Stacking Cards */}
             <div className="relative mt-[-20px] h-[520px] w-full pt-10">

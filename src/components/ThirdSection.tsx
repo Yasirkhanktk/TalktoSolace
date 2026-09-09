@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll, useSpring } from "motion/react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion, useScroll } from "motion/react";
 import imgHome from "../imports/Hero/c5350ce48a92f7054918aeb788bf135d4754965c.png";
 import imgTalkItOut from "../imports/3NdSection/30e513f7515e0de820633689d8febfe6dea7e482.png";
 import imgWellness from "../imports/MeetSolace-1/efecd8b2ced1ea351533f05753cd6733910d8c0f.png";
@@ -230,26 +230,198 @@ export default function ThirdSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
 
+  const [activeIdx, setActiveIdx] = useState(0);
+  const currentStepRef = useRef(0);
+  const isLockedRef = useRef(false);
+  const quietTimerRef = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const getTargetScrollY = useCallback((step: number) => {
+    const el = sectionRef.current;
+    if (!el) return window.scrollY;
+    const rect = el.getBoundingClientRect();
+    const sectionTop = window.scrollY + rect.top;
+    const totalScrollable = el.offsetHeight - window.innerHeight;
+    return sectionTop + (step / 4) * totalScrollable;
+  }, []);
+
+  const handleSelectStep = useCallback(
+    (idx: number) => {
+      const clamped = Math.max(0, Math.min(4, idx));
+      currentStepRef.current = clamped;
+      setActiveIdx(clamped);
+      isLockedRef.current = true;
+      const targetY = getTargetScrollY(clamped);
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+
+      if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
+      quietTimerRef.current = window.setTimeout(() => {
+        isLockedRef.current = false;
+      }, 650);
+    },
+    [getTargetScrollY]
+  );
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 120, damping: 20 });
-  const [activeIdx, setActiveIdx] = useState(0);
+  // Keep activeIdx in sync if user manually drags browser scrollbar
+  useEffect(() => {
+    return scrollYProgress.on("change", (latest) => {
+      if (isLockedRef.current) return;
+      let nextIdx = 0;
+      if (latest >= 0.82) nextIdx = 4;
+      else if (latest >= 0.62) nextIdx = 3;
+      else if (latest >= 0.42) nextIdx = 2;
+      else if (latest >= 0.20) nextIdx = 1;
+      else nextIdx = 0;
+
+      if (currentStepRef.current !== nextIdx) {
+        currentStepRef.current = nextIdx;
+        setActiveIdx(nextIdx);
+      }
+    });
+  }, [scrollYProgress]);
 
   useEffect(() => {
-    return smoothProgress.on("change", (latest) => {
-      let nextIdx = 0;
-      if (latest >= 0.76) nextIdx = 4;      // Model 5 (Rest) active from 0.76 to 1.00 (generous dwell before next section)
-      else if (latest >= 0.57) nextIdx = 3; // Model 4 (Insights) from 0.57 to 0.76
-      else if (latest >= 0.38) nextIdx = 2; // Model 3 (Wellness) from 0.38 to 0.57
-      else if (latest >= 0.19) nextIdx = 1; // Model 2 (Talk) from 0.19 to 0.38
-      else nextIdx = 0;                     // Model 1 (Journal) from 0.00 to 0.19
+    const handleWheel = (e: WheelEvent) => {
+      const el = sectionRef.current;
+      if (!el) return;
 
-      setActiveIdx(nextIdx);
-    });
-  }, [smoothProgress]);
+      const rect = el.getBoundingClientRect();
+      const isPinned = rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
+
+      // Only intercept while viewport is pinned within Section 3
+      if (!isPinned) return;
+
+      const delta = e.deltaY;
+      if (Math.abs(delta) < 6) return;
+
+      const dir = delta > 0 ? 1 : -1;
+      const current = currentStepRef.current;
+
+      // When at Model 5 (Rest) and scrolling down, release hold to scroll naturally to Section 4
+      if (dir === 1 && current >= 4) {
+        return;
+      }
+
+      // When at Model 1 (Journal) and scrolling up, release hold to scroll naturally to Section 2
+      if (dir === -1 && current <= 0) {
+        return;
+      }
+
+      // Inside the hold: intercept event so native scroll momentum cannot skip models
+      e.preventDefault();
+
+      // If currently locked, absorb all momentum from this flick
+      if (isLockedRef.current) {
+        if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
+        quietTimerRef.current = window.setTimeout(() => {
+          isLockedRef.current = false;
+        }, 180);
+        return;
+      }
+
+      // Advance strictly ONE model
+      const next = Math.max(0, Math.min(4, current + dir));
+      currentStepRef.current = next;
+      setActiveIdx(next);
+      isLockedRef.current = true;
+
+      const targetY = getTargetScrollY(next);
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+
+      if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
+      quietTimerRef.current = window.setTimeout(() => {
+        isLockedRef.current = false;
+      }, 650);
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        touchStartY.current = e.touches[0].clientY;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const el = sectionRef.current;
+      if (!el || touchStartY.current === null) return;
+
+      const rect = el.getBoundingClientRect();
+      const isPinned = rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
+      if (!isPinned) return;
+
+      const currentY = e.touches[0].clientY;
+      const deltaY = touchStartY.current - currentY;
+
+      if (Math.abs(deltaY) < 25) return;
+
+      const dir = deltaY > 0 ? 1 : -1;
+      const current = currentStepRef.current;
+
+      if (dir === 1 && current >= 4) return;
+      if (dir === -1 && current <= 0) return;
+
+      e.preventDefault();
+
+      if (isLockedRef.current) return;
+
+      const next = Math.max(0, Math.min(4, current + dir));
+      currentStepRef.current = next;
+      setActiveIdx(next);
+      isLockedRef.current = true;
+
+      const targetY = getTargetScrollY(next);
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+
+      touchStartY.current = currentY;
+      if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
+      quietTimerRef.current = window.setTimeout(() => {
+        isLockedRef.current = false;
+      }, 650);
+    };
+
+    const handleTouchEnd = () => {
+      touchStartY.current = null;
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const el = sectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const isPinned = rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
+      if (!isPinned) return;
+
+      if (e.key === "ArrowDown" || e.key === "PageDown") {
+        if (currentStepRef.current < 4) {
+          e.preventDefault();
+          handleSelectStep(currentStepRef.current + 1);
+        }
+      } else if (e.key === "ArrowUp" || e.key === "PageUp") {
+        if (currentStepRef.current > 0) {
+          e.preventDefault();
+          handleSelectStep(currentStepRef.current - 1);
+        }
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("keydown", handleKeyDown);
+      if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
+    };
+  }, [getTargetScrollY, handleSelectStep]);
 
   return (
     <section ref={sectionRef} className="relative h-[650vh] bg-white">
@@ -339,7 +511,7 @@ export default function ThirdSection() {
               <button
                 key={feat.key}
                 type="button"
-                onClick={() => setActiveIdx(i)}
+                onClick={() => handleSelectStep(i)}
                 className="group absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 focus:outline-none"
                 style={{
                   left: `${pt.xPercent}%`,
