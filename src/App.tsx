@@ -7,6 +7,7 @@ import SixthSection from "./components/SixthSection";
 import JourneySection from "./components/JourneySection";
 import FounderSection from "./components/FounderSection";
 import SupportSection from "./components/SupportSection";
+import PricingSection from "./components/PricingSection";
 import FaqSection from "./components/FaqSection";
 import Footer from "./components/Footer";
 
@@ -22,6 +23,7 @@ export default function App() {
       <JourneySection />
       <FounderSection />
       <SupportSection />
+      <PricingSection />
       <FaqSection />
       <Footer />
     </div>
