@@ -1,22 +1,15 @@
-<<<<<<< HEAD
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useSpring, useReducedMotion, type MotionValue } from "motion/react";
-=======
-import { useRef } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { useHoldAnimationScroll } from "../hooks/useHoldAnimationScroll";
->>>>>>> 08a34b21d12c8af0467ea29194a5b1e16dbe70d2
 import imgPlaceholder from "../imports/MeetSolace/1fabb6006b2b2026a2aa6f647b1aff16b1c50164.png";
 import SolaceEmblem from "./SolaceEmblem";
 
 const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 const MODULES = [
   {
     step: "Step 01",
     title: "Talk It Out",
-    desc: "Speak freely without judgment. Solace listens with deep empathy, providing instant reassurance whenever thoughts feel overwhelming.",
+    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo.",
     features: [
       { num: "100%", text: "Secure, encrypted\ndata protection" },
       { num: "2 Minutes", text: "Set up to connect\nand begin instantly" },
@@ -26,7 +19,7 @@ const MODULES = [
   {
     step: "Step 02",
     title: "Journal Thoughts",
-    desc: "Reflect on your day, track your moods, and build a healthy habit of self-awareness with gentle AI-guided prompts.",
+    desc: "Reflect on your day, track your moods, and build a healthy habit of self-awareness.",
     features: [
       { num: "Daily", text: "Guided prompts\nand reflections" },
       { num: "Private", text: "Your thoughts are\nfor your eyes only" },
@@ -36,7 +29,7 @@ const MODULES = [
   {
     step: "Step 03",
     title: "Wellness Toolkit",
-    desc: "Access guided box breathing, mindful sensory grounding, and personalized calming exercises anywhere, anytime.",
+    desc: "Access guided meditations, breathing exercises, and mindful practices anywhere.",
     features: [
       { num: "24/7", text: "Access to calming\nresources" },
       { num: "Guided", text: "Routines designed\nfor your needs" },
@@ -47,9 +40,28 @@ const MODULES = [
 
 /* ── Sub-components ── */
 
-function TextSlide({ mod }: { mod: (typeof MODULES)[number] }) {
+function TextSlide({
+  mod,
+  index,
+  smoothProgress,
+}: {
+  mod: (typeof MODULES)[number];
+  index: number;
+  smoothProgress: MotionValue<number>;
+}) {
+  const start = index === 0 ? 0 : (index - 0.1) / MODULES.length;
+  const peakIn = (index + 0.1) / MODULES.length;
+  const peakOut = (index + 0.8) / MODULES.length;
+  const end = (index + 1) / MODULES.length;
+
+  const opacity = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0, 1, 1, 0]);
+  const y = useTransform(smoothProgress, [start, peakIn, peakOut, end], [30, 0, 0, -30]);
+
   return (
-    <div className="flex flex-col items-start">
+    <motion.div
+      className="absolute inset-0 flex flex-col items-start"
+      style={{ opacity, y, pointerEvents: "none" }}
+    >
       <h3
         className="text-[38px] leading-[1.15] tracking-[-1px] lg:text-[46px]"
         style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
@@ -87,11 +99,10 @@ function TextSlide({ mod }: { mod: (typeof MODULES)[number] }) {
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-<<<<<<< HEAD
 function UniqueDockStepper({
   scrollYProgress,
   onSelectStep,
@@ -113,44 +124,13 @@ function UniqueDockStepper({
     { num: "01", label: "Talk", tag: "Voice" },
     { num: "02", label: "Journal", tag: "Reflect" },
     { num: "03", label: "Tools", tag: "Habits" },
-=======
-/* ── Unique Liquid Glass Dock Stepper ── */
-function UniqueDockStepper({
-  activeStep,
-  onSelectStep,
-}: {
-  activeStep: number;
-  onSelectStep: (idx: number) => void;
-}) {
-  const steps = [
-    {
-      num: "01",
-      label: "Talk",
-      tag: "Voice",
-    },
-    {
-      num: "02",
-      label: "Journal",
-      tag: "Reflect",
-    },
-    {
-      num: "03",
-      label: "Tools",
-      tag: "Habits",
-    },
->>>>>>> 08a34b21d12c8af0467ea29194a5b1e16dbe70d2
   ];
 
   return (
     <div className="relative z-20 flex w-full justify-center">
       {/* Liquid Glass Capsule Chassis */}
-<<<<<<< HEAD
       <div className="relative flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white/85 p-1.5 shadow-[0_10px_35px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-2xl">
         {/* Ambient gradient track */}
-=======
-      <div className="relative flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white/80 p-1.5 shadow-[0_10px_35px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-2xl">
-        {/* Background gradient track */}
->>>>>>> 08a34b21d12c8af0467ea29194a5b1e16dbe70d2
         <div className="pointer-events-none absolute inset-x-8 top-1/2 h-[1.5px] -translate-y-1/2 bg-gradient-to-r from-transparent via-[#e91e63]/20 to-transparent" />
 
         {steps.map((s, i) => {
@@ -171,10 +151,6 @@ function UniqueDockStepper({
                   className="absolute inset-0 rounded-full border border-white/90 bg-white shadow-[0_6px_22px_rgba(233,30,99,0.18),0_2px_6px_rgba(0,0,0,0.04)]"
                   transition={{ type: "spring", stiffness: 420, damping: 32 }}
                 >
-<<<<<<< HEAD
-=======
-                  {/* Glowing laser accent */}
->>>>>>> 08a34b21d12c8af0467ea29194a5b1e16dbe70d2
                   <div
                     className="absolute bottom-0 left-1/2 h-[2.5px] w-3/4 -translate-x-1/2 rounded-full"
                     style={{ background: GRAD }}
@@ -232,32 +208,36 @@ function UniqueDockStepper({
 function StepCard({
   mod,
   index,
-  activeStep,
+  smoothProgress,
 }: {
   mod: (typeof MODULES)[number];
   index: number;
-  activeStep: number;
+  smoothProgress: MotionValue<number>;
 }) {
-  const isCurrent = activeStep === index;
-  const isPast = index < activeStep;
+  const isLast = index === MODULES.length - 1;
+  const start = index === 0 ? 0 : (index - 0.15) / MODULES.length;
+  const peakIn = (index + 0.12) / MODULES.length;
+  const peakOut = (index + 0.85) / MODULES.length;
+  const end = (index + 1) / MODULES.length;
+
+  const y = useTransform(smoothProgress, [start, peakIn, peakOut, end], [80, 0, 0, isLast ? 0 : -50]);
+  const scale = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0.82, 1, 1, isLast ? 1 : 0.92]);
+  const opacity = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0, 1, 1, isLast ? 1 : 0.3]);
+  const rotateX = useTransform(smoothProgress, [start, peakIn, peakOut, end], [8, 0, 0, isLast ? 0 : -4]);
+  const glowVal = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0, 0.25, 0.25, 0]);
+  const borderColor = useTransform(glowVal, (v) => `rgba(233, 30, 99, ${v})`);
 
   return (
     <motion.div
-      className="absolute inset-x-0 top-6 flex flex-col items-center overflow-hidden rounded-[30px] p-[2px] shadow-2xl"
-      animate={{
-        scale: isCurrent ? 1 : isPast ? 0.92 : 0.95,
-        y: isCurrent ? 0 : isPast ? -45 : 70,
-        opacity: isCurrent ? 1 : isPast ? 0.25 : 0,
-        rotateX: isCurrent ? 0 : isPast ? -4 : 6,
-        zIndex: isCurrent ? 10 : isPast ? index : 0,
-      }}
-      transition={{ type: "spring", stiffness: 100, damping: 20 }}
+      className="absolute inset-x-0 top-10 flex flex-col items-center overflow-hidden rounded-[30px] p-[2px] shadow-2xl"
       style={{
+        scale,
+        y,
+        opacity,
+        rotateX,
+        zIndex: index + 1,
         transformOrigin: "bottom center",
-        background: isCurrent
-          ? "linear-gradient(135deg, rgba(233,30,99,0.35), rgba(156,39,176,0.35))"
-          : "rgba(220,220,230,0.5)",
-        pointerEvents: isCurrent ? "auto" : "none",
+        background: borderColor,
       }}
     >
       <div className="flex w-full flex-col items-center overflow-hidden rounded-[28px] bg-white">
@@ -298,18 +278,13 @@ function StepCard({
 
 export default function FifthSection() {
   const containerRef = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
 
-  const { activeStep, setStep } = useHoldAnimationScroll(
-    3,
-    containerRef,
-    {
-      throttleMs: 650,
-      quietMs: 180,
-      nextSectionId: "testimonials-section",
-      prevSectionId: "moments-section",
-    }
-  );
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 80, damping: 22 });
 
   const handleSelectModule = (idx: number) => {
     const el = containerRef.current;
@@ -322,7 +297,7 @@ export default function FifthSection() {
   };
 
   return (
-    <section ref={containerRef} id="meet-solace-section" className="relative h-[400vh] bg-white">
+    <section ref={containerRef} className="relative h-[400vh] bg-white">
       <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden">
         {/* Floating emblem in lower-right empty space */}
         <div className="pointer-events-none absolute bottom-[6%] right-[3%] z-0 hidden xl:block opacity-35">
@@ -365,6 +340,7 @@ export default function FifthSection() {
 
         {/* Main Content */}
         <div className="relative mt-8 flex w-full max-w-[1260px] flex-col gap-16 px-6 lg:mt-12 lg:flex-row lg:items-start lg:gap-20">
+
           {/* Left Column */}
           <div className="flex flex-1 flex-col items-start pt-6 lg:pt-12">
             <div
@@ -381,42 +357,22 @@ export default function FifthSection() {
               </span>
             </div>
 
-            <div className="relative mt-8 min-h-[220px] w-full">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={MODULES[activeStep].step}
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -18 }}
-                  transition={{ duration: 0.35, ease: EASE }}
-                >
-                  <TextSlide mod={MODULES[activeStep]} />
-                </motion.div>
-              </AnimatePresence>
+            <div className="relative mt-8 min-h-[200px] w-full">
+              {MODULES.map((mod, i) => (
+                <TextSlide key={`text-${i}`} mod={mod} index={i} smoothProgress={smoothProgress} />
+              ))}
             </div>
           </div>
 
           {/* Right Column */}
           <div className="relative w-full max-w-[620px]">
             {/* Unique Liquid Glass Dock Stepper */}
-<<<<<<< HEAD
             <UniqueDockStepper scrollYProgress={scrollYProgress} onSelectStep={handleSelectModule} />
-=======
-            <UniqueDockStepper
-              activeStep={activeStep}
-              onSelectStep={(idx) => setStep(idx)}
-            />
->>>>>>> 08a34b21d12c8af0467ea29194a5b1e16dbe70d2
 
             {/* Stacking Cards */}
-            <div className="relative mt-[-10px] h-[520px] w-full pt-6">
+            <div className="relative mt-[-20px] h-[520px] w-full pt-10">
               {MODULES.map((mod, i) => (
-                <StepCard
-                  key={`card-${i}`}
-                  mod={mod}
-                  index={i}
-                  activeStep={activeStep}
-                />
+                <StepCard key={`card-${i}`} mod={mod} index={i} smoothProgress={smoothProgress} />
               ))}
             </div>
           </div>
@@ -425,3 +381,4 @@ export default function FifthSection() {
     </section>
   );
 }
+
