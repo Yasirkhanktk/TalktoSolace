@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, useScroll } from "motion/react";
+=======
+import { useRef } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { useHoldAnimationScroll } from "../hooks/useHoldAnimationScroll";
+>>>>>>> 08a34b21d12c8af0467ea29194a5b1e16dbe70d2
 import imgHome from "../imports/Hero/c5350ce48a92f7054918aeb788bf135d4754965c.png";
 import imgTalkItOut from "../imports/3NdSection/30e513f7515e0de820633689d8febfe6dea7e482.png";
 import imgWellness from "../imports/MeetSolace-1/efecd8b2ced1ea351533f05753cd6733910d8c0f.png";
@@ -230,6 +236,7 @@ export default function ThirdSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
 
+<<<<<<< HEAD
   const [activeIdx, setActiveIdx] = useState(0);
   const currentStepRef = useRef(0);
   const isLockedRef = useRef(false);
@@ -422,9 +429,21 @@ export default function ThirdSection() {
       if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
     };
   }, [getTargetScrollY, handleSelectStep]);
+=======
+  const { activeStep: activeIdx, setStep: setActiveIdx } = useHoldAnimationScroll(
+    5,
+    sectionRef,
+    {
+      throttleMs: 650,
+      quietMs: 180,
+      nextSectionId: "moments-section",
+      prevSectionId: "second-section",
+    }
+  );
+>>>>>>> 08a34b21d12c8af0467ea29194a5b1e16dbe70d2
 
   return (
-    <section ref={sectionRef} className="relative h-[650vh] bg-white">
+    <section ref={sectionRef} id="features-section" className="relative h-[650vh] bg-white">
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-6 py-6">
         {/* Background Solace Emblem */}
         <div className="pointer-events-none absolute left-[3%] top-[10%] z-0 hidden opacity-60 xl:block">
