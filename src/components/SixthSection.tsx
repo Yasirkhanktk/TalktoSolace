@@ -31,7 +31,7 @@ export default function SixthSection() {
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-60%"]);
 
   return (
-    <section ref={containerRef} id="testimonials-section" className="relative h-[300vh] bg-white">
+    <section ref={containerRef} className="relative h-[300vh] bg-white">
       <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden">
         
         {/* Floating emblem in top-left empty space */}

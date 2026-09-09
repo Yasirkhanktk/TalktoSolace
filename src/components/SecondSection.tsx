@@ -87,7 +87,7 @@ export default function SecondSection() {
   const state = reduce ? "show" : inView ? "show" : "hidden";
 
   return (
-    <section ref={ref} id="second-section" className="relative bg-white py-20 md:py-24 overflow-hidden">
+    <section ref={ref} className="relative bg-white py-20 md:py-24 overflow-hidden">
       {/* Decorative floating Solace Logo Emblem */}
       <div className="absolute right-[-20px] md:right-[3%] top-[12%] pointer-events-none z-0 hidden sm:block opacity-70">
         <SolaceEmblem size={135} tilt={14} />

@@ -52,7 +52,7 @@ export default function FounderSection() {
   const textState = inView ? "show" : "hidden";
 
   return (
-    <section ref={sectionRef} id="founder-section" className="relative bg-white py-20 md:py-24 overflow-hidden flex items-center justify-center">
+    <section ref={sectionRef} className="relative bg-white py-20 md:py-24 overflow-hidden flex items-center justify-center">
       {/* Tilted, Animated Solace Logo Emblem on the left */}
       <div className="absolute left-[-20px] md:left-[2%] lg:left-[4%] top-[18%] pointer-events-none z-0 hidden sm:block">
         <SolaceEmblem size={150} tilt={-16} />
