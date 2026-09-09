@@ -233,13 +233,11 @@ export default function ThirdSection() {
   const [activeIdx, setActiveIdx] = useState(0);
   const currentStepRef = useRef(0);
   const isLockedRef = useRef(false);
-  const scrollPinRef = useRef<number | null>(null);
   const quietTimerRef = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
-  const rafRef = useRef<number | null>(null);
 
   const TOTAL_STEPS = 5; // 5 models: 0-4
-  const LOCK_DURATION = 800; // ms — must exceed trackpad inertia (~500-700ms)
+  const LOCK_DURATION = 400; // ms — snappy transition without freezing scroll
 
   /* ── Compute the exact scroll Y for a given step ── */
   const getTargetScrollY = useCallback((step: number) => {
@@ -259,46 +257,31 @@ export default function ThirdSection() {
     return rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
   }, []);
 
+  /* ── Lock helper: sets lock and starts a FIXED timer (never reset) ── */
+  const lockStep = useCallback((step: number) => {
+    currentStepRef.current = step;
+    setActiveIdx(step);
+    isLockedRef.current = true;
+    const targetY = getTargetScrollY(step);
+    window.scrollTo({ top: targetY, behavior: "smooth" });
+
+    // Fixed timer — NOT reset by inertia so user is never stuck
+    if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
+    quietTimerRef.current = window.setTimeout(() => {
+      isLockedRef.current = false;
+    }, LOCK_DURATION);
+  }, [getTargetScrollY]);
+
   /* ── Advance to a specific step (used by arc buttons) ── */
   const handleSelectStep = useCallback(
     (idx: number) => {
-      const clamped = Math.max(0, Math.min(TOTAL_STEPS - 1, idx));
-      currentStepRef.current = clamped;
-      setActiveIdx(clamped);
-
-      // Pin scroll position and lock
-      const targetY = getTargetScrollY(clamped);
-      scrollPinRef.current = targetY;
-      isLockedRef.current = true;
-      window.scrollTo(0, targetY);
-
-      if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
-      quietTimerRef.current = window.setTimeout(() => {
-        isLockedRef.current = false;
-        scrollPinRef.current = null;
-      }, LOCK_DURATION);
+      lockStep(Math.max(0, Math.min(TOTAL_STEPS - 1, idx)));
     },
-    [getTargetScrollY]
+    [lockStep]
   );
 
   useEffect(() => {
-    /* ── SCROLL PINNING: The core of the fix ──
-       While isLockedRef is true, every scroll event forces the
-       window back to scrollPinRef. This prevents ANY source of
-       scroll drift — trackpad inertia, momentum, scrollbar drag,
-       touch fling, etc. — from moving past one step. */
-    const handleScroll = () => {
-      if (isLockedRef.current && scrollPinRef.current !== null) {
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        rafRef.current = requestAnimationFrame(() => {
-          if (scrollPinRef.current !== null) {
-            window.scrollTo(0, scrollPinRef.current);
-          }
-        });
-      }
-    };
-
-    /* ── WHEEL HANDLER: Intercept and advance one step ── */
+    /* ── WHEEL HANDLER ── */
     const handleWheel = (e: WheelEvent) => {
       if (!getIsPinned()) return;
 
@@ -312,36 +295,14 @@ export default function ThirdSection() {
       if (dir === 1 && current >= TOTAL_STEPS - 1) return;
       if (dir === -1 && current <= 0) return;
 
-      // BLOCK the native scroll event entirely
+      // Block native scroll
       e.preventDefault();
 
-      // If currently locked, absorb this event (inertia from same flick)
-      // and reset the debounce timer so lock persists through all inertia
-      if (isLockedRef.current) {
-        if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
-        quietTimerRef.current = window.setTimeout(() => {
-          isLockedRef.current = false;
-          scrollPinRef.current = null;
-        }, LOCK_DURATION);
-        return;
-      }
+      // If locked, just absorb — do NOT reset timer
+      if (isLockedRef.current) return;
 
       // Advance exactly ONE step
-      const next = Math.max(0, Math.min(TOTAL_STEPS - 1, current + dir));
-      currentStepRef.current = next;
-      setActiveIdx(next);
-
-      // Pin scroll position and lock
-      const targetY = getTargetScrollY(next);
-      scrollPinRef.current = targetY;
-      isLockedRef.current = true;
-      window.scrollTo(0, targetY);
-
-      if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
-      quietTimerRef.current = window.setTimeout(() => {
-        isLockedRef.current = false;
-        scrollPinRef.current = null;
-      }, LOCK_DURATION);
+      lockStep(Math.max(0, Math.min(TOTAL_STEPS - 1, current + dir)));
     };
 
     /* ── TOUCH HANDLERS ── */
@@ -370,21 +331,8 @@ export default function ThirdSection() {
 
       if (isLockedRef.current) return;
 
-      const next = Math.max(0, Math.min(TOTAL_STEPS - 1, current + dir));
-      currentStepRef.current = next;
-      setActiveIdx(next);
-
-      const targetY = getTargetScrollY(next);
-      scrollPinRef.current = targetY;
-      isLockedRef.current = true;
-      window.scrollTo(0, targetY);
-
       touchStartY.current = currentY;
-      if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
-      quietTimerRef.current = window.setTimeout(() => {
-        isLockedRef.current = false;
-        scrollPinRef.current = null;
-      }, LOCK_DURATION);
+      lockStep(Math.max(0, Math.min(TOTAL_STEPS - 1, current + dir)));
     };
 
     const handleTouchEnd = () => {
@@ -408,7 +356,6 @@ export default function ThirdSection() {
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
@@ -416,16 +363,14 @@ export default function ThirdSection() {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("keydown", handleKeyDown);
       if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [getTargetScrollY, getIsPinned, handleSelectStep]);
+  }, [getIsPinned, lockStep, handleSelectStep]);
 
   return (
     <section ref={sectionRef} className="relative h-[650vh] bg-white">
