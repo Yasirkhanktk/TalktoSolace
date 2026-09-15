@@ -128,8 +128,8 @@ function UniqueDockStepper({
 
   return (
     <div className="relative z-20 flex w-full justify-center">
-      {/* Liquid Glass Capsule Chassis */}
-      <div className="relative flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white/85 p-1.5 shadow-[0_10px_35px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-2xl">
+      {/* Liquid Glass Capsule Chassis — Borderless, Shadowless & Blended */}
+      <div className="relative flex items-center gap-1.5 rounded-full bg-white/70 p-1.5 backdrop-blur-2xl">
         {/* Ambient gradient track */}
         <div className="pointer-events-none absolute inset-x-8 top-1/2 h-[1.5px] -translate-y-1/2 bg-gradient-to-r from-transparent via-[#e91e63]/20 to-transparent" />
 

@@ -149,78 +149,175 @@ const FEATURES: Feature[] = [
 // Angles: 180°, 135°, 90°, 45°, 0°
 const ARC_POINTS = [
   { xPercent: 8, yPercent: 78, angle: 180, rotAngle: 180 },
-  { xPercent: 24, yPercent: 28, angle: 135, rotAngle: 225 },
-  { xPercent: 50, yPercent: 8, angle: 90, rotAngle: 270 },
-  { xPercent: 76, yPercent: 28, angle: 45, rotAngle: 315 },
+  { xPercent: 24, yPercent: 32, angle: 135, rotAngle: 225 },
+  { xPercent: 50, yPercent: 16, angle: 90, rotAngle: 270 },
+  { xPercent: 76, yPercent: 32, angle: 45, rotAngle: 315 },
   { xPercent: 92, yPercent: 78, angle: 0, rotAngle: 360 },
 ];
 
-function TiltedTabCard({
+function BubbleCard({
   item,
-  tilt,
   side,
   index,
+  tilt = 0,
 }: {
   item: TabItem;
-  tilt: number;
   side: "left" | "right";
   index: number;
+  tilt?: number;
 }) {
   const reduce = useReducedMotion();
+
+  // Organic wobbly shapes per card
+  const borderShape =
+    index % 3 === 0
+      ? "46% 54% 50% 50% / 53% 47% 53% 47%"
+      : index % 3 === 1
+      ? "53% 47% 52% 48% / 47% 53% 47% 53%"
+      : "50% 50% 47% 53% / 52% 48% 52% 48%";
 
   return (
     <motion.div
       className="group relative select-none"
+      style={{ rotate: tilt }}
       animate={
         reduce
           ? undefined
           : {
-              y: [0, index % 2 === 0 ? -4 : 4, 0],
+              y: [0, index % 2 === 0 ? -8 : 7, 0],
+              x: [0, index % 2 === 0 ? 5 : -5, 0],
+              rotate: [tilt, tilt + (index % 2 === 0 ? 1.5 : -1.5), tilt],
             }
       }
       transition={{
-        duration: 3.2 + index * 0.4,
+        duration: 3.4 + index * 0.4,
         repeat: Infinity,
         ease: "easeInOut",
       }}
-      style={{
-        transform: `rotate(${tilt}deg)`,
-      }}
       whileHover={{
+        scale: 1.1,
         rotate: 0,
-        scale: 1.04,
-        transition: { type: "spring", stiffness: 350, damping: 18 },
+        transition: { type: "spring", stiffness: 380, damping: 15 },
       }}
     >
-      <div className="relative flex w-[265px] flex-col gap-1.5 overflow-hidden rounded-[20px] border border-white/90 bg-white/90 p-3.5 px-4 shadow-[0_6px_22px_rgba(0,0,0,0.06)] backdrop-blur-[14px] transition-all duration-300 hover:border-[#e91e63]/40 hover:bg-white hover:shadow-[0_12px_32px_rgba(233,30,99,0.18)]">
-        {/* Glow Accent Bar */}
+      {/* ── Ambient Floating Micro-Bubbles Around Main Bubble ── */}
+      {/* Micro Bubble 1 (Top Corner) */}
+      <motion.div
+        className="pointer-events-none absolute -top-2.5 right-3 z-0 h-4 w-4 rounded-full border border-[#e91e63]/20 bg-gradient-to-br from-white/90 via-pink-100/40 to-purple-100/30 shadow-[0_2px_8px_rgba(233,30,99,0.12)] backdrop-blur-md"
+        animate={reduce ? undefined : { y: [0, -6, 0], scale: [0.9, 1.15, 0.9] }}
+        transition={{ duration: 2.6 + index * 0.3, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <div className="absolute top-1 left-1 h-1 w-1 rounded-full bg-white/90" />
+      </motion.div>
+
+      {/* Micro Bubble 2 (Bottom Corner) */}
+      <motion.div
+        className="pointer-events-none absolute -bottom-3 left-4 z-0 h-3.5 w-3.5 rounded-full border border-purple-300/30 bg-gradient-to-br from-white/95 via-pink-50/50 to-purple-100/40 shadow-[0_2px_6px_rgba(156,39,176,0.12)] backdrop-blur-md"
+        animate={reduce ? undefined : { y: [0, 5, 0], x: [0, -3, 0] }}
+        transition={{ duration: 3.1 + index * 0.4, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <div className="absolute top-0.5 left-0.5 h-1 w-1 rounded-full bg-white/95" />
+      </motion.div>
+
+      {/* Micro Bubble 3 (Side Tiny Pearl) */}
+      <motion.div
+        className="pointer-events-none absolute top-1/2 -top-1 -left-3 z-0 h-2.5 w-2.5 rounded-full border border-[#e91e63]/25 bg-white/90 shadow-[0_1px_4px_rgba(233,30,99,0.15)]"
+        animate={reduce ? undefined : { scale: [1, 1.25, 1], opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 2.2 + index * 0.2, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* ── Main Circular Glass Bubble Body ── */}
+      <div
+        className="relative z-10 flex min-h-[118px] w-[182px] flex-col items-center justify-center gap-1.5 p-3 px-4 text-center backdrop-blur-xl transition-all duration-300 hover:border-[#e91e63]/30 hover:shadow-[0_14px_40px_rgba(233,30,99,0.22)]"
+        style={{
+          borderRadius: borderShape,
+          background:
+            "radial-gradient(circle at 35% 25%, rgba(255,255,255,0.98) 0%, rgba(253,235,242,0.6) 55%, rgba(255,255,255,0.92) 100%)",
+          border: "1.5px solid rgba(233,30,99,0.16)",
+          boxShadow:
+            "0 8px 24px rgba(233,30,99,0.08), inset 0 3px 6px rgba(255,255,255,0.95), inset 0 -2px 4px rgba(233,30,99,0.05)",
+        }}
+      >
+        {/* Specular Bubble Gloss Highlight */}
         <div
-          className={`absolute ${
-            side === "left" ? "left-0" : "right-0"
-          } top-0 h-full w-[3.5px] opacity-80 transition-opacity group-hover:opacity-100`}
-          style={{ background: GRAD }}
+          className="pointer-events-none absolute rounded-full"
+          style={{
+            width: "45%",
+            height: "30%",
+            top: "10%",
+            left: "15%",
+            background:
+              "radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 75%)",
+          }}
         />
 
-        {/* Top Tag & Indicator */}
-        <div className="flex items-center justify-between">
-          <span
-            className="rounded-full bg-gradient-to-r from-[#e91e63]/10 to-[#9c27b0]/10 px-2.5 py-[2px] text-[10px] font-bold uppercase tracking-wider text-[#d81b60]"
-            style={{ fontFamily: "'Inter', sans-serif" }}
-          >
-            {item.tag}
-          </span>
-          <div className="flex h-5 w-5 items-center justify-center rounded-full border border-[#e91e63]/25 bg-gradient-to-br from-[#e91e63]/10 to-[#9c27b0]/10 shadow-[0_0_8px_rgba(233,30,99,0.2)]">
-            <div className="h-1.5 w-1.5 rounded-full" style={{ background: GRAD }} />
-          </div>
-        </div>
+        {/* Secondary Bottom Reflection */}
+        <div
+          className="pointer-events-none absolute rounded-full opacity-40"
+          style={{
+            width: "35%",
+            height: "15%",
+            bottom: "10%",
+            right: "20%",
+            background:
+              "radial-gradient(ellipse at center, rgba(233,30,99,0.2) 0%, transparent 70%)",
+          }}
+        />
 
-        {/* Title */}
+        {/* Eyebrow Tag Pill */}
         <span
-          className="text-[13.5px] font-semibold text-[#1e1e1e] transition-colors group-hover:text-black"
+          className="relative z-10 inline-block rounded-full border border-[#e91e63]/20 px-2.5 py-[1px] text-[9px] font-bold uppercase tracking-wider text-[#d81b60] shadow-[0_2px_4px_rgba(233,30,99,0.06)]"
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(252,228,236,0.8) 100%)",
+          }}
+        >
+          {item.tag}
+        </span>
+
+        {/* Beautiful Centered Text */}
+        <span
+          className="relative z-10 max-w-[150px] text-[12px] font-semibold leading-[1.3] text-slate-800 transition-colors group-hover:text-black"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
           {item.text}
         </span>
+      </div>
+
+      {/* ── Bubble Tail / Connector Spheres pointing to screen ── */}
+      <div
+        className={`absolute ${
+          side === "left" ? "-right-3.5 top-1/2" : "-left-3.5 top-1/2"
+        } z-20 flex -translate-y-1/2 items-center gap-[4px] ${
+          side === "left" ? "flex-row" : "flex-row-reverse"
+        }`}
+      >
+        <div
+          className="h-[11px] w-[11px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.98), rgba(252,228,236,0.7))",
+            border: "1px solid rgba(233,30,99,0.18)",
+            boxShadow: "0 2px 6px rgba(233,30,99,0.08)",
+          }}
+        />
+        <div
+          className="h-[7px] w-[7px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95), rgba(252,228,236,0.6))",
+            border: "1px solid rgba(233,30,99,0.14)",
+          }}
+        />
+        <div
+          className="h-[4px] w-[4px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.9), rgba(252,228,236,0.5))",
+            border: "1px solid rgba(233,30,99,0.1)",
+          }}
+        />
       </div>
     </motion.div>
   );
@@ -404,13 +501,13 @@ export default function ThirdSection() {
         </h2>
         <div className="mt-1.5 h-[4px] w-[52px] rounded-full" style={{ background: GRAD }} />
 
-        {/* ───── D-Shaped 180-Degree Arc Controller with 5 Milestone Points (increased space) ───── */}
-        <div className="relative mt-12 h-[145px] w-[min(680px,96vw)]">
+        {/* ───── D-Shaped 180-Degree Arc Controller with 5 Milestone Points ───── */}
+        <div className="relative mt-12 mb-3 h-[130px] w-[min(620px,94vw)]">
           {/* Central Glowing Sphere & Pointer Ring */}
-          <div className="absolute left-1/2 bottom-2 -translate-x-1/2">
+          <div className="absolute left-1/2 bottom-[-20px] -translate-x-1/2">
             {/* Halo */}
             <motion.div
-              className="absolute left-1/2 top-1/2 h-[90px] w-[90px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-xl"
+              className="absolute left-1/2 top-1/2 h-[80px] w-[80px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-xl"
               style={{ background: "radial-gradient(circle, rgba(233,30,99,0.35), rgba(156,39,176,0) 70%)" }}
               animate={reduce ? undefined : { scale: [1, 1.15, 1], opacity: [0.6, 0.9, 0.6] }}
               transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
@@ -418,11 +515,11 @@ export default function ThirdSection() {
 
             {/* Rotating Pointer Arrow Indicator */}
             <motion.div
-              className="absolute left-1/2 top-1/2 h-[120px] w-[120px] -translate-x-1/2 -translate-y-1/2"
+              className="absolute left-1/2 top-1/2 h-[92px] w-[92px] -translate-x-1/2 -translate-y-1/2"
               animate={{ rotate: reduce ? 0 : ARC_POINTS[activeIdx].rotAngle }}
               transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 65, damping: 14 }}
             >
-              <svg className="absolute right-0 top-1/2 h-[45px] w-[22px] -translate-y-1/2" viewBox="0 0 22 45" fill="none">
+              <svg className="absolute right-0 top-1/2 h-[34px] w-[17px] -translate-y-1/2" viewBox="0 0 22 45" fill="none">
                 <path d="M3 5 Q18 22.5 3 40" stroke="url(#arcStrokeGrad2)" strokeWidth="3" strokeLinecap="round" />
                 <path d="M18 22.5 L9 16 M18 22.5 L9 29" stroke="url(#arcStrokeGrad2)" strokeWidth="3" strokeLinecap="round" />
                 <defs>
@@ -436,26 +533,28 @@ export default function ThirdSection() {
 
             {/* Glass Orb Core */}
             <motion.div
-              className="relative flex h-[68px] w-[68px] items-center justify-center rounded-full shadow-[0_10px_30px_rgba(233,30,99,0.25)]"
+              className="relative flex h-[60px] w-[60px] items-center justify-center rounded-full shadow-[0_10px_30px_rgba(233,30,99,0.25)]"
               style={{
                 background:
-                  "radial-gradient(circle at 36% 28%, #ffffff 0%, #fce4ec 25%, #f48fb1 55%, #ad1457 100%)",
+                  "radial-gradient(circle at 36% 28%, #ffffff 0%, #fce4ec 30%, #f48fb1 60%, #ad1457 100%)",
                 boxShadow:
-                  "inset -6px -8px 14px rgba(74,20,140,0.4), inset 5px 6px 12px rgba(255,255,255,0.7), 0 12px 28px rgba(233,30,99,0.3)",
+                  "inset -6px -8px 14px rgba(74,20,140,0.35), inset 5px 6px 12px rgba(255,255,255,0.85), 0 10px 24px rgba(233,30,99,0.28)",
               }}
               animate={reduce ? undefined : { y: [0, -3, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             >
-              <span className="text-[11px] font-bold text-white tracking-wider">
+              <span className="text-[13px] font-extrabold text-slate-900 tracking-wider">
                 {FEATURES[activeIdx].num}
               </span>
             </motion.div>
           </div>
 
-          {/* 5 Milestone Points along the 180° Arc */}
+          {/* 5 Milestone Points along the 180° Arc (Top points have label ABOVE to prevent overlap) */}
           {FEATURES.map((feat, i) => {
             const pt = ARC_POINTS[i];
             const isActive = activeIdx === i;
+            const isTopArc = i >= 1 && i <= 3; // Points 02, 03, 04
+
             return (
               <button
                 key={feat.key}
@@ -468,7 +567,9 @@ export default function ThirdSection() {
                 }}
               >
                 <div
-                  className={`flex flex-col items-center transition-transform duration-300 ${
+                  className={`flex items-center transition-transform duration-300 ${
+                    isTopArc ? "flex-col-reverse" : "flex-col"
+                  } ${
                     isActive ? "scale-110" : "scale-95 opacity-70 group-hover:opacity-100 group-hover:scale-105"
                   }`}
                 >
@@ -492,7 +593,9 @@ export default function ThirdSection() {
 
                   {/* Label */}
                   <span
-                    className={`mt-1 whitespace-nowrap text-[12px] font-semibold transition-all ${
+                    className={`whitespace-nowrap text-[12px] font-semibold transition-all ${
+                      isTopArc ? "mb-1" : "mt-1"
+                    } ${
                       isActive
                         ? "bg-clip-text text-transparent"
                         : "text-[#777] group-hover:text-black"
@@ -511,10 +614,10 @@ export default function ThirdSection() {
           })}
         </div>
 
-        {/* ───── Stage: Paired Tilted Tabs & Central Screen ───── */}
-        <div className="relative mt-2 flex w-full max-w-[1380px] h-[480px] items-center justify-between px-2">
-          {/* Left Column: 2 Pairs (2 Left-Up, 2 Left-Down) */}
-          <div className="relative z-20 w-[300px] h-[440px] shrink-0">
+        {/* ───── Stage: Unaligned Creative Bubbles & Central Screen ───── */}
+        <div className="relative mt-1 flex w-full max-w-[1380px] h-[390px] items-center justify-between px-2">
+          {/* Left Column: Organic Unaligned Bubbles */}
+          <div className="relative z-20 w-[280px] h-[380px] shrink-0 mt-[-52px]">
             {FEATURES.map((feat, fIdx) => {
               const isActive = activeIdx === fIdx;
               return (
@@ -522,55 +625,61 @@ export default function ThirdSection() {
                   key={`${feat.key}-left-col`}
                   className="absolute inset-0 flex flex-col justify-between py-2 pointer-events-none"
                 >
-                  {/* Pair 1 (Left Up: 2 Tabs) */}
-                  <div className="flex flex-col gap-3.5">
+                  {/* Left-Up Bubbles */}
+                  <div className="flex flex-col gap-4">
                     {feat.leftUp.map((item, i) => {
-                      const tilt = i === 0 ? -3.5 : 2;
+                      const posX = i === 0 ? -22 : 14;
+                      const posY = i === 0 ? -8 : 6;
+                      const tilt = i === 0 ? -4.5 : 3.5;
                       return (
                         <motion.div
                           key={`${feat.key}-lu-${i}`}
-                          initial={{ opacity: 0, x: -50, rotate: tilt * 2 }}
+                          initial={{ opacity: 0, scale: 0, x: posX - 30, y: posY }}
                           animate={{
                             opacity: isActive ? 1 : 0,
-                            x: isActive ? 0 : -50,
-                            rotate: isActive ? tilt : tilt * 2,
+                            scale: isActive ? 1 : 0,
+                            x: isActive ? posX : posX - 30,
+                            y: posY,
                           }}
                           transition={{
                             type: "spring",
-                            stiffness: 95,
-                            damping: 17,
-                            delay: isActive ? i * 0.08 : 0,
+                            stiffness: 260,
+                            damping: 14,
+                            delay: isActive ? i * 0.1 : 0,
                           }}
                           style={{ pointerEvents: isActive ? "auto" : "none" }}
                         >
-                          <TiltedTabCard item={item} tilt={tilt} side="left" index={i} />
+                          <BubbleCard item={item} side="left" index={i} tilt={tilt} />
                         </motion.div>
                       );
                     })}
                   </div>
 
-                  {/* Pair 2 (Left Down: 2 Tabs) */}
-                  <div className="flex flex-col gap-3.5">
+                  {/* Left-Down Bubbles */}
+                  <div className="flex flex-col gap-4">
                     {feat.leftDown.map((item, i) => {
-                      const tilt = i === 0 ? 3.5 : -2.5;
+                      const posX = i === 0 ? -16 : 18;
+                      const posY = i === 0 ? -4 : 10;
+                      const tilt = i === 0 ? 2.5 : -3.5;
                       return (
                         <motion.div
                           key={`${feat.key}-ld-${i}`}
-                          initial={{ opacity: 0, x: -50, rotate: tilt * 2 }}
+                          initial={{ opacity: 0, scale: 0, x: posX - 30, y: posY }}
                           animate={{
                             opacity: isActive ? 1 : 0,
-                            x: isActive ? 0 : -50,
-                            rotate: isActive ? tilt : tilt * 2,
+                            scale: isActive ? 1 : 0,
+                            x: isActive ? posX : posX - 30,
+                            y: posY,
                           }}
                           transition={{
                             type: "spring",
-                            stiffness: 95,
-                            damping: 17,
-                            delay: isActive ? (i + 2) * 0.08 : 0,
+                            stiffness: 260,
+                            damping: 14,
+                            delay: isActive ? (i + 2) * 0.1 : 0,
                           }}
                           style={{ pointerEvents: isActive ? "auto" : "none" }}
                         >
-                          <TiltedTabCard item={item} tilt={tilt} side="left" index={i + 2} />
+                          <BubbleCard item={item} side="left" index={i + 2} tilt={tilt} />
                         </motion.div>
                       );
                     })}
@@ -581,7 +690,7 @@ export default function ThirdSection() {
           </div>
 
           {/* Central Screen Frame */}
-          <div className="relative z-10 mx-auto w-full max-w-[680px] rounded-[24px] bg-[#0b0b14] p-2.5 shadow-[0px_44px_100px_rgba(20,10,40,0.38)]">
+          <div className="relative z-10 mx-auto w-full max-w-[600px] mt-10 rounded-[22px] bg-[#0b0b14] p-2 shadow-[0px_32px_80px_rgba(20,10,40,0.32)]">
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[16px]">
               {FEATURES.map((feat, i) => {
                 const isActive = activeIdx === i;
@@ -604,8 +713,8 @@ export default function ThirdSection() {
             </div>
           </div>
 
-          {/* Right Column: 2 Pairs (2 Right-Up, 2 Right-Down) */}
-          <div className="relative z-20 w-[300px] h-[440px] shrink-0">
+          {/* Right Column: Organic Unaligned Bubbles */}
+          <div className="relative z-20 w-[280px] h-[380px] shrink-0 mt-[-52px]">
             {FEATURES.map((feat, fIdx) => {
               const isActive = activeIdx === fIdx;
               return (
@@ -613,55 +722,61 @@ export default function ThirdSection() {
                   key={`${feat.key}-right-col`}
                   className="absolute inset-0 flex flex-col items-end justify-between py-2 pointer-events-none"
                 >
-                  {/* Pair 1 (Right Up: 2 Tabs) */}
-                  <div className="flex flex-col items-end gap-3.5">
+                  {/* Right-Up Bubbles */}
+                  <div className="flex flex-col items-end gap-4">
                     {feat.rightUp.map((item, i) => {
-                      const tilt = i === 0 ? 3.5 : -2;
+                      const posX = i === 0 ? 22 : -12;
+                      const posY = i === 0 ? -10 : 4;
+                      const tilt = i === 0 ? 4.5 : -3;
                       return (
                         <motion.div
                           key={`${feat.key}-ru-${i}`}
-                          initial={{ opacity: 0, x: 50, rotate: tilt * 2 }}
+                          initial={{ opacity: 0, scale: 0, x: posX + 30, y: posY }}
                           animate={{
                             opacity: isActive ? 1 : 0,
-                            x: isActive ? 0 : 50,
-                            rotate: isActive ? tilt : tilt * 2,
+                            scale: isActive ? 1 : 0,
+                            x: isActive ? posX : posX + 30,
+                            y: posY,
                           }}
                           transition={{
                             type: "spring",
-                            stiffness: 95,
-                            damping: 17,
-                            delay: isActive ? i * 0.08 : 0,
+                            stiffness: 260,
+                            damping: 14,
+                            delay: isActive ? i * 0.1 : 0,
                           }}
                           style={{ pointerEvents: isActive ? "auto" : "none" }}
                         >
-                          <TiltedTabCard item={item} tilt={tilt} side="right" index={i} />
+                          <BubbleCard item={item} side="right" index={i} tilt={tilt} />
                         </motion.div>
                       );
                     })}
                   </div>
 
-                  {/* Pair 2 (Right Down: 2 Tabs) */}
-                  <div className="flex flex-col items-end gap-3.5">
+                  {/* Right-Down Bubbles */}
+                  <div className="flex flex-col items-end gap-4">
                     {feat.rightDown.map((item, i) => {
-                      const tilt = i === 0 ? -3 : 2.5;
+                      const posX = i === 0 ? 16 : -14;
+                      const posY = i === 0 ? -4 : 8;
+                      const tilt = i === 0 ? -2.5 : 4.5;
                       return (
                         <motion.div
                           key={`${feat.key}-rd-${i}`}
-                          initial={{ opacity: 0, x: 50, rotate: tilt * 2 }}
+                          initial={{ opacity: 0, scale: 0, x: posX + 30, y: posY }}
                           animate={{
                             opacity: isActive ? 1 : 0,
-                            x: isActive ? 0 : 50,
-                            rotate: isActive ? tilt : tilt * 2,
+                            scale: isActive ? 1 : 0,
+                            x: isActive ? posX : posX + 30,
+                            y: posY,
                           }}
                           transition={{
                             type: "spring",
-                            stiffness: 95,
-                            damping: 17,
-                            delay: isActive ? (i + 2) * 0.08 : 0,
+                            stiffness: 260,
+                            damping: 14,
+                            delay: isActive ? (i + 2) * 0.1 : 0,
                           }}
                           style={{ pointerEvents: isActive ? "auto" : "none" }}
                         >
-                          <TiltedTabCard item={item} tilt={tilt} side="right" index={i + 2} />
+                          <BubbleCard item={item} side="right" index={i + 2} tilt={tilt} />
                         </motion.div>
                       );
                     })}

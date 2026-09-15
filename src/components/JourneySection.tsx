@@ -215,37 +215,69 @@ export default function JourneySection() {
           <div className="flex items-center justify-center lg:justify-end">
             <div className="relative h-[430px] w-[min(430px,90vw)]">
               {STEPS.map((step, i) => {
-                const isActive = i <= activeStep;
                 const isCurrent = i === activeStep;
+                const isPast = i < activeStep;
+                const offsetBehind = i - activeStep; // 1 or 2 when behind
 
-                // Each card has a unique resting tilt and offset when inactive
-                const restRotate = [5, -4, 6][i] ?? 0;
-                const restX = [16, -12, 20][i] ?? 0;
-                const restY = [6, 16, -4][i] ?? 0;
+                // High-visibility peeking 3D stack transforms:
+                // Front card: (0,0) scale 1, opacity 1
+                // 1st card behind: y: -22px, x: 20px, rotate: 5deg, scale: 0.95, opacity: 0.90
+                // 2nd card behind: y: -40px, x: -16px, rotate: -4deg, scale: 0.89, opacity: 0.78
+                // Flipped / Past card: y: -150px, rotate: -8deg, opacity: 0
+
+                let animX = 0;
+                let animY = 0;
+                let animRotate = 0;
+                let animScale = 1;
+                let animOpacity = 1;
+                let animZIndex = 30;
+
+                if (isCurrent) {
+                  animX = 0;
+                  animY = 0;
+                  animRotate = 0;
+                  animScale = 1;
+                  animOpacity = 1;
+                  animZIndex = 30;
+                } else if (isPast) {
+                  animX = -20;
+                  animY = -150;
+                  animRotate = -8;
+                  animScale = 0.95;
+                  animOpacity = 0;
+                  animZIndex = 5;
+                } else {
+                  animY = offsetBehind === 1 ? -22 : -40;
+                  animX = offsetBehind === 1 ? 20 : -16;
+                  animRotate = offsetBehind === 1 ? 5 : -4;
+                  animScale = offsetBehind === 1 ? 0.95 : 0.89;
+                  animOpacity = offsetBehind === 1 ? 0.90 : 0.78;
+                  animZIndex = 30 - offsetBehind * 10;
+                }
 
                 return (
                   <motion.div
                     key={step.num}
                     className="absolute inset-0 flex flex-col justify-between overflow-hidden rounded-[28px] p-7 backdrop-blur-[12px]"
                     animate={{
-                      rotate: isCurrent ? 0 : restRotate,
-                      x: isCurrent ? 0 : restX,
-                      y: isCurrent ? 0 : restY,
-                      scale: isCurrent ? 1 : isActive ? 0.92 : 0.85,
-                      opacity: isCurrent ? 1 : isActive ? 0.6 : 0.35,
-                      zIndex: isCurrent ? 10 : isActive ? 5 : 0,
+                      rotate: animRotate,
+                      x: animX,
+                      y: animY,
+                      scale: animScale,
+                      opacity: animOpacity,
+                      zIndex: animZIndex,
                     }}
                     transition={{ duration: 0.55, ease: EASE }}
                     style={{
                       background: isCurrent
                         ? "linear-gradient(150deg, rgba(255,255,255,0.98) 0%, rgba(254,242,250,0.96) 100%)"
-                        : "rgba(248,248,250,0.9)",
+                        : "linear-gradient(150deg, rgba(255,255,255,0.95) 0%, rgba(248,248,252,0.92) 100%)",
                       boxShadow: isCurrent
                         ? "0 24px 70px rgba(233,30,99,0.16), 0 4px 20px rgba(0,0,0,0.06)"
-                        : "0 6px 20px rgba(0,0,0,0.04)",
+                        : "0 14px 40px rgba(0,0,0,0.08)",
                       border: isCurrent
                         ? "1.5px solid rgba(233,30,99,0.35)"
-                        : "1.5px solid rgba(220,220,230,0.7)",
+                        : "1.5px solid rgba(233,30,99,0.18)",
                     }}
                   >
                     {/* Header: Icon, Label & Glowing Number */}
