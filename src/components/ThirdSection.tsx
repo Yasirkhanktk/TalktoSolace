@@ -160,13 +160,16 @@ function BubbleCard({
   side,
   index,
   tilt = 0,
+  isActive = false,
 }: {
   item: TabItem;
   side: "left" | "right";
   index: number;
   tilt?: number;
+  isActive?: boolean;
 }) {
   const reduce = useReducedMotion();
+  const shouldAnimate = isActive && !reduce;
 
   // Organic wobbly shapes per card
   const borderShape =
@@ -179,21 +182,25 @@ function BubbleCard({
   return (
     <motion.div
       className="group relative select-none"
-      style={{ rotate: tilt }}
+      style={{ rotate: tilt, willChange: "transform" }}
       animate={
-        reduce
-          ? undefined
-          : {
+        shouldAnimate
+          ? {
               y: [0, index % 2 === 0 ? -8 : 7, 0],
               x: [0, index % 2 === 0 ? 5 : -5, 0],
               rotate: [tilt, tilt + (index % 2 === 0 ? 1.5 : -1.5), tilt],
             }
+          : { y: 0, x: 0, rotate: tilt }
       }
-      transition={{
-        duration: 3.4 + index * 0.4,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
+      transition={
+        shouldAnimate
+          ? {
+              duration: 3.4 + index * 0.4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }
+          : { duration: 0 }
+      }
       whileHover={{
         scale: 1.1,
         rotate: 0,
@@ -204,8 +211,8 @@ function BubbleCard({
       {/* Micro Bubble 1 (Top Corner) */}
       <motion.div
         className="pointer-events-none absolute -top-2.5 right-3 z-0 h-4 w-4 rounded-full border border-[#e91e63]/20 bg-gradient-to-br from-white/90 via-pink-100/40 to-purple-100/30 shadow-[0_2px_8px_rgba(233,30,99,0.12)] backdrop-blur-md"
-        animate={reduce ? undefined : { y: [0, -6, 0], scale: [0.9, 1.15, 0.9] }}
-        transition={{ duration: 2.6 + index * 0.3, repeat: Infinity, ease: "easeInOut" }}
+        animate={shouldAnimate ? { y: [0, -6, 0], scale: [0.9, 1.15, 0.9] } : { y: 0, scale: 1 }}
+        transition={shouldAnimate ? { duration: 2.6 + index * 0.3, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
       >
         <div className="absolute top-1 left-1 h-1 w-1 rounded-full bg-white/90" />
       </motion.div>
@@ -213,8 +220,8 @@ function BubbleCard({
       {/* Micro Bubble 2 (Bottom Corner) */}
       <motion.div
         className="pointer-events-none absolute -bottom-3 left-4 z-0 h-3.5 w-3.5 rounded-full border border-purple-300/30 bg-gradient-to-br from-white/95 via-pink-50/50 to-purple-100/40 shadow-[0_2px_6px_rgba(156,39,176,0.12)] backdrop-blur-md"
-        animate={reduce ? undefined : { y: [0, 5, 0], x: [0, -3, 0] }}
-        transition={{ duration: 3.1 + index * 0.4, repeat: Infinity, ease: "easeInOut" }}
+        animate={shouldAnimate ? { y: [0, 5, 0], x: [0, -3, 0] } : { y: 0, x: 0 }}
+        transition={shouldAnimate ? { duration: 3.1 + index * 0.4, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
       >
         <div className="absolute top-0.5 left-0.5 h-1 w-1 rounded-full bg-white/95" />
       </motion.div>
@@ -222,8 +229,8 @@ function BubbleCard({
       {/* Micro Bubble 3 (Side Tiny Pearl) */}
       <motion.div
         className="pointer-events-none absolute top-1/2 -top-1 -left-3 z-0 h-2.5 w-2.5 rounded-full border border-[#e91e63]/25 bg-white/90 shadow-[0_1px_4px_rgba(233,30,99,0.15)]"
-        animate={reduce ? undefined : { scale: [1, 1.25, 1], opacity: [0.7, 1, 0.7] }}
-        transition={{ duration: 2.2 + index * 0.2, repeat: Infinity, ease: "easeInOut" }}
+        animate={shouldAnimate ? { scale: [1, 1.25, 1], opacity: [0.7, 1, 0.7] } : { scale: 1, opacity: 0.7 }}
+        transition={shouldAnimate ? { duration: 2.2 + index * 0.2, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
       />
 
       {/* ── Main Circular Glass Bubble Body ── */}
@@ -649,7 +656,7 @@ export default function ThirdSection() {
                           }}
                           style={{ pointerEvents: isActive ? "auto" : "none" }}
                         >
-                          <BubbleCard item={item} side="left" index={i} tilt={tilt} />
+                          <BubbleCard item={item} side="left" index={i} tilt={tilt} isActive={isActive} />
                         </motion.div>
                       );
                     })}
@@ -679,7 +686,7 @@ export default function ThirdSection() {
                           }}
                           style={{ pointerEvents: isActive ? "auto" : "none" }}
                         >
-                          <BubbleCard item={item} side="left" index={i + 2} tilt={tilt} />
+                          <BubbleCard item={item} side="left" index={i + 2} tilt={tilt} isActive={isActive} />
                         </motion.div>
                       );
                     })}
@@ -690,7 +697,7 @@ export default function ThirdSection() {
           </div>
 
           {/* Central Screen Frame */}
-          <div className="relative z-10 mx-auto w-full max-w-[600px] mt-10 rounded-[22px] bg-[#0b0b14] p-2 shadow-[0px_32px_80px_rgba(20,10,40,0.32)]">
+          <div className="relative z-10 mx-auto w-full max-w-[650px] mt-16 rounded-[22px] bg-[#0b0b14] p-2 shadow-[0px_32px_80px_rgba(20,10,40,0.32)]">
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[16px]">
               {FEATURES.map((feat, i) => {
                 const isActive = activeIdx === i;
@@ -746,7 +753,7 @@ export default function ThirdSection() {
                           }}
                           style={{ pointerEvents: isActive ? "auto" : "none" }}
                         >
-                          <BubbleCard item={item} side="right" index={i} tilt={tilt} />
+                          <BubbleCard item={item} side="right" index={i} tilt={tilt} isActive={isActive} />
                         </motion.div>
                       );
                     })}
@@ -776,7 +783,7 @@ export default function ThirdSection() {
                           }}
                           style={{ pointerEvents: isActive ? "auto" : "none" }}
                         >
-                          <BubbleCard item={item} side="right" index={i + 2} tilt={tilt} />
+                          <BubbleCard item={item} side="right" index={i + 2} tilt={tilt} isActive={isActive} />
                         </motion.div>
                       );
                     })}
