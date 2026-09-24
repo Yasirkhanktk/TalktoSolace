@@ -121,85 +121,195 @@ function UniqueDockStepper({
   }, [scrollYProgress]);
 
   const steps = [
-    { num: "01", label: "Talk", tag: "Voice" },
-    { num: "02", label: "Journal", tag: "Reflect" },
-    { num: "03", label: "Tools", tag: "Habits" },
+    { num: "01", phase: "PHASE 01", title: "Talk It Out", tag: "Live Voice AI" },
+    { num: "02", phase: "PHASE 02", title: "Journal Thoughts", tag: "Daily Reflection" },
+    { num: "03", phase: "PHASE 03", title: "Wellness Toolkit", tag: "Mindful Habits" },
   ];
 
+  // Track progress position: 0% at step 0, 50% at step 1, 100% at step 2
+  const progressPercent = activeStep === 0 ? "0%" : activeStep === 1 ? "50%" : "100%";
+
   return (
-    <div className="relative z-20 flex w-full justify-center">
-      {/* Liquid Glass Capsule Chassis — Borderless, Shadowless & Blended */}
-      <div className="relative flex items-center gap-1.5 rounded-full bg-white/70 p-1.5 backdrop-blur-2xl">
-        {/* Ambient gradient track */}
-        <div className="pointer-events-none absolute inset-x-8 top-1/2 h-[1.5px] -translate-y-1/2 bg-gradient-to-r from-transparent via-[#e91e63]/20 to-transparent" />
+    <div className="relative z-20 w-full select-none px-1">
+      {/* Ethereal Ambient Radial Light behind active node — completely blends into canvas */}
+      <motion.div
+        className="pointer-events-none absolute -top-10 h-32 w-56 rounded-full blur-3xl opacity-50"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(233,30,99,0.22) 0%, rgba(156,39,176,0.14) 55%, transparent 75%)",
+        }}
+        animate={{
+          left: activeStep === 0 ? "0%" : activeStep === 1 ? "34%" : "66%",
+        }}
+        transition={{ type: "spring", stiffness: 220, damping: 28 }}
+      />
 
-        {steps.map((s, i) => {
-          const isActive = activeStep === i;
-          return (
-            <button
-              key={s.num}
-              type="button"
-              onClick={() => onSelectStep(i)}
-              className={`group relative flex cursor-pointer items-center gap-2.5 rounded-full px-5 py-2.5 transition-all duration-300 focus:outline-none ${
-                isActive ? "text-[#1d1d1d]" : "text-[#777] hover:text-black"
-              }`}
-            >
-              {/* Magnetic Floating Spotlight Pill */}
-              {isActive && (
-                <motion.div
-                  layoutId="stepperActivePill"
-                  className="absolute inset-0 rounded-full border border-white/90 bg-white shadow-[0_6px_22px_rgba(233,30,99,0.18),0_2px_6px_rgba(0,0,0,0.04)]"
-                  transition={{ type: "spring", stiffness: 420, damping: 32 }}
-                >
-                  <div
-                    className="absolute bottom-0 left-1/2 h-[2.5px] w-3/4 -translate-x-1/2 rounded-full"
-                    style={{ background: GRAD }}
-                  />
-                </motion.div>
-              )}
+      {/* Floating Timeline Track & Interactive Step Nodes (No background box) */}
+      <div className="relative w-full py-1">
+        {/* Horizontal Connecting Timeline Track Line */}
+        <div className="pointer-events-none absolute left-[16%] right-[16%] top-[25px] h-[2.5px] -translate-y-1/2">
+          {/* Subtle Base Track with delicate glowing tint */}
+          <div className="absolute inset-0 rounded-full bg-slate-200/80" />
 
-              {/* Number Orb Badge */}
-              <div className="relative z-10 flex items-center">
-                <motion.div
-                  className={`flex h-7 w-7 items-center justify-center rounded-full transition-all duration-300 ${
-                    isActive
-                      ? "shadow-[0_2px_12px_rgba(233,30,99,0.4)]"
-                      : "bg-[#f1f1f4] group-hover:bg-[#e8e8ed]"
-                  }`}
-                  style={isActive ? { background: GRAD } : undefined}
-                  animate={isActive ? { scale: [1, 1.06, 1] } : { scale: 1 }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <span
-                    className={`text-[11px] font-bold tracking-tight ${
-                      isActive ? "text-white" : "text-[#777]"
+          {/* Animated Illuminated Gradient Progress Beam */}
+          <motion.div
+            className="absolute left-0 top-0 h-full rounded-full"
+            style={{
+              background: GRAD,
+              boxShadow: "0 0 12px rgba(233,30,99,0.55)",
+            }}
+            animate={{ width: progressPercent }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          />
+
+          {/* Gliding Glowing Spark Head at the front edge */}
+          <motion.div
+            className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_0_10px_2.5px_rgba(233,30,99,0.85),0_0_3px_#fff]"
+            animate={{ left: progressPercent }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </div>
+
+        {/* Step Nodes */}
+        <div className="relative flex items-start justify-between">
+          {steps.map((s, i) => {
+            const isActive = activeStep === i;
+            const isCompleted = i < activeStep;
+
+            return (
+              <button
+                key={s.num}
+                type="button"
+                onClick={() => onSelectStep(i)}
+                className="group relative flex cursor-pointer flex-col items-center focus:outline-none"
+              >
+                {/* Node Orb Marker */}
+                <div className="relative flex h-[50px] w-[50px] items-center justify-center">
+                  {/* Active Luminous Radar Rings */}
+                  {isActive && (
+                    <>
+                      <motion.div
+                        className="absolute inset-0 rounded-full"
+                        style={{ border: "1.5px solid rgba(233,30,99,0.4)" }}
+                        animate={{ scale: [1, 1.32, 1], opacity: [0.9, 0.25, 0.9] }}
+                        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                      />
+                      <motion.div
+                        className="absolute -inset-1 rounded-full bg-pink-500/10 blur-sm"
+                        animate={{ opacity: [0.35, 0.75, 0.35] }}
+                        transition={{ duration: 2.0, repeat: Infinity, ease: "easeInOut" }}
+                      />
+                    </>
+                  )}
+
+                  {/* Core Node Circle */}
+                  <motion.div
+                    className={`relative z-10 flex items-center justify-center rounded-full transition-all duration-300 ${
+                      isActive
+                        ? "h-11 w-11 text-white shadow-[0_8px_24px_rgba(233,30,99,0.45)] ring-4 ring-pink-500/20"
+                        : isCompleted
+                        ? "h-9 w-9 text-white shadow-[0_4px_12px_rgba(233,30,99,0.25)]"
+                        : "h-9 w-9 border-2 border-slate-200 bg-white/90 text-slate-400 backdrop-blur-sm group-hover:border-pink-300 group-hover:text-slate-700"
                     }`}
+                    style={isActive || isCompleted ? { background: GRAD } : undefined}
+                    animate={isActive ? { scale: 1.06 } : { scale: 1 }}
+                    transition={{ type: "spring", stiffness: 380, damping: 24 }}
                   >
-                    {s.num}
-                  </span>
-                </motion.div>
-              </div>
+                    {isCompleted ? (
+                      <svg className="h-4 w-4 stroke-current stroke-[2.8]" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    ) : (
+                      <span className={`font-extrabold ${isActive ? "text-[13px]" : "text-[11px]"}`}>
+                        {s.num}
+                      </span>
+                    )}
+                  </motion.div>
+                </div>
 
-              {/* Title & Micro-tag */}
-              <div className="relative z-10 flex flex-col items-start text-left">
-                <span
-                  className={`text-[13.5px] font-bold transition-colors ${
-                    isActive ? "text-black" : "text-[#555] group-hover:text-black"
-                  }`}
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  {s.label}
-                </span>
-                <span
-                  className="text-[9.5px] font-semibold tracking-wider uppercase text-[#999]"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {s.tag}
-                </span>
-              </div>
-            </button>
-          );
-        })}
+                {/* Typography & Step Labels */}
+                <div className="mt-1 flex flex-col items-center text-center">
+                  <span
+                    className={`text-[9.5px] font-bold uppercase tracking-widest transition-colors ${
+                      isActive ? "text-[#e91e63]" : isCompleted ? "text-slate-500" : "text-slate-400"
+                    }`}
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                  >
+                    {s.phase}
+                  </span>
+
+                  <span
+                    className={`mt-0.5 text-[13px] font-bold tracking-tight transition-colors sm:text-[13.5px] ${
+                      isActive
+                        ? "text-slate-900"
+                        : isCompleted
+                        ? "text-slate-700"
+                        : "text-slate-400 group-hover:text-slate-600"
+                    }`}
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    {s.title}
+                  </span>
+
+                  {/* Creative Status Badge */}
+                  <div className="mt-1.5 flex items-center">
+                    {isActive ? (
+                      <motion.div
+                        initial={{ opacity: 0, y: 3 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] shadow-sm"
+                        style={{
+                          background: "linear-gradient(135deg, rgba(233,30,99,0.1), rgba(156,39,176,0.1))",
+                          border: "1px solid rgba(233,30,99,0.28)",
+                        }}
+                      >
+                        {/* Animated Voice/Mindful Equalizer Wave */}
+                        <div className="flex h-2.5 items-end gap-[2px]">
+                          <motion.span
+                            className="w-[2px] rounded-full bg-[#e91e63]"
+                            animate={{ height: ["3px", "10px", "3px"] }}
+                            transition={{ duration: 0.75, repeat: Infinity, ease: "easeInOut" }}
+                          />
+                          <motion.span
+                            className="w-[2px] rounded-full bg-[#e91e63]"
+                            animate={{ height: ["9px", "3px", "9px"] }}
+                            transition={{ duration: 0.85, repeat: Infinity, ease: "easeInOut" }}
+                          />
+                          <motion.span
+                            className="w-[2px] rounded-full bg-[#9c27b0]"
+                            animate={{ height: ["4px", "10px", "4px"] }}
+                            transition={{ duration: 0.65, repeat: Infinity, ease: "easeInOut" }}
+                          />
+                        </div>
+                        <span
+                          className="bg-clip-text text-[9px] font-bold uppercase tracking-wider text-transparent"
+                          style={{ backgroundImage: GRAD, fontFamily: "'Inter', sans-serif" }}
+                        >
+                          Active
+                        </span>
+                      </motion.div>
+                    ) : isCompleted ? (
+                      <span
+                        className="inline-flex items-center gap-1 rounded-full bg-pink-50/80 px-2 py-[2px] text-[8.5px] font-bold uppercase tracking-wider text-[#e91e63]"
+                        style={{ fontFamily: "'Inter', sans-serif" }}
+                      >
+                        <span className="h-1 w-1 rounded-full bg-[#e91e63]" />
+                        Done
+                      </span>
+                    ) : (
+                      <span
+                        className="inline-flex items-center rounded-full px-2 py-[2px] text-[8.5px] font-medium uppercase tracking-wider text-slate-400"
+                        style={{ fontFamily: "'Inter', sans-serif" }}
+                      >
+                        Next
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -370,7 +480,7 @@ export default function FifthSection() {
             <UniqueDockStepper scrollYProgress={scrollYProgress} onSelectStep={handleSelectModule} />
 
             {/* Stacking Cards */}
-            <div className="relative mt-[-20px] h-[520px] w-full pt-10">
+            <div className="relative mt-2 h-[520px] w-full pt-6">
               {MODULES.map((mod, i) => (
                 <StepCard key={`card-${i}`} mod={mod} index={i} smoothProgress={smoothProgress} />
               ))}

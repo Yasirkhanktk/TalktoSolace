@@ -81,17 +81,9 @@ export default function PricingSection() {
     offset: ["start start", "end end"],
   });
 
-  /* Cards panel shrinks and slides left from 40%→65% of scroll progress */
-  const pricingWidth = useTransform(
-    scrollYProgress,
-    [0, 0.3, 0.6, 1],
-    ["100%", "100%", "48%", "48%"]
-  );
-  const pricingX = useTransform(
-    scrollYProgress,
-    [0, 0.3, 0.6, 1],
-    ["0%", "0%", "-2%", "-2%"]
-  );
+  /* Cards panel stays full width — no shrink */
+  const pricingWidth = "100%";
+  const pricingX = "0%";
 
   /* Trial panel slides in from right starting at 25% scroll */
   const demoOpacity = useTransform(
@@ -109,6 +101,7 @@ export default function PricingSection() {
     [0.25, 0.5, 0.9, 1],
     [0.9, 1, 1, 1]
   );
+
 
   return (
     <section ref={containerRef} className="relative h-[280vh] bg-gradient-to-b from-white via-[#fdfbfe] to-white">

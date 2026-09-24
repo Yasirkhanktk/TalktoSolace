@@ -35,20 +35,20 @@ const FEATURES: Feature[] = [
     shortLabel: "Journal",
     screen: imgHome,
     leftUp: [
-      { text: "Capture your thoughts", tag: "AI Transcribe" },
-      { text: "Track your moods", tag: "Daily Trend" },
+      { text: "Capture every thought, voice or text", tag: "AI Notes" },
+      { text: "Track daily moods over time", tag: "Mood Log" },
     ],
     leftDown: [
-      { text: "Voice-to-text notes", tag: "Instant Sync" },
-      { text: "Emotional patterns", tag: "Deep Clarity" },
+      { text: "Spot emotional patterns early", tag: "Insights" },
+      { text: "Private & end-to-end encrypted", tag: "Safe" },
     ],
     rightUp: [
-      { text: "Guided daily prompts", tag: "Reflective" },
-      { text: "Private & encrypted", tag: "100% Safe" },
+      { text: "Guided prompts to go deeper", tag: "Reflect" },
+      { text: "Weekly highlights & streaks", tag: "Progress" },
     ],
     rightDown: [
-      { text: "Weekly reflections", tag: "Highlights" },
-      { text: "Milestone badges", tag: "Celebration" },
+      { text: "Voice-to-text in seconds", tag: "Instant" },
+      { text: "Celebrate your milestones", tag: "Growth" },
     ],
   },
   {
@@ -58,20 +58,20 @@ const FEATURES: Feature[] = [
     shortLabel: "Talk",
     screen: imgTalkItOut,
     leftUp: [
-      { text: "Talk freely, anytime", tag: "24/7 Live" },
-      { text: "Judgement-free space", tag: "Gentle Tone" },
+      { text: "Talk freely, any time of day", tag: "24 / 7" },
+      { text: "Zero judgment, full presence", tag: "Safe Space" },
     ],
     leftDown: [
-      { text: "Adaptive AI empathy", tag: "Context-Aware" },
-      { text: "Real-time voice sync", tag: "Zero Delay" },
+      { text: "AI that reads your emotional tone", tag: "Empathy" },
+      { text: "Real-time voice, no lag", tag: "Instant" },
     ],
     rightUp: [
-      { text: "Voice or video mode", tag: "Flexible" },
-      { text: "Deep reflection", tag: "Insightful" },
+      { text: "Switch voice or video anytime", tag: "Flexible" },
+      { text: "Deep, thoughtful responses", tag: "Mindful" },
     ],
     rightDown: [
-      { text: "Personalized pacing", tag: "Your Speed" },
-      { text: "Instant reassurance", tag: "Warm Support" },
+      { text: "Goes at your pace, always", tag: "Your Speed" },
+      { text: "Warm reassurance when you need it", tag: "Support" },
     ],
   },
   {
@@ -81,20 +81,20 @@ const FEATURES: Feature[] = [
     shortLabel: "Wellness",
     screen: imgWellness,
     leftUp: [
-      { text: "Breathing exercises", tag: "Box & 4-7-8" },
-      { text: "Daily check-ins", tag: "Quick Mood" },
+      { text: "Box breathing & 4-7-8 technique", tag: "Breathe" },
+      { text: "30-second mood check-ins", tag: "Quick Reset" },
     ],
     leftDown: [
-      { text: "Grounding drills", tag: "5-4-3-2-1" },
-      { text: "Mindful pauses", tag: "Micro Break" },
+      { text: "5-4-3-2-1 grounding drill", tag: "Grounding" },
+      { text: "Micro-break mindful pauses", tag: "Pause" },
     ],
     rightUp: [
-      { text: "Calm soundscapes", tag: "Rain & Waves" },
-      { text: "Build gentle habits", tag: "Daily Streak" },
+      { text: "Rain, ocean & calm soundscapes", tag: "Sounds" },
+      { text: "Build tiny daily habits", tag: "Streak" },
     ],
     rightDown: [
-      { text: "Stress relief drills", tag: "Tension Drop" },
-      { text: "Energy reset", tag: "Body Scan" },
+      { text: "Full body tension release scan", tag: "Body Scan" },
+      { text: "Quick energy reset anytime", tag: "Recharge" },
     ],
   },
   {
@@ -104,20 +104,20 @@ const FEATURES: Feature[] = [
     shortLabel: "Insights",
     screen: imgNature,
     leftUp: [
-      { text: "Pattern discovery", tag: "AI Summary" },
-      { text: "Weekly summaries", tag: "Digest" },
+      { text: "AI finds patterns in your emotions", tag: "Discovery" },
+      { text: "Clear weekly digest of your week", tag: "Summary" },
     ],
     leftDown: [
-      { text: "Trigger awareness", tag: "Early Warning" },
-      { text: "Progress milestones", tag: "Growth Path" },
+      { text: "Know your triggers before they hit", tag: "Early Alert" },
+      { text: "Watch your growth month by month", tag: "Progress" },
     ],
     rightUp: [
-      { text: "Mood correlation", tag: "Sleep & Focus" },
-      { text: "Adaptive suggestions", tag: "Tailored" },
+      { text: "Mood linked to sleep & focus data", tag: "Correlation" },
+      { text: "Suggestions tailored just for you", tag: "Adaptive" },
     ],
     rightDown: [
-      { text: "Goal tracking", tag: "Small Steps" },
-      { text: "Mindset shifts", tag: "Long-term" },
+      { text: "Set goals, track tiny steps daily", tag: "Goals" },
+      { text: "Long-term mindset shifts", tag: "Lasting" },
     ],
   },
   {
@@ -127,20 +127,20 @@ const FEATURES: Feature[] = [
     shortLabel: "Rest",
     screen: imgRest,
     leftUp: [
-      { text: "Late-night check-in", tag: "Bedtime Companion" },
-      { text: "Gentle reflections", tag: "Wind Down" },
+      { text: "Late-night companion for winding down", tag: "Bedtime" },
+      { text: "Gentle reflections before sleep", tag: "Wind Down" },
     ],
     leftDown: [
-      { text: "Sleep soundscapes", tag: "Deep Rest" },
-      { text: "Decompression drills", tag: "Quiet Mind" },
+      { text: "Sleep soundscapes for deep rest", tag: "Deep Rest" },
+      { text: "Quiet the mental noise", tag: "Calm Mind" },
     ],
     rightUp: [
-      { text: "Morning affirmations", tag: "Fresh Start" },
-      { text: "Gratitude prompts", tag: "Perspective" },
+      { text: "Start mornings with affirmations", tag: "Good Morning" },
+      { text: "Gratitude shifts your perspective", tag: "Grateful" },
     ],
     rightDown: [
-      { text: "Evening journaling", tag: "Release Thoughts" },
-      { text: "Consistent routine", tag: "Restful Night" },
+      { text: "Evening journal to release thoughts", tag: "Let Go" },
+      { text: "Build a restful nightly routine", tag: "Ritual" },
     ],
   },
 ];
@@ -155,177 +155,165 @@ const ARC_POINTS = [
   { xPercent: 92, yPercent: 78, angle: 0, rotAngle: 360 },
 ];
 
+/* ── Bubble gradient — lighter/brighter, matches section 2 button palette ── */
+const BUBBLE_GRAD = "linear-gradient(135deg, #a832a8 0%, #d42070 55%, #e8366f 100%)";
+
+/* Sizes: alternating large/medium for visual variety */
+const BUBBLE_SIZES = [158, 124, 144, 114];
+
+/* Float offsets per index — gentle unique y rhythm, no x/rotate to avoid erratic motion */
+const FLOAT_Y = [-10, 8, -7, 10];
+const FLOAT_DUR = [4.2, 5.0, 4.6, 5.4];
+
 function BubbleCard({
   item,
   side,
   index,
-  tilt = 0,
   isActive = false,
 }: {
   item: TabItem;
   side: "left" | "right";
   index: number;
-  tilt?: number;
   isActive?: boolean;
 }) {
   const reduce = useReducedMotion();
   const shouldAnimate = isActive && !reduce;
-
-  // Organic wobbly shapes per card
-  const borderShape =
-    index % 3 === 0
-      ? "46% 54% 50% 50% / 53% 47% 53% 47%"
-      : index % 3 === 1
-      ? "53% 47% 52% 48% / 47% 53% 47% 53%"
-      : "50% 50% 47% 53% / 52% 48% 52% 48%";
+  const size = BUBBLE_SIZES[index] ?? 114;
+  const floatY = FLOAT_Y[index] ?? -8;
+  const floatDur = FLOAT_DUR[index] ?? 4.8;
 
   return (
     <motion.div
-      className="group relative select-none"
-      style={{ rotate: tilt, willChange: "transform" }}
-      animate={
-        shouldAnimate
-          ? {
-              y: [0, index % 2 === 0 ? -8 : 7, 0],
-              x: [0, index % 2 === 0 ? 5 : -5, 0],
-              rotate: [tilt, tilt + (index % 2 === 0 ? 1.5 : -1.5), tilt],
-            }
-          : { y: 0, x: 0, rotate: tilt }
-      }
+      className="relative select-none"
+      style={{ willChange: "transform" }}
+      /* Gentle pure-Y float — no x or rotate so it stays smooth */
+      animate={shouldAnimate ? { y: [0, floatY, 0] } : { y: 0 }}
       transition={
         shouldAnimate
-          ? {
-              duration: 3.4 + index * 0.4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }
-          : { duration: 0 }
+          ? { duration: floatDur, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" }
+          : { duration: 0.4, ease: "easeOut" }
       }
       whileHover={{
-        scale: 1.1,
-        rotate: 0,
-        transition: { type: "spring", stiffness: 380, damping: 15 },
+        scale: 1.07,
+        transition: { type: "spring", stiffness: 260, damping: 18 },
       }}
     >
-      {/* ── Ambient Floating Micro-Bubbles Around Main Bubble ── */}
-      {/* Micro Bubble 1 (Top Corner) */}
-      <motion.div
-        className="pointer-events-none absolute -top-2.5 right-3 z-0 h-4 w-4 rounded-full border border-[#e91e63]/20 bg-gradient-to-br from-white/90 via-pink-100/40 to-purple-100/30 shadow-[0_2px_8px_rgba(233,30,99,0.12)] backdrop-blur-md"
-        animate={shouldAnimate ? { y: [0, -6, 0], scale: [0.9, 1.15, 0.9] } : { y: 0, scale: 1 }}
-        transition={shouldAnimate ? { duration: 2.6 + index * 0.3, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
-      >
-        <div className="absolute top-1 left-1 h-1 w-1 rounded-full bg-white/90" />
-      </motion.div>
-
-      {/* Micro Bubble 2 (Bottom Corner) */}
-      <motion.div
-        className="pointer-events-none absolute -bottom-3 left-4 z-0 h-3.5 w-3.5 rounded-full border border-purple-300/30 bg-gradient-to-br from-white/95 via-pink-50/50 to-purple-100/40 shadow-[0_2px_6px_rgba(156,39,176,0.12)] backdrop-blur-md"
-        animate={shouldAnimate ? { y: [0, 5, 0], x: [0, -3, 0] } : { y: 0, x: 0 }}
-        transition={shouldAnimate ? { duration: 3.1 + index * 0.4, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
-      >
-        <div className="absolute top-0.5 left-0.5 h-1 w-1 rounded-full bg-white/95" />
-      </motion.div>
-
-      {/* Micro Bubble 3 (Side Tiny Pearl) */}
-      <motion.div
-        className="pointer-events-none absolute top-1/2 -top-1 -left-3 z-0 h-2.5 w-2.5 rounded-full border border-[#e91e63]/25 bg-white/90 shadow-[0_1px_4px_rgba(233,30,99,0.15)]"
-        animate={shouldAnimate ? { scale: [1, 1.25, 1], opacity: [0.7, 1, 0.7] } : { scale: 1, opacity: 0.7 }}
-        transition={shouldAnimate ? { duration: 2.2 + index * 0.2, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
+      {/* ── Soft drop shadow glow behind sphere ── */}
+      <div
+        className="pointer-events-none absolute rounded-full blur-2xl"
+        style={{
+          width: size,
+          height: size,
+          top: 6,
+          left: 0,
+          background: BUBBLE_GRAD,
+          opacity: 0.32,
+          transform: "scale(0.88)",
+        }}
       />
 
-      {/* ── Main Circular Glass Bubble Body ── */}
+      {/* ── Main Gradient Sphere ── */}
       <div
-        className="relative z-10 flex min-h-[118px] w-[182px] flex-col items-center justify-center gap-1.5 p-3 px-4 text-center backdrop-blur-xl transition-all duration-300 hover:border-[#e91e63]/30 hover:shadow-[0_14px_40px_rgba(233,30,99,0.22)]"
+        className="relative flex flex-col items-center justify-center text-center"
         style={{
-          borderRadius: borderShape,
-          background:
-            "radial-gradient(circle at 35% 25%, rgba(255,255,255,0.98) 0%, rgba(253,235,242,0.6) 55%, rgba(255,255,255,0.92) 100%)",
-          border: "1.5px solid rgba(233,30,99,0.16)",
+          width: size,
+          height: size,
+          borderRadius: "50%",
+          background: BUBBLE_GRAD,
           boxShadow:
-            "0 8px 24px rgba(233,30,99,0.08), inset 0 3px 6px rgba(255,255,255,0.95), inset 0 -2px 4px rgba(233,30,99,0.05)",
+            "0 10px 36px rgba(233,49,122,0.40), 0 3px 10px rgba(201,75,187,0.22), inset 0 -6px 16px rgba(150,20,80,0.22)",
+          border: "2px solid rgba(240,85,122,0.45)",
         }}
       >
-        {/* Specular Bubble Gloss Highlight */}
+        {/* Gloss sheen — top-left ellipse */}
         <div
           className="pointer-events-none absolute rounded-full"
           style={{
-            width: "45%",
-            height: "30%",
-            top: "10%",
-            left: "15%",
+            width: "55%",
+            height: "42%",
+            top: "7%",
+            left: "10%",
             background:
-              "radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 75%)",
+              "radial-gradient(ellipse at 38% 28%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0) 68%)",
           }}
         />
 
-        {/* Secondary Bottom Reflection */}
-        <div
-          className="pointer-events-none absolute rounded-full opacity-40"
-          style={{
-            width: "35%",
-            height: "15%",
-            bottom: "10%",
-            right: "20%",
-            background:
-              "radial-gradient(ellipse at center, rgba(233,30,99,0.2) 0%, transparent 70%)",
-          }}
-        />
-
-        {/* Eyebrow Tag Pill */}
+        {/* Tag pill */}
         <span
-          className="relative z-10 inline-block rounded-full border border-[#e91e63]/20 px-2.5 py-[1px] text-[9px] font-bold uppercase tracking-wider text-[#d81b60] shadow-[0_2px_4px_rgba(233,30,99,0.06)]"
+          className="relative z-10 mb-1.5 inline-block rounded-full bg-white/18 px-2.5 py-[3px] text-[8.5px] font-bold uppercase tracking-widest text-white/85"
           style={{
             fontFamily: "'Inter', sans-serif",
-            background:
-              "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(252,228,236,0.8) 100%)",
+            background: "rgba(255,255,255,0.15)",
+            backdropFilter: "blur(6px)",
+            border: "1px solid rgba(255,255,255,0.2)",
           }}
         >
           {item.tag}
         </span>
 
-        {/* Beautiful Centered Text */}
+        {/* Feature text */}
         <span
-          className="relative z-10 max-w-[150px] text-[12px] font-semibold leading-[1.3] text-slate-800 transition-colors group-hover:text-black"
+          className="relative z-10 px-4 text-[11.5px] font-semibold leading-[1.35] text-white drop-shadow-sm"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
           {item.text}
         </span>
       </div>
 
-      {/* ── Bubble Tail / Connector Spheres pointing to screen ── */}
-      <div
-        className={`absolute ${
-          side === "left" ? "-right-3.5 top-1/2" : "-left-3.5 top-1/2"
-        } z-20 flex -translate-y-1/2 items-center gap-[4px] ${
-          side === "left" ? "flex-row" : "flex-row-reverse"
-        }`}
+      {/* ── Satellite bubbles — fixed pixel offsets, gentle independent float ── */}
+      {/* Sat 1: top corner, larger */}
+      <motion.div
+        className="pointer-events-none absolute rounded-full"
+        style={{
+          width: Math.round(size * 0.26),
+          height: Math.round(size * 0.26),
+          top: -Math.round(size * 0.08),
+          [side === "left" ? "right" : "left"]: -Math.round(size * 0.06),
+          background: BUBBLE_GRAD,
+          boxShadow: "0 4px 14px rgba(156,39,176,0.32)",
+        }}
+        animate={shouldAnimate ? { y: [0, -6, 0] } : { y: 0 }}
+        transition={shouldAnimate ? { duration: floatDur * 0.78, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" } : { duration: 0 }}
       >
         <div
-          className="h-[11px] w-[11px] rounded-full"
+          className="absolute rounded-full"
           style={{
-            background:
-              "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.98), rgba(252,228,236,0.7))",
-            border: "1px solid rgba(233,30,99,0.18)",
-            boxShadow: "0 2px 6px rgba(233,30,99,0.08)",
+            width: "52%", height: "38%", top: "10%", left: "14%",
+            background: "radial-gradient(ellipse at center, rgba(255,255,255,0.48) 0%, transparent 70%)",
           }}
         />
-        <div
-          className="h-[7px] w-[7px] rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95), rgba(252,228,236,0.6))",
-            border: "1px solid rgba(233,30,99,0.14)",
-          }}
-        />
-        <div
-          className="h-[4px] w-[4px] rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.9), rgba(252,228,236,0.5))",
-            border: "1px solid rgba(233,30,99,0.1)",
-          }}
-        />
-      </div>
+      </motion.div>
+
+      {/* Sat 2: bottom, small dot */}
+      <motion.div
+        className="pointer-events-none absolute rounded-full"
+        style={{
+          width: Math.round(size * 0.16),
+          height: Math.round(size * 0.16),
+          bottom: -Math.round(size * 0.04),
+          [side === "left" ? "left" : "right"]: Math.round(size * 0.12),
+          background: BUBBLE_GRAD,
+          boxShadow: "0 2px 8px rgba(233,30,99,0.28)",
+          opacity: 0.82,
+        }}
+        animate={shouldAnimate ? { y: [0, 5, 0] } : { y: 0 }}
+        transition={shouldAnimate ? { duration: floatDur * 0.92, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" } : { duration: 0 }}
+      />
+
+      {/* Sat 3: side tiny pearl */}
+      <motion.div
+        className="pointer-events-none absolute rounded-full"
+        style={{
+          width: Math.round(size * 0.10),
+          height: Math.round(size * 0.10),
+          top: "42%",
+          [side === "left" ? "left" : "right"]: -Math.round(size * 0.1),
+          background: BUBBLE_GRAD,
+          opacity: 0.65,
+        }}
+        animate={shouldAnimate ? { y: [0, -4, 0] } : { y: 0 }}
+        transition={shouldAnimate ? { duration: floatDur * 1.1, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" } : { duration: 0 }}
+      />
     </motion.div>
   );
 }
@@ -621,76 +609,60 @@ export default function ThirdSection() {
           })}
         </div>
 
-        {/* ───── Stage: Unaligned Creative Bubbles & Central Screen ───── */}
-        <div className="relative mt-1 flex w-full max-w-[1380px] h-[390px] items-center justify-between px-2">
-          {/* Left Column: Organic Unaligned Bubbles */}
-          <div className="relative z-20 w-[280px] h-[380px] shrink-0 mt-[-52px]">
+        {/* ───── Stage: Freely-scattered Bubble Clusters & Central Screen ───── */}
+        <div className="relative mt-2 flex w-full max-w-[1440px] h-[440px] items-center justify-between px-0">
+
+          {/* ── LEFT cluster — 5 unique layouts, one per feature step ── */}
+          <div className="relative z-20 w-[340px] h-[440px] shrink-0">
             {FEATURES.map((feat, fIdx) => {
               const isActive = activeIdx === fIdx;
-              return (
-                <div
-                  key={`${feat.key}-left-col`}
-                  className="absolute inset-0 flex flex-col justify-between py-2 pointer-events-none"
-                >
-                  {/* Left-Up Bubbles */}
-                  <div className="flex flex-col gap-4">
-                    {feat.leftUp.map((item, i) => {
-                      const posX = i === 0 ? -22 : 14;
-                      const posY = i === 0 ? -8 : 6;
-                      const tilt = i === 0 ? -4.5 : 3.5;
-                      return (
-                        <motion.div
-                          key={`${feat.key}-lu-${i}`}
-                          initial={{ opacity: 0, scale: 0, x: posX - 30, y: posY }}
-                          animate={{
-                            opacity: isActive ? 1 : 0,
-                            scale: isActive ? 1 : 0,
-                            x: isActive ? posX : posX - 30,
-                            y: posY,
-                          }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 260,
-                            damping: 14,
-                            delay: isActive ? i * 0.1 : 0,
-                          }}
-                          style={{ pointerEvents: isActive ? "auto" : "none" }}
-                        >
-                          <BubbleCard item={item} side="left" index={i} tilt={tilt} isActive={isActive} />
-                        </motion.div>
-                      );
-                    })}
-                  </div>
+              const ease = [0.22, 1, 0.36, 1] as const;
 
-                  {/* Left-Down Bubbles */}
-                  <div className="flex flex-col gap-4">
-                    {feat.leftDown.map((item, i) => {
-                      const posX = i === 0 ? -16 : 18;
-                      const posY = i === 0 ? -4 : 10;
-                      const tilt = i === 0 ? 2.5 : -3.5;
-                      return (
-                        <motion.div
-                          key={`${feat.key}-ld-${i}`}
-                          initial={{ opacity: 0, scale: 0, x: posX - 30, y: posY }}
-                          animate={{
-                            opacity: isActive ? 1 : 0,
-                            scale: isActive ? 1 : 0,
-                            x: isActive ? posX : posX - 30,
-                            y: posY,
-                          }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 260,
-                            damping: 14,
-                            delay: isActive ? (i + 2) * 0.1 : 0,
-                          }}
-                          style={{ pointerEvents: isActive ? "auto" : "none" }}
-                        >
-                          <BubbleCard item={item} side="left" index={i + 2} tilt={tilt} isActive={isActive} />
-                        </motion.div>
-                      );
-                    })}
-                  </div>
+              // 5 unique left-side arrangements — position varies per step
+              const LEFT_LAYOUTS = [
+                // Step 0 — Journal: medium top-right, large top-left, large mid-left, medium lower-right
+                [ { top: 8,   left: 155, index: 1, group: feat.leftUp,   gi: 0 },
+                  { top: 55,  left: 10,  index: 0, group: feat.leftUp,   gi: 1 },
+                  { top: 215, left: 25,  index: 2, group: feat.leftDown, gi: 0 },
+                  { top: 310, left: 165, index: 3, group: feat.leftDown, gi: 1 } ],
+                // Step 1 — Talk: large top-left, medium top-right offset, medium mid-right, large lower-left
+                [ { top: 20,  left: 15,  index: 0, group: feat.leftUp,   gi: 0 },
+                  { top: 10,  left: 175, index: 1, group: feat.leftUp,   gi: 1 },
+                  { top: 200, left: 160, index: 3, group: feat.leftDown, gi: 0 },
+                  { top: 285, left: 10,  index: 2, group: feat.leftDown, gi: 1 } ],
+                // Step 2 — Wellness: medium top-far-right, large top-center, large lower-left, medium lower-far-right
+                [ { top: 5,   left: 190, index: 1, group: feat.leftUp,   gi: 0 },
+                  { top: 60,  left: 55,  index: 0, group: feat.leftUp,   gi: 1 },
+                  { top: 205, left: 5,   index: 2, group: feat.leftDown, gi: 0 },
+                  { top: 320, left: 155, index: 3, group: feat.leftDown, gi: 1 } ],
+                // Step 3 — Insights: large top-left, small top-far-right, medium mid-center, large lower-right
+                [ { top: 30,  left: 5,   index: 0, group: feat.leftUp,   gi: 0 },
+                  { top: 15,  left: 180, index: 3, group: feat.leftUp,   gi: 1 },
+                  { top: 210, left: 90,  index: 2, group: feat.leftDown, gi: 0 },
+                  { top: 305, left: 175, index: 1, group: feat.leftDown, gi: 1 } ],
+                // Step 4 — Rest: medium top-left, large top-right, large mid-left, medium lower-center
+                [ { top: 10,  left: 30,  index: 1, group: feat.leftUp,   gi: 0 },
+                  { top: 45,  left: 160, index: 0, group: feat.leftUp,   gi: 1 },
+                  { top: 220, left: 10,  index: 2, group: feat.leftDown, gi: 0 },
+                  { top: 300, left: 130, index: 3, group: feat.leftDown, gi: 1 } ],
+              ];
+
+              const slots = LEFT_LAYOUTS[fIdx] ?? LEFT_LAYOUTS[0];
+
+              return (
+                <div key={`${feat.key}-left-col`} className="absolute inset-0 pointer-events-none">
+                  {slots.map(({ top, left, index, group, gi }, si) => (
+                    <motion.div
+                      key={`${feat.key}-l-${si}`}
+                      className="absolute"
+                      style={{ top, left, pointerEvents: isActive ? "auto" : "none" }}
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: isActive ? 1 : 0, scale: isActive ? 1 : 0.5 }}
+                      transition={{ duration: 0.55, ease, delay: isActive ? si * 0.07 : 0 }}
+                    >
+                      <BubbleCard item={group[gi]} side="left" index={index} isActive={isActive} />
+                    </motion.div>
+                  ))}
                 </div>
               );
             })}
@@ -708,11 +680,7 @@ export default function ThirdSection() {
                     alt={feat.label}
                     className="absolute inset-0 h-full w-full object-cover object-top"
                     initial={{ opacity: 0, scale: 0.97 }}
-                    animate={{
-                      opacity: isActive ? 1 : 0,
-                      scale: isActive ? 1 : 0.97,
-                      zIndex: isActive ? 2 : 1,
-                    }}
+                    animate={{ opacity: isActive ? 1 : 0, scale: isActive ? 1 : 0.97, zIndex: isActive ? 2 : 1 }}
                     transition={{ duration: 0.55, ease: EASE }}
                   />
                 );
@@ -720,78 +688,62 @@ export default function ThirdSection() {
             </div>
           </div>
 
-          {/* Right Column: Organic Unaligned Bubbles */}
-          <div className="relative z-20 w-[280px] h-[380px] shrink-0 mt-[-52px]">
+          {/* ── RIGHT cluster — 5 unique layouts, one per feature step ── */}
+          <div className="relative z-20 w-[340px] h-[440px] shrink-0">
             {FEATURES.map((feat, fIdx) => {
               const isActive = activeIdx === fIdx;
-              return (
-                <div
-                  key={`${feat.key}-right-col`}
-                  className="absolute inset-0 flex flex-col items-end justify-between py-2 pointer-events-none"
-                >
-                  {/* Right-Up Bubbles */}
-                  <div className="flex flex-col items-end gap-4">
-                    {feat.rightUp.map((item, i) => {
-                      const posX = i === 0 ? 22 : -12;
-                      const posY = i === 0 ? -10 : 4;
-                      const tilt = i === 0 ? 4.5 : -3;
-                      return (
-                        <motion.div
-                          key={`${feat.key}-ru-${i}`}
-                          initial={{ opacity: 0, scale: 0, x: posX + 30, y: posY }}
-                          animate={{
-                            opacity: isActive ? 1 : 0,
-                            scale: isActive ? 1 : 0,
-                            x: isActive ? posX : posX + 30,
-                            y: posY,
-                          }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 260,
-                            damping: 14,
-                            delay: isActive ? i * 0.1 : 0,
-                          }}
-                          style={{ pointerEvents: isActive ? "auto" : "none" }}
-                        >
-                          <BubbleCard item={item} side="right" index={i} tilt={tilt} isActive={isActive} />
-                        </motion.div>
-                      );
-                    })}
-                  </div>
+              const ease = [0.22, 1, 0.36, 1] as const;
 
-                  {/* Right-Down Bubbles */}
-                  <div className="flex flex-col items-end gap-4">
-                    {feat.rightDown.map((item, i) => {
-                      const posX = i === 0 ? 16 : -14;
-                      const posY = i === 0 ? -4 : 8;
-                      const tilt = i === 0 ? -2.5 : 4.5;
-                      return (
-                        <motion.div
-                          key={`${feat.key}-rd-${i}`}
-                          initial={{ opacity: 0, scale: 0, x: posX + 30, y: posY }}
-                          animate={{
-                            opacity: isActive ? 1 : 0,
-                            scale: isActive ? 1 : 0,
-                            x: isActive ? posX : posX + 30,
-                            y: posY,
-                          }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 260,
-                            damping: 14,
-                            delay: isActive ? (i + 2) * 0.1 : 0,
-                          }}
-                          style={{ pointerEvents: isActive ? "auto" : "none" }}
-                        >
-                          <BubbleCard item={item} side="right" index={i + 2} tilt={tilt} isActive={isActive} />
-                        </motion.div>
-                      );
-                    })}
-                  </div>
+              // 5 unique right-side arrangements
+              const RIGHT_LAYOUTS = [
+                // Step 0 — Journal: medium top-left, large top-right, medium mid-left, large lower-right
+                [ { top: 5,   right: 155, index: 1, group: feat.rightUp,   gi: 0 },
+                  { top: 55,  right: 10,  index: 0, group: feat.rightUp,   gi: 1 },
+                  { top: 215, right: 150, index: 2, group: feat.rightDown, gi: 0 },
+                  { top: 305, right: 5,   index: 3, group: feat.rightDown, gi: 1 } ],
+                // Step 1 — Talk: large top-right, medium top-left, large mid-right, medium lower-left
+                [ { top: 15,  right: 10,  index: 0, group: feat.rightUp,   gi: 0 },
+                  { top: 10,  right: 170, index: 1, group: feat.rightUp,   gi: 1 },
+                  { top: 200, right: 5,   index: 2, group: feat.rightDown, gi: 0 },
+                  { top: 295, right: 155, index: 3, group: feat.rightDown, gi: 1 } ],
+                // Step 2 — Wellness: large top-left-of-right, medium top-far-right, medium mid-right, large lower-left
+                [ { top: 50,  right: 170, index: 0, group: feat.rightUp,   gi: 0 },
+                  { top: 8,   right: 10,  index: 1, group: feat.rightUp,   gi: 1 },
+                  { top: 210, right: 10,  index: 3, group: feat.rightDown, gi: 0 },
+                  { top: 300, right: 155, index: 2, group: feat.rightDown, gi: 1 } ],
+                // Step 3 — Insights: medium top-right, large top-center-right, large lower-right, medium lower-left
+                [ { top: 10,  right: 15,  index: 1, group: feat.rightUp,   gi: 0 },
+                  { top: 40,  right: 160, index: 0, group: feat.rightUp,   gi: 1 },
+                  { top: 215, right: 5,   index: 2, group: feat.rightDown, gi: 0 },
+                  { top: 305, right: 160, index: 3, group: feat.rightDown, gi: 1 } ],
+                // Step 4 — Rest: large top-right, small top-left-of-right, medium mid-center, large lower-right
+                [ { top: 45,  right: 5,   index: 0, group: feat.rightUp,   gi: 0 },
+                  { top: 5,   right: 170, index: 3, group: feat.rightUp,   gi: 1 },
+                  { top: 205, right: 100, index: 2, group: feat.rightDown, gi: 0 },
+                  { top: 310, right: 10,  index: 1, group: feat.rightDown, gi: 1 } ],
+              ];
+
+              const slots = RIGHT_LAYOUTS[fIdx] ?? RIGHT_LAYOUTS[0];
+
+              return (
+                <div key={`${feat.key}-right-col`} className="absolute inset-0 pointer-events-none">
+                  {slots.map(({ top, right, index, group, gi }, si) => (
+                    <motion.div
+                      key={`${feat.key}-r-${si}`}
+                      className="absolute"
+                      style={{ top, right, pointerEvents: isActive ? "auto" : "none" }}
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: isActive ? 1 : 0, scale: isActive ? 1 : 0.5 }}
+                      transition={{ duration: 0.55, ease, delay: isActive ? si * 0.07 : 0 }}
+                    >
+                      <BubbleCard item={group[gi]} side="right" index={index} isActive={isActive} />
+                    </motion.div>
+                  ))}
                 </div>
               );
             })}
           </div>
+
         </div>
       </div>
     </section>
