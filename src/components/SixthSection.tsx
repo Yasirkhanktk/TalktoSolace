@@ -7,7 +7,7 @@ type GradientCard = { id: string; type: "gradient"; gradient: string; quote: str
 type ImageCard = { id: string; type: "image"; image: string; quote: string; name: string; tag: string };
 type MomentCardType = GradientCard | ImageCard;
 
-/* Alternating: gradient → image → gradient → image → gradient → image */
+/* Alternating: gradient → image → gradient → image → gradient → image ... */
 const MOMENTS: MomentCardType[] = [
   {
     id: "a", type: "gradient",
@@ -45,6 +45,30 @@ const MOMENTS: MomentCardType[] = [
     quote: "The privacy means I can say what is really on my mind. I genuinely look forward to it.",
     name: "Alex R.", tag: "100% Private",
   },
+  {
+    id: "g", type: "gradient",
+    gradient: "linear-gradient(145deg, #c2185b 0%, #e91e63 45%, #7b1fa2 100%)",
+    quote: "Checking in with Solace before sleep has completely replaced late-night doom-scrolling.",
+    name: "Liam T.", tag: "Night Routine",
+  },
+  {
+    id: "h", type: "image",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    quote: "The gentle voice tone and thoughtful questions help me slow down when my mind is racing.",
+    name: "Chloe M.", tag: "Calm Mind",
+  },
+  {
+    id: "i", type: "gradient",
+    gradient: "linear-gradient(145deg, #e91e63 0%, #d81b60 50%, #8e24aa 100%)",
+    quote: "I feel truly understood. It is like having a patient listener in my pocket at all times.",
+    name: "Julian K.", tag: "Emotional Clarity",
+  },
+  {
+    id: "j", type: "image",
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80",
+    quote: "A quiet sanctuary to untangle overwhelming thoughts without having to explain myself.",
+    name: "Maya S.", tag: "Safe Sanctuary",
+  },
 ];
 
 const STATS = ["10,000+ Users", "4.9 Rating", "Real-time Insights", "Secure & compliant"];
@@ -63,8 +87,9 @@ function MomentCardItem({
   scrollYProgress: MotionValue<number>;
   reduce: boolean | null;
 }) {
-  const peak = index / (total - 1);
-  const delta = 0.16;
+  const step = 1 / (total - 1);
+  const peak = index * step;
+  const delta = step * 0.95;
 
   let input: number[];
   let scaleVals: number[];
@@ -186,7 +211,7 @@ export default function SixthSection() {
   const reduce = useReducedMotion();
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
-  const x = useTransform(scrollYProgress, [0, 1], ["6%", "-56%"]);
+  const x = useTransform(scrollYProgress, [0, 1], ["4%", "-64%"]);
 
   return (
     <section ref={containerRef} className="relative h-[300vh] bg-white">
