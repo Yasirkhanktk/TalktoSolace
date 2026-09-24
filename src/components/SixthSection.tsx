@@ -5,10 +5,10 @@ const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
 
 type GradientCard = { id: string; type: "gradient"; gradient: string; quote: string; name: string; tag: string };
 type ImageCard = { id: string; type: "image"; image: string; quote: string; name: string; tag: string };
-type MomentCard = GradientCard | ImageCard;
+type MomentCardType = GradientCard | ImageCard;
 
 /* Alternating: gradient → image → gradient → image → gradient → image */
-const MOMENTS: MomentCard[] = [
+const MOMENTS: MomentCardType[] = [
   {
     id: "a", type: "gradient",
     gradient: "linear-gradient(145deg, #e91e63 0%, #c2185b 40%, #9c27b0 100%)",
@@ -49,12 +49,144 @@ const MOMENTS: MomentCard[] = [
 
 const STATS = ["10,000+ Users", "4.9 Rating", "Real-time Insights", "Secure & compliant"];
 
+/* ── Individual Moment Card with Dynamic Scroll Focus Scaling ── */
+function MomentCardItem({
+  m,
+  index,
+  total,
+  scrollYProgress,
+  reduce,
+}: {
+  m: MomentCardType;
+  index: number;
+  total: number;
+  scrollYProgress: MotionValue<number>;
+  reduce: boolean | null;
+}) {
+  const peak = index / (total - 1);
+  const delta = 0.16;
+
+  let input: number[];
+  let scaleVals: number[];
+  let opacityVals: number[];
+  let yVals: number[];
+
+  if (index === 0) {
+    input = [0, delta, delta * 2];
+    scaleVals = [1.14, 1.0, 0.94];
+    opacityVals = [1, 0.9, 0.82];
+    yVals = [-10, 0, 8];
+  } else if (index === total - 1) {
+    input = [1 - delta * 2, 1 - delta, 1];
+    scaleVals = [0.94, 1.0, 1.14];
+    opacityVals = [0.82, 0.9, 1];
+    yVals = [8, 0, -10];
+  } else {
+    input = [
+      Math.max(0, peak - delta),
+      peak,
+      Math.min(1, peak + delta),
+    ];
+    scaleVals = [0.94, 1.14, 0.94];
+    opacityVals = [0.82, 1, 0.82];
+    yVals = [8, -10, 8];
+  }
+
+  const scale = useTransform(scrollYProgress, input, scaleVals);
+  const opacity = useTransform(scrollYProgress, input, opacityVals);
+  const y = useTransform(scrollYProgress, input, yVals);
+  const zIndex = useTransform(scale, (s) => (s > 1.03 ? 20 : index + 1));
+
+  const baseW = 275;
+  const baseH = 355;
+
+  const cardContent = (
+    <div className="group relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[22px] cursor-pointer">
+      {/* Background */}
+      {m.type === "image" ? (
+        <>
+          <img
+            src={m.image}
+            alt={m.name}
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(160,20,90,0.14) 0%, rgba(120,15,140,0.46) 45%, rgba(80,8,120,0.88) 100%)",
+            }}
+          />
+        </>
+      ) : (
+        <div className="absolute inset-0" style={{ background: m.gradient }} />
+      )}
+
+      {/* Tag */}
+      <div className="relative z-10 p-5">
+        <span
+          className="rounded-full bg-white/20 px-3 py-[3px] text-[9.5px] font-bold uppercase tracking-wider text-white backdrop-blur-sm"
+          style={{ fontFamily: "'Inter', sans-serif", border: "1px solid rgba(255,255,255,0.25)" }}
+        >
+          {m.tag}
+        </span>
+      </div>
+
+      {/* Quote */}
+      <div className="relative z-10 p-5">
+        <p
+          className="text-[12.5px] font-medium leading-[1.58] text-white/95 drop-shadow-sm"
+          style={{ fontFamily: "'Inter', sans-serif" }}
+        >
+          &ldquo;{m.quote}&rdquo;
+        </p>
+        <p
+          className="mt-2.5 text-[11px] font-bold uppercase tracking-wider text-white/60"
+          style={{ fontFamily: "'Montserrat', sans-serif" }}
+        >
+          — {m.name}
+        </p>
+      </div>
+    </div>
+  );
+
+  return (
+    <motion.div
+      className="relative shrink-0 select-none"
+      style={{
+        width: baseW,
+        height: baseH,
+        scale: reduce ? 1 : scale,
+        opacity: reduce ? 1 : opacity,
+        y: reduce ? 0 : y,
+        zIndex,
+        transformOrigin: "center center",
+      }}
+      whileHover={{ scale: 1.15, transition: { type: "spring", stiffness: 320, damping: 20 } }}
+    >
+      {/* 4px Gradient Border for image cards */}
+      {m.type === "image" ? (
+        <div
+          className="h-full w-full rounded-[26px] p-[4px] shadow-[0_16px_40px_rgba(233,30,99,0.18)]"
+          style={{ background: GRAD }}
+        >
+          {cardContent}
+        </div>
+      ) : (
+        <div className="h-full w-full rounded-[22px] shadow-[0_16px_40px_rgba(156,39,176,0.18)]">
+          {cardContent}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
 export default function SixthSection() {
   const containerRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
-  const x = useTransform(scrollYProgress, [0, 1], ["4%", "-54%"]);
+  const x = useTransform(scrollYProgress, [0, 1], ["6%", "-56%"]);
 
   return (
     <section ref={containerRef} className="relative h-[300vh] bg-white">
@@ -83,78 +215,19 @@ export default function SixthSection() {
           <div className="mt-3 h-[4px] w-[48px] rounded-full" style={{ background: GRAD }} />
         </div>
 
-        {/* Scrolling Cards */}
-        <div className="relative mt-10 w-full overflow-visible">
-          <motion.div className="flex gap-5 px-[6vw]" style={{ x: reduce ? 0 : x }}>
-            {MOMENTS.map((m, idx) => {
-              const w = idx === 2 ? 320 : 270;
-              const h = idx === 2 ? 380 : 340;
-
-              const cardContent = (
-                <motion.div
-                  key={m.id}
-                  className="group relative shrink-0 overflow-hidden rounded-[21px] cursor-pointer"
-                  style={{ width: w, height: h }}
-                  whileHover={{ scale: 1.03, transition: { type: "spring", stiffness: 280, damping: 20 } }}
-                >
-                  {/* Background */}
-                  {m.type === "image" ? (
-                    <>
-                      <img
-                        src={m.image}
-                        alt={m.name}
-                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div
-                        className="absolute inset-0"
-                        style={{ background: "linear-gradient(180deg, rgba(160,20,90,0.18) 0%, rgba(120,15,140,0.48) 45%, rgba(80,8,120,0.86) 100%)" }}
-                      />
-                    </>
-                  ) : (
-                    <div className="absolute inset-0" style={{ background: m.gradient }} />
-                  )}
-
-                  {/* Tag */}
-                  <div className="absolute top-4 left-4 z-10">
-                    <span
-                      className="rounded-full bg-white/20 px-3 py-[3px] text-[9.5px] font-bold uppercase tracking-wider text-white backdrop-blur-sm"
-                      style={{ fontFamily: "'Inter', sans-serif", border: "1px solid rgba(255,255,255,0.25)" }}
-                    >
-                      {m.tag}
-                    </span>
-                  </div>
-
-                  {/* Quote */}
-                  <div className="absolute bottom-0 left-0 right-0 z-10 p-5">
-                    <p className="text-[12.5px] font-medium leading-[1.55] text-white/90" style={{ fontFamily: "'Inter', sans-serif" }}>
-                      {m.quote}
-                    </p>
-                    <p className="mt-2 text-[11px] font-bold uppercase tracking-wider text-white/55" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                      — {m.name}
-                    </p>
-                  </div>
-                </motion.div>
-              );
-
-              /* Image cards get a 2px gradient stroke border wrapper */
-              if (m.type === "image") {
-                return (
-                  <div
-                    key={m.id}
-                    className="shrink-0 rounded-[26px] p-[4px]"
-                    style={{
-                      background: GRAD,
-                      width: w + 8,
-                      height: h + 8,
-                    }}
-                  >
-                    {cardContent}
-                  </div>
-                );
-              }
-
-              return <div key={m.id} className="shrink-0">{cardContent}</div>;
-            })}
+        {/* Scrolling Cards with Dynamic Focal Zoom */}
+        <div className="relative mt-8 w-full overflow-visible py-4">
+          <motion.div className="flex items-center gap-6 px-[10vw]" style={{ x: reduce ? 0 : x }}>
+            {MOMENTS.map((m, idx) => (
+              <MomentCardItem
+                key={m.id}
+                m={m}
+                index={idx}
+                total={MOMENTS.length}
+                scrollYProgress={scrollYProgress}
+                reduce={reduce}
+              />
+            ))}
           </motion.div>
         </div>
 
