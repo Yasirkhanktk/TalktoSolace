@@ -1,10 +1,13 @@
-import { motion } from "motion/react";
+import { motion } from "motion/react"
 
-const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
+const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)"
 
 export default function Footer() {
   return (
-    <footer className="relative bg-white pt-12 pb-8 px-6 overflow-hidden">
+    <footer
+      id="contact"
+      className="relative bg-white pt-12 pb-8 px-6 overflow-hidden scroll-mt-20"
+    >
       <div className="mx-auto max-w-[1260px] flex flex-col">
         {/* Main Row: Logo on Left, Contact Pills on Right */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-10 pb-12">
@@ -79,7 +82,13 @@ export default function Footer() {
                 >
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                   <defs>
-                    <linearGradient id="footer_chat_grad" x1="3" y1="3" x2="21" y2="21">
+                    <linearGradient
+                      id="footer_chat_grad"
+                      x1="3"
+                      y1="3"
+                      x2="21"
+                      y2="21"
+                    >
                       <stop stopColor="#E91E63" />
                       <stop offset="1" stopColor="#9C27B0" />
                     </linearGradient>
@@ -125,7 +134,13 @@ export default function Footer() {
                   <circle cx="12" cy="12" r="10" />
                   <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
                   <defs>
-                    <linearGradient id="footer_phone_grad" x1="2" y1="2" x2="22" y2="22">
+                    <linearGradient
+                      id="footer_phone_grad"
+                      x1="2"
+                      y1="2"
+                      x2="22"
+                      y2="22"
+                    >
                       <stop stopColor="#E91E63" />
                       <stop offset="1" stopColor="#9C27B0" />
                     </linearGradient>
@@ -166,5 +181,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

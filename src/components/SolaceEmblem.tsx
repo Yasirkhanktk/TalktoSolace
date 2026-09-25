@@ -1,14 +1,14 @@
-import { motion } from "motion/react";
-import solaceLogoImg from "../assets/solace-logo-dark.png";
+import { motion } from "motion/react"
+import solaceLogoImg from "../assets/solace-logo-dark.png"
 
 export default function SolaceEmblem({
   className = "",
   size = 180,
   tilt = -14,
 }: {
-  className?: string;
-  size?: number;
-  tilt?: number;
+  className?: string
+  size?: number
+  tilt?: number
 }) {
   return (
     <motion.div
@@ -30,5 +30,5 @@ export default function SolaceEmblem({
         className="w-full h-auto object-contain drop-shadow-[0_20px_35px_rgba(233,30,99,0.25)] rounded-[24px]"
       />
     </motion.div>
-  );
+  )
 }

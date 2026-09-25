@@ -1,9 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useSpring, useReducedMotion, type MotionValue } from "motion/react";
-import imgPlaceholder from "../imports/MeetSolace/1fabb6006b2b2026a2aa6f647b1aff16b1c50164.png";
-import SolaceEmblem from "./SolaceEmblem";
+import { useEffect, useRef, useState } from "react"
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useReducedMotion,
+  type MotionValue,
+} from "motion/react"
+import imgPlaceholder from "../imports/MeetSolace/1fabb6006b2b2026a2aa6f647b1aff16b1c50164.png"
+import SolaceEmblem from "./SolaceEmblem"
 
-const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
+const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)"
 
 const MODULES = [
   {
@@ -36,7 +43,7 @@ const MODULES = [
     ],
     img: imgPlaceholder,
   },
-];
+]
 
 /* ── Sub-components ── */
 
@@ -45,17 +52,25 @@ function TextSlide({
   index,
   smoothProgress,
 }: {
-  mod: (typeof MODULES)[number];
-  index: number;
-  smoothProgress: MotionValue<number>;
+  mod: typeof MODULES[number]
+  index: number
+  smoothProgress: MotionValue<number>
 }) {
-  const start = index === 0 ? 0 : (index - 0.1) / MODULES.length;
-  const peakIn = (index + 0.1) / MODULES.length;
-  const peakOut = (index + 0.8) / MODULES.length;
-  const end = (index + 1) / MODULES.length;
+  const start = index === 0 ? 0 : (index - 0.1) / MODULES.length
+  const peakIn = (index + 0.1) / MODULES.length
+  const peakOut = (index + 0.8) / MODULES.length
+  const end = (index + 1) / MODULES.length
 
-  const opacity = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0, 1, 1, 0]);
-  const y = useTransform(smoothProgress, [start, peakIn, peakOut, end], [30, 0, 0, -30]);
+  const opacity = useTransform(
+    smoothProgress,
+    [start, peakIn, peakOut, end],
+    [0, 1, 1, 0],
+  )
+  const y = useTransform(
+    smoothProgress,
+    [start, peakIn, peakOut, end],
+    [30, 0, 0, -30],
+  )
 
   return (
     <motion.div
@@ -72,7 +87,9 @@ function TextSlide({
         >
           {mod.title.split(" ")[0]}
         </span>{" "}
-        <span className="text-[#1d1d1d]">{mod.title.split(" ").slice(1).join(" ")}</span>
+        <span className="text-[#1d1d1d]">
+          {mod.title.split(" ").slice(1).join(" ")}
+        </span>
       </h3>
       <p
         className="mt-4 max-w-[474px] text-[16px] font-medium leading-[1.55] text-[#555] lg:text-[16.7px]"
@@ -86,7 +103,10 @@ function TextSlide({
           <div key={fi} className="flex flex-col gap-1.5">
             <span
               className="bg-clip-text text-[28px] font-bold text-transparent lg:text-[32px]"
-              style={{ fontFamily: "'Montserrat', sans-serif", backgroundImage: GRAD }}
+              style={{
+                fontFamily: "'Montserrat', sans-serif",
+                backgroundImage: GRAD,
+              }}
             >
               {feat.num}
             </span>
@@ -100,34 +120,50 @@ function TextSlide({
         ))}
       </div>
     </motion.div>
-  );
+  )
 }
 
 function UniqueDockStepper({
   scrollYProgress,
   onSelectStep,
 }: {
-  scrollYProgress: MotionValue<number>;
-  onSelectStep: (idx: number) => void;
+  scrollYProgress: MotionValue<number>
+  onSelectStep: (idx: number) => void
 }) {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(0)
 
   useEffect(() => {
     return scrollYProgress.on("change", (latest) => {
-      if (latest >= 0.62) setActiveStep(2);
-      else if (latest >= 0.30) setActiveStep(1);
-      else setActiveStep(0);
-    });
-  }, [scrollYProgress]);
+      if (latest >= 0.62) setActiveStep(2)
+      else if (latest >= 0.3) setActiveStep(1)
+      else setActiveStep(0)
+    })
+  }, [scrollYProgress])
 
   const steps = [
-    { num: "01", phase: "PHASE 01", title: "Talk It Out", tag: "Live Voice AI" },
-    { num: "02", phase: "PHASE 02", title: "Journal Thoughts", tag: "Daily Reflection" },
-    { num: "03", phase: "PHASE 03", title: "Wellness Toolkit", tag: "Mindful Habits" },
-  ];
+    {
+      num: "01",
+      phase: "PHASE 01",
+      title: "Talk It Out",
+      tag: "Live Voice AI",
+    },
+    {
+      num: "02",
+      phase: "PHASE 02",
+      title: "Journal Thoughts",
+      tag: "Daily Reflection",
+    },
+    {
+      num: "03",
+      phase: "PHASE 03",
+      title: "Wellness Toolkit",
+      tag: "Mindful Habits",
+    },
+  ]
 
   // Track progress position: 0% at step 0, 50% at step 1, 100% at step 2
-  const progressPercent = activeStep === 0 ? "0%" : activeStep === 1 ? "50%" : "100%";
+  const progressPercent =
+    activeStep === 0 ? "0%" : activeStep === 1 ? "50%" : "100%"
 
   return (
     <div className="relative z-20 w-full select-none px-1">
@@ -173,8 +209,8 @@ function UniqueDockStepper({
         {/* Step Nodes */}
         <div className="relative flex items-start justify-between">
           {steps.map((s, i) => {
-            const isActive = activeStep === i;
-            const isCompleted = i < activeStep;
+            const isActive = activeStep === i
+            const isCompleted = i < activeStep
 
             return (
               <button
@@ -191,13 +227,24 @@ function UniqueDockStepper({
                       <motion.div
                         className="absolute inset-0 rounded-full"
                         style={{ border: "1.5px solid rgba(233,30,99,0.4)" }}
-                        animate={{ scale: [1, 1.32, 1], opacity: [0.9, 0.25, 0.9] }}
-                        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                        animate={{
+                          scale: [1, 1.32, 1],
+                          opacity: [0.9, 0.25, 0.9],
+                        }}
+                        transition={{
+                          duration: 2.4,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
                       />
                       <motion.div
                         className="absolute -inset-1 rounded-full bg-pink-500/10 blur-sm"
                         animate={{ opacity: [0.35, 0.75, 0.35] }}
-                        transition={{ duration: 2.0, repeat: Infinity, ease: "easeInOut" }}
+                        transition={{
+                          duration: 2.0,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
                       />
                     </>
                   )}
@@ -208,19 +255,33 @@ function UniqueDockStepper({
                       isActive
                         ? "h-11 w-11 text-white shadow-[0_8px_24px_rgba(233,30,99,0.45)] ring-4 ring-pink-500/20"
                         : isCompleted
-                        ? "h-9 w-9 text-white shadow-[0_4px_12px_rgba(233,30,99,0.25)]"
-                        : "h-9 w-9 border-2 border-slate-200 bg-white/90 text-slate-400 backdrop-blur-sm group-hover:border-pink-300 group-hover:text-slate-700"
+                          ? "h-9 w-9 text-white shadow-[0_4px_12px_rgba(233,30,99,0.25)]"
+                          : "h-9 w-9 border-2 border-slate-200 bg-white/90 text-slate-400 backdrop-blur-sm group-hover:border-pink-300 group-hover:text-slate-700"
                     }`}
-                    style={isActive || isCompleted ? { background: GRAD } : undefined}
+                    style={
+                      isActive || isCompleted ? { background: GRAD } : undefined
+                    }
                     animate={isActive ? { scale: 1.06 } : { scale: 1 }}
                     transition={{ type: "spring", stiffness: 380, damping: 24 }}
                   >
                     {isCompleted ? (
-                      <svg className="h-4 w-4 stroke-current stroke-[2.8]" viewBox="0 0 24 24" fill="none">
-                        <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                      <svg
+                        className="h-4 w-4 stroke-current stroke-[2.8]"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M5 13l4 4L19 7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                     ) : (
-                      <span className={`font-extrabold ${isActive ? "text-[13px]" : "text-[11px]"}`}>
+                      <span
+                        className={`font-extrabold ${
+                          isActive ? "text-[13px]" : "text-[11px]"
+                        }`}
+                      >
                         {s.num}
                       </span>
                     )}
@@ -231,7 +292,11 @@ function UniqueDockStepper({
                 <div className="mt-1 flex flex-col items-center text-center">
                   <span
                     className={`text-[9.5px] font-bold uppercase tracking-widest transition-colors ${
-                      isActive ? "text-[#e91e63]" : isCompleted ? "text-slate-500" : "text-slate-400"
+                      isActive
+                        ? "text-[#e91e63]"
+                        : isCompleted
+                          ? "text-slate-500"
+                          : "text-slate-400"
                     }`}
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >
@@ -243,8 +308,8 @@ function UniqueDockStepper({
                       isActive
                         ? "text-slate-900"
                         : isCompleted
-                        ? "text-slate-700"
-                        : "text-slate-400 group-hover:text-slate-600"
+                          ? "text-slate-700"
+                          : "text-slate-400 group-hover:text-slate-600"
                     }`}
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
@@ -259,7 +324,8 @@ function UniqueDockStepper({
                         animate={{ opacity: 1, y: 0 }}
                         className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] shadow-sm"
                         style={{
-                          background: "linear-gradient(135deg, rgba(233,30,99,0.1), rgba(156,39,176,0.1))",
+                          background:
+                            "linear-gradient(135deg, rgba(233,30,99,0.1), rgba(156,39,176,0.1))",
                           border: "1px solid rgba(233,30,99,0.28)",
                         }}
                       >
@@ -268,22 +334,37 @@ function UniqueDockStepper({
                           <motion.span
                             className="w-[2px] rounded-full bg-[#e91e63]"
                             animate={{ height: ["3px", "10px", "3px"] }}
-                            transition={{ duration: 0.75, repeat: Infinity, ease: "easeInOut" }}
+                            transition={{
+                              duration: 0.75,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                            }}
                           />
                           <motion.span
                             className="w-[2px] rounded-full bg-[#e91e63]"
                             animate={{ height: ["9px", "3px", "9px"] }}
-                            transition={{ duration: 0.85, repeat: Infinity, ease: "easeInOut" }}
+                            transition={{
+                              duration: 0.85,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                            }}
                           />
                           <motion.span
                             className="w-[2px] rounded-full bg-[#9c27b0]"
                             animate={{ height: ["4px", "10px", "4px"] }}
-                            transition={{ duration: 0.65, repeat: Infinity, ease: "easeInOut" }}
+                            transition={{
+                              duration: 0.65,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                            }}
                           />
                         </div>
                         <span
                           className="bg-clip-text text-[9px] font-bold uppercase tracking-wider text-transparent"
-                          style={{ backgroundImage: GRAD, fontFamily: "'Inter', sans-serif" }}
+                          style={{
+                            backgroundImage: GRAD,
+                            fontFamily: "'Inter', sans-serif",
+                          }}
                         >
                           Active
                         </span>
@@ -307,12 +388,12 @@ function UniqueDockStepper({
                   </div>
                 </div>
               </button>
-            );
+            )
           })}
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function StepCard({
@@ -320,22 +401,46 @@ function StepCard({
   index,
   smoothProgress,
 }: {
-  mod: (typeof MODULES)[number];
-  index: number;
-  smoothProgress: MotionValue<number>;
+  mod: typeof MODULES[number]
+  index: number
+  smoothProgress: MotionValue<number>
 }) {
-  const isLast = index === MODULES.length - 1;
-  const start = index === 0 ? 0 : (index - 0.15) / MODULES.length;
-  const peakIn = (index + 0.12) / MODULES.length;
-  const peakOut = (index + 0.85) / MODULES.length;
-  const end = (index + 1) / MODULES.length;
+  const isLast = index === MODULES.length - 1
+  const start = index === 0 ? 0 : (index - 0.15) / MODULES.length
+  const peakIn = (index + 0.12) / MODULES.length
+  const peakOut = (index + 0.85) / MODULES.length
+  const end = (index + 1) / MODULES.length
 
-  const y = useTransform(smoothProgress, [start, peakIn, peakOut, end], [80, 0, 0, isLast ? 0 : -50]);
-  const scale = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0.82, 1, 1, isLast ? 1 : 0.92]);
-  const opacity = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0, 1, 1, isLast ? 1 : 0.3]);
-  const rotateX = useTransform(smoothProgress, [start, peakIn, peakOut, end], [8, 0, 0, isLast ? 0 : -4]);
-  const glowVal = useTransform(smoothProgress, [start, peakIn, peakOut, end], [0, 0.25, 0.25, 0]);
-  const borderColor = useTransform(glowVal, (v) => `rgba(233, 30, 99, ${v})`);
+  const y = useTransform(smoothProgress, [start, peakIn, peakOut, end], [
+    80,
+    0,
+    0,
+    isLast ? 0 : -50,
+  ])
+  const scale = useTransform(smoothProgress, [start, peakIn, peakOut, end], [
+    0.82,
+    1,
+    1,
+    isLast ? 1 : 0.92,
+  ])
+  const opacity = useTransform(smoothProgress, [start, peakIn, peakOut, end], [
+    0,
+    1,
+    1,
+    isLast ? 1 : 0.3,
+  ])
+  const rotateX = useTransform(smoothProgress, [start, peakIn, peakOut, end], [
+    8,
+    0,
+    0,
+    isLast ? 0 : -4,
+  ])
+  const glowVal = useTransform(
+    smoothProgress,
+    [start, peakIn, peakOut, end],
+    [0, 0.25, 0.25, 0],
+  )
+  const borderColor = useTransform(glowVal, (v) => `rgba(233, 30, 99, ${v})`)
 
   return (
     <motion.div
@@ -355,13 +460,20 @@ function StepCard({
         <div className="h-[3px] w-full" style={{ background: GRAD }} />
         <div className="flex w-full flex-col items-center p-8 pt-6">
           <div className="relative h-[240px] w-full max-w-[460px] overflow-hidden rounded-[16px] sm:h-[320px]">
-            <img src={mod.img} alt={mod.title} className="absolute inset-0 h-full w-full object-cover" />
+            <img
+              src={mod.img}
+              alt={mod.title}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
             <div className="absolute inset-x-0 bottom-0 h-[60px] bg-gradient-to-t from-white/40 to-transparent" />
           </div>
           <div className="mt-6 flex flex-col items-center text-center">
             <h4
               className="text-[22px] tracking-[-0.5px]"
-              style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
+              style={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 400,
+              }}
             >
               <span
                 className="bg-clip-text font-semibold italic text-transparent"
@@ -369,7 +481,9 @@ function StepCard({
               >
                 {mod.title.split(" ")[0]}
               </span>{" "}
-              <span className="text-[#1d1d1d]">{mod.title.split(" ").slice(1).join(" ")}</span>
+              <span className="text-[#1d1d1d]">
+                {mod.title.split(" ").slice(1).join(" ")}
+              </span>
             </h4>
             <p
               className="mt-2 max-w-[380px] text-[15px] font-medium leading-[1.5] text-[#666]"
@@ -381,33 +495,41 @@ function StepCard({
         </div>
       </div>
     </motion.div>
-  );
+  )
 }
 
 /* ── Main Section ── */
 
 export default function FifthSection() {
-  const containerRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLElement>(null)
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
-  });
+  })
 
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 80, damping: 22 });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping: 22,
+  })
 
   const handleSelectModule = (idx: number) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const sectionTop = window.scrollY + rect.top;
-    const totalScrollable = el.offsetHeight - window.innerHeight;
-    const targetY = sectionTop + (idx / (MODULES.length - 1)) * (totalScrollable * 0.82);
-    window.scrollTo({ top: targetY, behavior: "smooth" });
-  };
+    const el = containerRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const sectionTop = window.scrollY + rect.top
+    const totalScrollable = el.offsetHeight - window.innerHeight
+    const targetY =
+      sectionTop + (idx / (MODULES.length - 1)) * (totalScrollable * 0.82)
+    window.scrollTo({ top: targetY, behavior: "smooth" })
+  }
 
   return (
-    <section ref={containerRef} className="relative h-[400vh] bg-white">
+    <section
+      ref={containerRef}
+      id="how-it-works"
+      className="relative h-[400vh] bg-white"
+    >
       <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden">
         {/* Floating emblem in lower-right empty space */}
         <div className="pointer-events-none absolute bottom-[6%] right-[3%] z-0 hidden xl:block opacity-35">
@@ -420,10 +542,14 @@ export default function FifthSection() {
             className="rounded-[12px] border border-[#e91e63] px-4 py-[6px] text-[11px] font-semibold uppercase backdrop-blur-[4px]"
             style={{
               fontFamily: "'Montserrat', sans-serif",
-              backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.12), rgba(156,39,176,0.12))",
+              backgroundImage:
+                "linear-gradient(131deg, rgba(233,30,99,0.12), rgba(156,39,176,0.12))",
             }}
           >
-            <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: GRAD }}
+            >
               Meet Solace
             </span>
           </span>
@@ -445,23 +571,29 @@ export default function FifthSection() {
           >
             Your companion for every step of the journey
           </p>
-          <div className="mt-4 h-[5px] w-[57px] rounded-full" style={{ background: GRAD }} />
+          <div
+            className="mt-4 h-[5px] w-[57px] rounded-full"
+            style={{ background: GRAD }}
+          />
         </div>
 
         {/* Main Content */}
         <div className="relative mt-8 flex w-full max-w-[1260px] flex-col gap-16 px-6 lg:mt-12 lg:flex-row lg:items-start lg:gap-20">
-
           {/* Left Column */}
           <div className="flex flex-1 flex-col items-start pt-6 lg:pt-12">
             <div
               className="inline-flex rounded-full border border-[#e91e63]/30 px-5 py-2.5"
               style={{
-                backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.08), rgba(156,39,176,0.08))",
+                backgroundImage:
+                  "linear-gradient(131deg, rgba(233,30,99,0.08), rgba(156,39,176,0.08))",
               }}
             >
               <span
                 className="bg-clip-text text-[13.3px] font-semibold text-transparent"
-                style={{ fontFamily: "'Inter', sans-serif", backgroundImage: GRAD }}
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  backgroundImage: GRAD,
+                }}
               >
                 How it works
               </span>
@@ -469,7 +601,12 @@ export default function FifthSection() {
 
             <div className="relative mt-8 min-h-[200px] w-full">
               {MODULES.map((mod, i) => (
-                <TextSlide key={`text-${i}`} mod={mod} index={i} smoothProgress={smoothProgress} />
+                <TextSlide
+                  key={`text-${i}`}
+                  mod={mod}
+                  index={i}
+                  smoothProgress={smoothProgress}
+                />
               ))}
             </div>
           </div>
@@ -477,18 +614,25 @@ export default function FifthSection() {
           {/* Right Column */}
           <div className="relative w-full max-w-[620px]">
             {/* Unique Liquid Glass Dock Stepper */}
-            <UniqueDockStepper scrollYProgress={scrollYProgress} onSelectStep={handleSelectModule} />
+            <UniqueDockStepper
+              scrollYProgress={scrollYProgress}
+              onSelectStep={handleSelectModule}
+            />
 
             {/* Stacking Cards */}
             <div className="relative mt-2 h-[520px] w-full pt-6">
               {MODULES.map((mod, i) => (
-                <StepCard key={`card-${i}`} mod={mod} index={i} smoothProgress={smoothProgress} />
+                <StepCard
+                  key={`card-${i}`}
+                  mod={mod}
+                  index={i}
+                  smoothProgress={smoothProgress}
+                />
               ))}
             </div>
           </div>
         </div>
       </div>
     </section>
-  );
+  )
 }
-

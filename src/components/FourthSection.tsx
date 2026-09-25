@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react"
 import {
   motion,
   AnimatePresence,
@@ -6,29 +6,29 @@ import {
   useTransform,
   useReducedMotion,
   type MotionValue,
-} from "motion/react";
-import svgPaths from "../imports/Section3-1/svg-jmap5htj3m";
-import imgManBg from "../imports/Section3-1/45f1bcbe2a295e2466d94f9e694653e00545f002.png";
-import imgManFg from "../imports/Section3-1/285cb81d1803e135c1f00b00eedd9ab25e601b19.png";
-import imgBlueBg from "../imports/Section3-1/60435868beca1bf5fcd288752e2ce2dc031c0d44.png";
-import imgBlueFg from "../imports/Section3-1/141fdb7bf66120704255629fbd3acc8cdb3d4bc6.png";
-import imgChairBg from "../imports/Section3-1/90f354a9a06e95c6f4115c3e72de97f16fc882d7.png";
-import imgChairFg from "../imports/Section3-1/357e6fa693eebbf6f9fb3555348fd2b13af72fb4.png";
-import imgAthBg from "../imports/Section3-1/c5a297d0252bc641d8d543cdb0db6fe7d2290e57.png";
-import imgAthFg from "../imports/Section3-1/bc07016c8c4e3f240776b464f9521d286372372f.png";
-import SolaceEmblem from "./SolaceEmblem";
+} from "motion/react"
+import svgPaths from "../imports/Section3-1/svg-jmap5htj3m"
+import imgManBg from "../imports/Section3-1/45f1bcbe2a295e2466d94f9e694653e00545f002.png"
+import imgManFg from "../imports/Section3-1/285cb81d1803e135c1f00b00eedd9ab25e601b19.png"
+import imgBlueBg from "../imports/Section3-1/60435868beca1bf5fcd288752e2ce2dc031c0d44.png"
+import imgBlueFg from "../imports/Section3-1/141fdb7bf66120704255629fbd3acc8cdb3d4bc6.png"
+import imgChairBg from "../imports/Section3-1/90f354a9a06e95c6f4115c3e72de97f16fc882d7.png"
+import imgChairFg from "../imports/Section3-1/357e6fa693eebbf6f9fb3555348fd2b13af72fb4.png"
+import imgAthBg from "../imports/Section3-1/c5a297d0252bc641d8d543cdb0db6fe7d2290e57.png"
+import imgAthFg from "../imports/Section3-1/bc07016c8c4e3f240776b464f9521d286372372f.png"
+import SolaceEmblem from "./SolaceEmblem"
 
-const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
-const EASE = [0.22, 1, 0.36, 1] as const;
+const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)"
+const EASE = [0.22, 1, 0.36, 1] as const
 
 type Card = {
-  n: string;
-  title: string;
-  sub: string;
-  bg: string;
-  fg: string;
-  sparkle?: "tl" | "tr";
-};
+  n: string
+  title: string
+  sub: string
+  bg: string
+  fg: string
+  sparkle?: "tl" | "tr"
+}
 
 const CARDS: Card[] = [
   {
@@ -61,7 +61,7 @@ const CARDS: Card[] = [
     bg: imgAthBg,
     fg: imgAthFg,
   },
-];
+]
 
 // Each later card slides up over the one before it during its own window.
 const ENTER: ([number, number] | null)[] = [
@@ -69,7 +69,7 @@ const ENTER: ([number, number] | null)[] = [
   [0.06, 0.31],
   [0.34, 0.59],
   [0.62, 0.87],
-];
+]
 
 function Sparkle({ pos }: { pos: "tl" | "tr" }) {
   return (
@@ -79,16 +79,28 @@ function Sparkle({ pos }: { pos: "tl" | "tr" }) {
       }`}
     >
       <svg viewBox="0 0 35.3771 36.6704" fill="none" className="h-full w-full">
-        <path d={svgPaths.peb644f0} fill="url(#moment_sparkle)" stroke="white" strokeWidth="0.795427" />
+        <path
+          d={svgPaths.peb644f0}
+          fill="url(#moment_sparkle)"
+          stroke="white"
+          strokeWidth="0.795427"
+        />
         <defs>
-          <linearGradient id="moment_sparkle" gradientUnits="userSpaceOnUse" x1="0" x2="35.6662" y1="11.6617" y2="24.1853">
+          <linearGradient
+            id="moment_sparkle"
+            gradientUnits="userSpaceOnUse"
+            x1="0"
+            x2="35.6662"
+            y1="11.6617"
+            y2="24.1853"
+          >
             <stop stopColor="#E91E63" />
             <stop offset="1" stopColor="#9C27B0" />
           </linearGradient>
         </defs>
       </svg>
     </div>
-  );
+  )
 }
 
 function StackCard({
@@ -97,15 +109,22 @@ function StackCard({
   progress,
   enter,
 }: {
-  card: Card;
-  index: number;
-  progress: MotionValue<number>;
-  enter: [number, number] | null;
+  card: Card
+  index: number
+  progress: MotionValue<number>
+  enter: [number, number] | null
 }) {
-  const y = useTransform(progress, enter ?? [0, 1], enter ? ["115vh", "0vh"] : ["0vh", "0vh"]);
+  const y = useTransform(
+    progress,
+    enter ?? [0, 1],
+    enter ? ["115vh", "0vh"] : ["0vh", "0vh"],
+  )
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center" style={{ zIndex: index + 1 }}>
+    <div
+      className="absolute inset-0 flex items-center justify-center"
+      style={{ zIndex: index + 1 }}
+    >
       <motion.div
         className="w-[min(560px,86vw)] will-change-transform bg-white"
         style={{ y: !enter ? 0 : y }}
@@ -138,13 +157,19 @@ function StackCard({
           <div>
             <p
               className="text-[21px] leading-[1.1] tracking-[-0.6px] text-black"
-              style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
+              style={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 500,
+              }}
             >
               {card.title}
             </p>
             <p
               className="mt-2 text-[14px] tracking-[-0.6px] text-[#434343]"
-              style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
+              style={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 500,
+              }}
             >
               {card.sub}
             </p>
@@ -152,7 +177,7 @@ function StackCard({
         </div>
       </motion.div>
     </div>
-  );
+  )
 }
 
 function CurvedArrow({ down = true }: { down?: boolean }) {
@@ -165,26 +190,45 @@ function CurvedArrow({ down = true }: { down?: boolean }) {
       transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
     >
       <path d={svgPaths.p3bf54f80} fill="url(#moment_ah)" />
-      <path d={svgPaths.p2b5e9b00} stroke="url(#moment_al)" strokeLinecap="round" strokeWidth="2.92366" />
+      <path
+        d={svgPaths.p2b5e9b00}
+        stroke="url(#moment_al)"
+        strokeLinecap="round"
+        strokeWidth="2.92366"
+      />
       <defs>
-        <linearGradient id="moment_ah" gradientUnits="userSpaceOnUse" x1="1.14138" x2="19.5851" y1="8.52298" y2="69.0184">
+        <linearGradient
+          id="moment_ah"
+          gradientUnits="userSpaceOnUse"
+          x1="1.14138"
+          x2="19.5851"
+          y1="8.52298"
+          y2="69.0184"
+        >
           <stop stopColor="#E91E63" />
           <stop offset="1" stopColor="#9C27B0" />
         </linearGradient>
-        <linearGradient id="moment_al" gradientUnits="userSpaceOnUse" x1="1.87185" x2="12.6787" y1="17.1867" y2="20.093">
+        <linearGradient
+          id="moment_al"
+          gradientUnits="userSpaceOnUse"
+          x1="1.87185"
+          x2="12.6787"
+          y1="17.1867"
+          y2="20.093"
+        >
           <stop stopColor="#E91E63" />
           <stop offset="1" stopColor="#9C27B0" />
         </linearGradient>
       </defs>
     </motion.svg>
-  );
+  )
 }
 
 type SlideInfo = {
-  n: string;
-  heading: string;
-  body: string;
-};
+  n: string
+  heading: string
+  body: string
+}
 
 const SLIDE_TEXTS: SlideInfo[] = [
   {
@@ -207,36 +251,40 @@ const SLIDE_TEXTS: SlideInfo[] = [
     heading: "Before a big decision...",
     body: "When the stakes feel highest, Solace is there — a steady, judgment-free presence to help you trust yourself again.",
   },
-];
+]
 
 export default function FourthSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null)
+  const reduce = useReducedMotion()
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
-  });
+  })
 
-  const [activeSlide, setActiveSlide] = useState<number | null>(null);
+  const [activeSlide, setActiveSlide] = useState<number | null>(null)
 
   useEffect(() => {
     return scrollYProgress.on("change", (v) => {
-      if (v >= 0.82) setActiveSlide(3);
-      else if (v >= 0.58) setActiveSlide(2);
-      else if (v >= 0.32) setActiveSlide(1);
-      else if (v >= 0.08) setActiveSlide(0);
-      else setActiveSlide(null);
-    });
-  }, [scrollYProgress]);
+      if (v >= 0.82) setActiveSlide(3)
+      else if (v >= 0.58) setActiveSlide(2)
+      else if (v >= 0.32) setActiveSlide(1)
+      else if (v >= 0.08) setActiveSlide(0)
+      else setActiveSlide(null)
+    })
+  }, [scrollYProgress])
 
   // Map the full 0 -> 1 scroll range explicitly to guarantee it never bounces back or extrapolates.
-  const headY = useTransform(scrollYProgress, [0, 0.15, 1], [0, -150, -150]);
-  const headOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [1, 0, 0]);
-  
+  const headY = useTransform(scrollYProgress, [0, 0.15, 1], [0, -150, -150])
+  const headOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [1, 0, 0])
+
   // The CTA fades in right as the final card (card 4) comes into place.
-  const ctaOpacity = useTransform(scrollYProgress, [0, 0.80, 0.86, 1], [0, 0, 1, 1]);
-  const ctaY = useTransform(scrollYProgress, [0, 0.80, 0.86, 1], [22, 22, 0, 0]);
+  const ctaOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.8, 0.86, 1],
+    [0, 0, 1, 1],
+  )
+  const ctaY = useTransform(scrollYProgress, [0, 0.8, 0.86, 1], [22, 22, 0, 0])
 
   return (
     <section ref={sectionRef} className="relative h-[440vh] bg-white">
@@ -256,23 +304,41 @@ export default function FourthSection() {
             >
               <span
                 className="inline-flex rounded-[12px] border border-[#e91e63] px-3 py-[6px] text-[11.1px] font-semibold uppercase backdrop-blur-[4px]"
-                style={{ backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.12), rgba(156,39,176,0.12))" }}
+                style={{
+                  backgroundImage:
+                    "linear-gradient(131deg, rgba(233,30,99,0.12), rgba(156,39,176,0.12))",
+                }}
               >
-                <span className="bg-clip-text text-transparent" style={{ fontFamily: "'Montserrat', sans-serif", backgroundImage: GRAD }}>
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{
+                    fontFamily: "'Montserrat', sans-serif",
+                    backgroundImage: GRAD,
+                  }}
+                >
                   Moments
                 </span>
               </span>
               <h2
                 className="mt-5 text-[clamp(40px,4.4vw,56px)] leading-[1] tracking-[-1.7px] text-black"
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 400,
+                }}
               >
                 Everyday
                 <br />
-                <span className="bg-clip-text text-transparent" style={{ fontWeight: 600, backgroundImage: GRAD }}>
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{ fontWeight: 600, backgroundImage: GRAD }}
+                >
                   Moments.....
                 </span>
               </h2>
-              <div className="mt-4 h-[5px] w-[57px] rounded-full" style={{ background: GRAD }} />
+              <div
+                className="mt-4 h-[5px] w-[57px] rounded-full"
+                style={{ background: GRAD }}
+              />
             </motion.div>
 
             {/* Per-slide animated text — with AnimatePresence so only active slide renders */}
@@ -290,24 +356,37 @@ export default function FourthSection() {
                     <span
                       className="mb-3 inline-flex self-start rounded-full border border-[#e91e63]/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest"
                       style={{
-                        backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.1), rgba(156,39,176,0.1))",
+                        backgroundImage:
+                          "linear-gradient(131deg, rgba(233,30,99,0.1), rgba(156,39,176,0.1))",
                         fontFamily: "'Montserrat', sans-serif",
                       }}
                     >
-                      <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+                      <span
+                        className="bg-clip-text text-transparent"
+                        style={{ backgroundImage: GRAD }}
+                      >
                         {SLIDE_TEXTS[activeSlide].n}
                       </span>
                     </span>
                     <h3
                       className="text-[clamp(28px,3.2vw,40px)] leading-[1.1] tracking-[-1.2px] text-black"
-                      style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 600,
+                      }}
                     >
                       {SLIDE_TEXTS[activeSlide].heading}
                     </h3>
-                    <div className="mt-3 h-[3px] w-[48px] rounded-full" style={{ background: GRAD }} />
+                    <div
+                      className="mt-3 h-[3px] w-[48px] rounded-full"
+                      style={{ background: GRAD }}
+                    />
                     <p
                       className="mt-4 max-w-[360px] text-[16px] leading-[1.65] text-[#555]"
-                      style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 500,
+                      }}
                     >
                       {SLIDE_TEXTS[activeSlide].body}
                     </p>
@@ -325,7 +404,11 @@ export default function FourthSection() {
                 <a
                   href="#"
                   className="inline-flex items-center whitespace-nowrap rounded-[14px] px-8 py-[14px] text-[14px] tracking-[0.28px] text-white shadow-[0px_8px_16px_rgba(233,30,99,0.34)] transition-transform hover:scale-105"
-                  style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, backgroundImage: GRAD }}
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontWeight: 700,
+                    backgroundImage: GRAD,
+                  }}
                 >
                   Become a Founding Member
                 </a>
@@ -351,5 +434,5 @@ export default function FourthSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }

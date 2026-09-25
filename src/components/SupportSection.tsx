@@ -1,26 +1,33 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring, useReducedMotion } from "motion/react";
-import SolaceEmblem from "./SolaceEmblem";
+import { useRef } from "react"
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useReducedMotion,
+} from "motion/react"
+import SolaceEmblem from "./SolaceEmblem"
 
-const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
+const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)"
 
 type MessageGroup = {
-  id: number;
-  userText: string;
-  solaceText: string;
+  id: number
+  userText: string
+  solaceText: string
   // Positions relative to center
-  userPos: { top?: string; left?: string; right?: string; bottom?: string };
-  solacePos: { top?: string; left?: string; right?: string; bottom?: string };
+  userPos: { top?: string left?: string right?: string bottom?: string }
+  solacePos: { top?: string left?: string right?: string bottom?: string }
   // Scroll ranges
-  userRange: [number, number];
-  solaceRange: [number, number];
-};
+  userRange: [number, number]
+  solaceRange: [number, number]
+}
 
 const MESSAGE_GROUPS: MessageGroup[] = [
   {
     id: 1,
     userText: "I'm feeling so down lately...",
-    solaceText: "I'm right here with you. It's okay to feel down. Let's take it one gentle step at a time.",
+    solaceText:
+      "I'm right here with you. It's okay to feel down. Let's take it one gentle step at a time.",
     userPos: { top: "12%", left: "10%" },
     solacePos: { top: "20%", left: "14%" },
     userRange: [0.08, 0.18],
@@ -29,7 +36,8 @@ const MESSAGE_GROUPS: MessageGroup[] = [
   {
     id: 2,
     userText: "Everything feels so overwhelming today.",
-    solaceText: "Take a deep breath. You don't have to figure it all out right now. I'm here to listen.",
+    solaceText:
+      "Take a deep breath. You don't have to figure it all out right now. I'm here to listen.",
     userPos: { top: "25%", right: "10%" },
     solacePos: { top: "34%", right: "12%" },
     userRange: [0.3, 0.4],
@@ -38,7 +46,8 @@ const MESSAGE_GROUPS: MessageGroup[] = [
   {
     id: 3,
     userText: "I just need someone to listen, without judging.",
-    solaceText: "I am always here for you. Share whatever is on your mind—no pressure, no judgment.",
+    solaceText:
+      "I am always here for you. Share whatever is on your mind—no pressure, no judgment.",
     userPos: { bottom: "26%", left: "8%" },
     solacePos: { bottom: "16%", left: "10%" },
     userRange: [0.52, 0.62],
@@ -47,13 +56,14 @@ const MESSAGE_GROUPS: MessageGroup[] = [
   {
     id: 4,
     userText: "I feel like I'm falling behind everyone else.",
-    solaceText: "Your journey is uniquely yours. Be gentle with yourself. You are doing the best you can.",
+    solaceText:
+      "Your journey is uniquely yours. Be gentle with yourself. You are doing the best you can.",
     userPos: { bottom: "14%", right: "8%" },
     solacePos: { bottom: "6%", right: "10%" },
     userRange: [0.74, 0.84],
     solaceRange: [0.84, 0.94],
   },
-];
+]
 
 function MessageBubble({
   text,
@@ -62,20 +72,28 @@ function MessageBubble({
   range,
   smoothProgress,
 }: {
-  text: string;
-  sender: "user" | "solace";
-  pos: React.CSSProperties;
-  range: [number, number];
-  smoothProgress: any;
+  text: string
+  sender: "user" | "solace"
+  pos: React.CSSProperties
+  range: [number, number]
+  smoothProgress: any
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotion()
 
   // Map progress to opacity and scale
-  const opacity = useTransform(smoothProgress, [range[0], range[0] + 0.05, 0.98, 1], [0, 1, 1, 0]);
-  const scale = useTransform(smoothProgress, [range[0], range[0] + 0.05, 0.98, 1], [0.8, 1, 1, 0.8]);
-  const y = useTransform(smoothProgress, [range[0], range[0] + 0.05], [15, 0]);
+  const opacity = useTransform(
+    smoothProgress,
+    [range[0], range[0] + 0.05, 0.98, 1],
+    [0, 1, 1, 0],
+  )
+  const scale = useTransform(
+    smoothProgress,
+    [range[0], range[0] + 0.05, 0.98, 1],
+    [0.8, 1, 1, 0.8],
+  )
+  const y = useTransform(smoothProgress, [range[0], range[0] + 0.05], [15, 0])
 
-  const isUser = sender === "user";
+  const isUser = sender === "user"
 
   return (
     <motion.div
@@ -121,23 +139,25 @@ function MessageBubble({
         </p>
       </div>
     </motion.div>
-  );
+  )
 }
 
 export default function SupportSection() {
-  const containerRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLElement>(null)
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
-  });
+  })
 
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 85, damping: 22 });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 85,
+    damping: 22,
+  })
 
   return (
     <section ref={containerRef} className="relative h-[400vh] bg-white">
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden px-6">
-        
         {/* Floating background blobs for visual depth */}
         <div className="absolute left-[10%] top-[20%] w-[320px] h-[320px] rounded-full blur-3xl bg-pink-300/10 -z-10" />
         <div className="absolute right-[10%] bottom-[20%] w-[320px] h-[320px] rounded-full blur-3xl bg-purple-300/10 -z-10" />
@@ -154,10 +174,14 @@ export default function SupportSection() {
             className="rounded-[12px] border border-[#e91e63] px-4 py-[6px] text-[11px] font-semibold uppercase"
             style={{
               fontFamily: "'Montserrat', sans-serif",
-              backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.12), rgba(156,39,176,0.12))",
+              backgroundImage:
+                "linear-gradient(131deg, rgba(233,30,99,0.12), rgba(156,39,176,0.12))",
             }}
           >
-            <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: GRAD }}
+            >
               Moments
             </span>
           </span>
@@ -202,8 +226,7 @@ export default function SupportSection() {
             />
           </div>
         ))}
-
       </div>
     </section>
-  );
+  )
 }

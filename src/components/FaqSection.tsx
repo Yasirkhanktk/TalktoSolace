@@ -1,14 +1,19 @@
-import { useState, useRef } from "react";
-import { motion, AnimatePresence, useInView, useReducedMotion } from "motion/react";
-import svgPaths from "../imports/2ndSection/svg-49ujxxcd0l";
+import { useState, useRef } from "react"
+import {
+  motion,
+  AnimatePresence,
+  useInView,
+  useReducedMotion,
+} from "motion/react"
+import svgPaths from "../imports/2ndSection/svg-49ujxxcd0l"
 
-const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
-const EASE = [0.22, 1, 0.36, 1] as const;
+const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)"
+const EASE = [0.22, 1, 0.36, 1] as const
 
 type FaqItem = {
-  question: string;
-  answer: string;
-};
+  question: string
+  answer: string
+}
 
 const FAQS: FaqItem[] = [
   {
@@ -46,11 +51,15 @@ const FAQS: FaqItem[] = [
     answer:
       "If you are in immediate crisis or experiencing a medical emergency, please reach out to emergency services or call/text your local crisis helpline (such as 988 in the US and Canada). SOLACE is a supportive companion, not an emergency intervention tool.",
   },
-];
+]
 
 function CurvedArrow({ animate }: { animate: boolean }) {
   return (
-    <svg viewBox="0 0 192.752 28.0938" fill="none" className="h-[24px] w-[165px]">
+    <svg
+      viewBox="0 0 192.752 28.0938"
+      fill="none"
+      className="h-[24px] w-[165px]"
+    >
       <motion.path
         d={svgPaths.p2b5e9b00}
         stroke="url(#faq_arrow_line)"
@@ -65,49 +74,73 @@ function CurvedArrow({ animate }: { animate: boolean }) {
         d={svgPaths.p3bf54f80}
         fill="url(#faq_arrow_head)"
         initial={{ opacity: 0, scale: 0.4 }}
-        animate={animate ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.4 }}
+        animate={
+          animate ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.4 }
+        }
         transition={{ duration: 0.35, delay: 1.1, ease: EASE }}
         style={{ transformOrigin: "10px 14px" }}
       />
       <defs>
-        <linearGradient id="faq_arrow_head" gradientUnits="userSpaceOnUse" x1="1.14138" x2="19.5851" y1="8.52298" y2="69.0184">
+        <linearGradient
+          id="faq_arrow_head"
+          gradientUnits="userSpaceOnUse"
+          x1="1.14138"
+          x2="19.5851"
+          y1="8.52298"
+          y2="69.0184"
+        >
           <stop stopColor="#E91E63" />
           <stop offset="1" stopColor="#9C27B0" />
         </linearGradient>
-        <linearGradient id="faq_arrow_line" gradientUnits="userSpaceOnUse" x1="1.87185" x2="12.6787" y1="17.1867" y2="20.093">
+        <linearGradient
+          id="faq_arrow_line"
+          gradientUnits="userSpaceOnUse"
+          x1="1.87185"
+          x2="12.6787"
+          y1="17.1867"
+          y2="20.093"
+        >
           <stop stopColor="#E91E63" />
           <stop offset="1" stopColor="#9C27B0" />
         </linearGradient>
       </defs>
     </svg>
-  );
+  )
 }
 
 export default function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const sectionRef = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
-  const inView = useInView(sectionRef, { once: true, margin: "-15% 0px" });
+  const [openIndex, setOpenIndex] = useState<number | null>(0)
+  const sectionRef = useRef<HTMLElement>(null)
+  const reduce = useReducedMotion()
+  const inView = useInView(sectionRef, { once: true, margin: "-15% 0px" })
 
   const toggleAccordion = (index: number) => {
-    setOpenIndex((prev) => (prev === index ? null : index));
-  };
+    setOpenIndex((prev) => (prev === index ? null : index))
+  }
 
   return (
-    <section ref={sectionRef} className="relative bg-white py-20 md:py-24 px-6 overflow-hidden">
+    <section
+      ref={sectionRef}
+      id="faq"
+      className="relative bg-white py-20 md:py-24 px-6 overflow-hidden scroll-mt-20"
+    >
       <div className="mx-auto max-w-[760px] flex flex-col items-center">
         {/* Eyebrow Badge */}
         <motion.span
           className="rounded-[12px] border border-[#e91e63] px-3.5 py-[5px] text-[11px] font-semibold uppercase"
           style={{
             fontFamily: "'Montserrat', sans-serif",
-            backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.12), rgba(156,39,176,0.12))",
+            backgroundImage:
+              "linear-gradient(131deg, rgba(233,30,99,0.12), rgba(156,39,176,0.12))",
           }}
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, ease: EASE }}
         >
-          <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+          <span
+            className="bg-clip-text text-transparent"
+            style={{ backgroundImage: GRAD }}
+          >
             FAQs
           </span>
         </motion.span>
@@ -143,17 +176,21 @@ export default function FaqSection() {
           transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
         >
           {FAQS.map((faq, index) => {
-            const isOpen = openIndex === index;
+            const isOpen = openIndex === index
             return (
               <motion.div
                 key={faq.question}
                 className="overflow-hidden rounded-[18px] border transition-all duration-300 backdrop-blur-[6px]"
                 style={{
-                  borderColor: isOpen ? "rgba(233, 30, 99, 0.55)" : "rgba(233, 30, 99, 0.22)",
+                  borderColor: isOpen
+                    ? "rgba(233, 30, 99, 0.55)"
+                    : "rgba(233, 30, 99, 0.22)",
                   backgroundImage: isOpen
                     ? "linear-gradient(168deg, rgba(233, 30, 99, 0.04) 8%, rgba(156, 39, 176, 0.04) 92%)"
                     : "linear-gradient(168deg, rgba(233, 30, 99, 0.015) 8%, rgba(156, 39, 176, 0.015) 92%)",
-                  boxShadow: isOpen ? "0 8px 24px -8px rgba(233,30,99,0.12)" : "none",
+                  boxShadow: isOpen
+                    ? "0 8px 24px -8px rgba(233,30,99,0.12)"
+                    : "none",
                 }}
               >
                 <button
@@ -188,7 +225,9 @@ export default function FaqSection() {
                   {isOpen && (
                     <motion.div
                       key="content"
-                      initial={reduce ? { opacity: 1 } : { height: 0, opacity: 0 }}
+                      initial={
+                        reduce ? { opacity: 1 } : { height: 0, opacity: 0 }
+                      }
                       animate={{ height: "auto", opacity: 1 }}
                       exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
                       transition={{ duration: 0.35, ease: EASE }}
@@ -196,7 +235,10 @@ export default function FaqSection() {
                       <div className="px-5 pb-4 pt-0.5">
                         <p
                           className="text-[13.5px] leading-[1.6] text-[#555]"
-                          style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
+                          style={{
+                            fontFamily: "'Montserrat', sans-serif",
+                            fontWeight: 500,
+                          }}
                         >
                           {faq.answer}
                         </p>
@@ -205,7 +247,7 @@ export default function FaqSection() {
                   )}
                 </AnimatePresence>
               </motion.div>
-            );
+            )
           })}
         </motion.div>
 
@@ -257,5 +299,5 @@ export default function FaqSection() {
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

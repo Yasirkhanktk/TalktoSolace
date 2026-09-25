@@ -1,8 +1,8 @@
-import { useState, useRef } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
-import SolaceEmblem from "./SolaceEmblem";
+import { useState, useRef } from "react"
+import { motion, useScroll, useTransform, useReducedMotion } from "motion/react"
+import SolaceEmblem from "./SolaceEmblem"
 
-const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
+const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)"
 
 /* ── Trial Feature Bullets ── */
 const TRIAL_BULLETS = [
@@ -10,7 +10,7 @@ const TRIAL_BULLETS = [
   { icon: "🌿", text: "Talk through a difficult decision" },
   { icon: "🔮", text: "Process something weighing on your mind" },
   { icon: "✨", text: "Or simply see what the experience feels like" },
-];
+]
 
 /* ── Plans Data ── */
 const PLANS = [
@@ -68,46 +68,49 @@ const PLANS = [
     cta: "Choose Thrive",
     accent: "#e91e63",
   },
-];
+]
 
 export default function PricingSection() {
-  const containerRef = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
-  const [selectedPlan, setSelectedPlan] = useState<string>("thrive");
+  const containerRef = useRef<HTMLElement>(null)
+  const reduce = useReducedMotion()
+  const [selectedPlan, setSelectedPlan] = useState<string>("thrive")
 
   /* ── Scroll-driven transforms — full bidirectional range ── */
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
-  });
+  })
 
   /* Cards panel stays full width — no shrink */
-  const pricingWidth = "100%";
-  const pricingX = "0%";
+  const pricingWidth = "100%"
+  const pricingX = "0%"
 
   /* Trial panel slides in from right starting at 25% scroll */
   const demoOpacity = useTransform(
     scrollYProgress,
     [0.25, 0.5, 0.9, 1],
-    [0, 1, 1, 1]
-  );
-  const demoX = useTransform(
-    scrollYProgress,
-    [0.25, 0.5, 0.9, 1],
-    ["80px", "0px", "0px", "0px"]
-  );
+    [0, 1, 1, 1],
+  )
+  const demoX = useTransform(scrollYProgress, [0.25, 0.5, 0.9, 1], [
+    "80px",
+    "0px",
+    "0px",
+    "0px",
+  ])
   const demoScale = useTransform(
     scrollYProgress,
     [0.25, 0.5, 0.9, 1],
-    [0.9, 1, 1, 1]
-  );
-
+    [0.9, 1, 1, 1],
+  )
 
   return (
-    <section ref={containerRef} className="relative h-[280vh] bg-gradient-to-b from-white via-[#fdfbfe] to-white">
+    <section
+      ref={containerRef}
+      id="pricing"
+      className="relative h-[280vh] bg-gradient-to-b from-white via-[#fdfbfe] to-white"
+    >
       {/* ── Sticky Viewport ── */}
       <div className="sticky top-0 flex h-screen w-full flex-col justify-center items-center overflow-hidden px-6 py-6">
-
         {/* Background Watermark */}
         <div className="pointer-events-none absolute right-[2%] top-[8%] z-0 hidden xl:block opacity-[0.12]">
           <SolaceEmblem size={140} tilt={14} />
@@ -123,26 +126,35 @@ export default function PricingSection() {
         />
 
         <div className="relative z-10 mx-auto flex w-full max-w-[1240px] flex-col items-center">
-
           {/* ── Section Header ── */}
           <div className="text-center">
             <span
               className="rounded-[12px] border border-[#e91e63] px-3.5 py-[5px] text-[11px] font-semibold uppercase tracking-wider"
               style={{
                 fontFamily: "'Montserrat', sans-serif",
-                backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.10), rgba(156,39,176,0.10))",
+                backgroundImage:
+                  "linear-gradient(131deg, rgba(233,30,99,0.10), rgba(156,39,176,0.10))",
               }}
             >
-              <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+              <span
+                className="bg-clip-text text-transparent"
+                style={{ backgroundImage: GRAD }}
+              >
                 Pricing & Free Trial
               </span>
             </span>
             <h2
               className="mt-2.5 text-[clamp(24px,3vw,40px)] leading-[1.1] tracking-[-1px] text-slate-900"
-              style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
+              style={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 700,
+              }}
             >
               Simple Plans.{" "}
-              <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+              <span
+                className="bg-clip-text text-transparent"
+                style={{ backgroundImage: GRAD }}
+              >
                 Start Free.
               </span>
             </h2>
@@ -150,13 +162,13 @@ export default function PricingSection() {
               className="mt-1.5 text-[13px] text-slate-500 max-w-[440px] mx-auto"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Scroll to reveal your 30 free trial minutes — no card, no commitment.
+              Scroll to reveal your 30 free trial minutes — no card, no
+              commitment.
             </p>
           </div>
 
           {/* ── Animated Grid ── */}
           <div className="relative mt-6 flex w-full max-w-[1200px] items-stretch justify-between gap-6 lg:gap-8">
-
             {/* ── LEFT: Pricing Cards ── */}
             <motion.div
               className="z-10 flex h-full flex-col items-center"
@@ -167,7 +179,7 @@ export default function PricingSection() {
             >
               <div className="grid h-full w-full grid-cols-1 gap-4 sm:grid-cols-3">
                 {PLANS.map((plan) => {
-                  const isSelected = selectedPlan === plan.id;
+                  const isSelected = selectedPlan === plan.id
                   return (
                     <div
                       key={plan.id}
@@ -176,8 +188,8 @@ export default function PricingSection() {
                         plan.recommended
                           ? "border-2 border-[#e91e63]/50 bg-gradient-to-b from-pink-50/60 via-white to-white shadow-[0_16px_48px_rgba(233,30,99,0.16)] hover:shadow-[0_22px_56px_rgba(233,30,99,0.24)] hover:scale-[1.02]"
                           : isSelected
-                          ? "border-2 border-purple-300/60 bg-white shadow-[0_10px_30px_rgba(124,58,237,0.1)] scale-[1.01]"
-                          : "border border-slate-200/80 bg-white/95 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:border-slate-300 hover:shadow-[0_10px_28px_rgba(0,0,0,0.07)] hover:scale-[1.01]"
+                            ? "border-2 border-purple-300/60 bg-white shadow-[0_10px_30px_rgba(124,58,237,0.1)] scale-[1.01]"
+                            : "border border-slate-200/80 bg-white/95 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:border-slate-300 hover:shadow-[0_10px_28px_rgba(0,0,0,0.07)] hover:scale-[1.01]"
                       }`}
                     >
                       {/* Recommended glow bg */}
@@ -197,8 +209,9 @@ export default function PricingSection() {
                           <span
                             className="rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-md"
                             style={{
-                              background:
-                                plan.recommended ? GRAD : "linear-gradient(135deg, #7c3aed, #5b21b6)",
+                              background: plan.recommended
+                                ? GRAD
+                                : "linear-gradient(135deg, #7c3aed, #5b21b6)",
                               fontFamily: "'Montserrat', sans-serif",
                             }}
                           >
@@ -276,7 +289,10 @@ export default function PricingSection() {
                         }`}
                         style={
                           plan.recommended
-                            ? { background: GRAD, fontFamily: "'Montserrat', sans-serif" }
+                            ? {
+                                background: GRAD,
+                                fontFamily: "'Montserrat', sans-serif",
+                              }
                             : { fontFamily: "'Montserrat', sans-serif" }
                         }
                       >
@@ -284,7 +300,7 @@ export default function PricingSection() {
                         <span className="text-[13px]">→</span>
                       </button>
                     </div>
-                  );
+                  )
                 })}
               </div>
             </motion.div>
@@ -299,13 +315,13 @@ export default function PricingSection() {
               }}
             >
               {/* Light-themed Trial Card — matches pricing cards */}
-              <div
-                className="relative flex h-full flex-col justify-between overflow-hidden rounded-[22px] border-2 border-[#e91e63]/40 bg-gradient-to-b from-pink-50/60 via-white to-white p-5 shadow-[0_16px_48px_rgba(233,30,99,0.14)]"
-              >
+              <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[22px] border-2 border-[#e91e63]/40 bg-gradient-to-b from-pink-50/60 via-white to-white p-5 shadow-[0_16px_48px_rgba(233,30,99,0.14)]">
                 {/* Subtle top-right glow */}
                 <div
                   className="pointer-events-none absolute -top-8 -right-8 h-32 w-32 rounded-full blur-2xl opacity-20"
-                  style={{ background: "radial-gradient(circle, #e91e63, transparent)" }}
+                  style={{
+                    background: "radial-gradient(circle, #e91e63, transparent)",
+                  }}
                 />
 
                 {/* Top: Badge + Headline */}
@@ -337,7 +353,8 @@ export default function PricingSection() {
                     className="mt-1 text-[11.5px] font-medium text-pink-600/80"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >
-                    Every new Solace account includes this — use them however you&apos;d like.
+                    Every new Solace account includes this — use them however
+                    you&apos;d like.
                   </p>
 
                   <div className="my-3.5 h-[1px] w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
@@ -345,11 +362,15 @@ export default function PricingSection() {
                   {/* Bullets */}
                   <ul className="flex flex-col gap-2">
                     {TRIAL_BULLETS.map((b) => (
-                      <li key={b.text} className="flex items-center gap-2.5 text-[12px] font-medium text-slate-700">
+                      <li
+                        key={b.text}
+                        className="flex items-center gap-2.5 text-[12px] font-medium text-slate-700"
+                      >
                         <span
                           className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[13px]"
                           style={{
-                            background: "linear-gradient(135deg, rgba(233,30,99,0.10), rgba(156,39,176,0.08))",
+                            background:
+                              "linear-gradient(135deg, rgba(233,30,99,0.10), rgba(156,39,176,0.08))",
                             border: "1px solid rgba(233,30,99,0.18)",
                           }}
                         >
@@ -366,7 +387,10 @@ export default function PricingSection() {
                   <button
                     type="button"
                     className="flex w-full items-center justify-center gap-2 rounded-full py-2.5 text-[13px] font-bold text-white shadow-[0_6px_20px_rgba(233,30,99,0.32)] transition-all hover:scale-[1.02] hover:shadow-[0_10px_28px_rgba(233,30,99,0.42)]"
-                    style={{ background: GRAD, fontFamily: "'Montserrat', sans-serif" }}
+                    style={{
+                      background: GRAD,
+                      fontFamily: "'Montserrat', sans-serif",
+                    }}
                   >
                     Start With 30 Free Minutes
                     <span className="text-[14px]">→</span>
@@ -381,10 +405,9 @@ export default function PricingSection() {
                 </div>
               </div>
             </motion.div>
-
           </div>
         </div>
       </div>
     </section>
-  );
+  )
 }

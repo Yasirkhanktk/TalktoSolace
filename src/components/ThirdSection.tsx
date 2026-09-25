@@ -1,31 +1,31 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
-import imgHome from "../imports/Hero/c5350ce48a92f7054918aeb788bf135d4754965c.png";
-import imgTalkItOut from "../imports/3NdSection/30e513f7515e0de820633689d8febfe6dea7e482.png";
-import imgWellness from "../imports/MeetSolace-1/efecd8b2ced1ea351533f05753cd6733910d8c0f.png";
-import imgNature from "../imports/3NdSection/452655ecec9eeba9e3ade8328b7d7d1b0083fa45.png";
-import imgRest from "../imports/Hero/1fabb6006b2b2026a2aa6f647b1aff16b1c50164.png";
-import SolaceEmblem from "./SolaceEmblem";
+import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { motion, useReducedMotion } from "motion/react"
+import imgHome from "../imports/Hero/c5350ce48a92f7054918aeb788bf135d4754965c.png"
+import imgTalkItOut from "../imports/3NdSection/30e513f7515e0de820633689d8febfe6dea7e482.png"
+import imgWellness from "../imports/MeetSolace-1/efecd8b2ced1ea351533f05753cd6733910d8c0f.png"
+import imgNature from "../imports/3NdSection/452655ecec9eeba9e3ade8328b7d7d1b0083fa45.png"
+import imgRest from "../imports/Hero/1fabb6006b2b2026a2aa6f647b1aff16b1c50164.png"
+import SolaceEmblem from "./SolaceEmblem"
 
-const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
-const EASE = [0.22, 1, 0.36, 1] as const;
+const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)"
+const EASE = [0.22, 1, 0.36, 1] as const
 
 type TabItem = {
-  text: string;
-  tag: string;
-};
+  text: string
+  tag: string
+}
 
 type Feature = {
-  key: string;
-  num: string;
-  label: string;
-  shortLabel: string;
-  screen: string;
-  leftUp: TabItem[];
-  leftDown: TabItem[];
-  rightUp: TabItem[];
-  rightDown: TabItem[];
-};
+  key: string
+  num: string
+  label: string
+  shortLabel: string
+  screen: string
+  leftUp: TabItem[]
+  leftDown: TabItem[]
+  rightUp: TabItem[]
+  rightDown: TabItem[]
+}
 
 const FEATURES: Feature[] = [
   {
@@ -143,7 +143,7 @@ const FEATURES: Feature[] = [
       { text: "Build a restful nightly routine", tag: "Ritual" },
     ],
   },
-];
+]
 
 // Coordinates of the 5 points along the 180° semi-circular / D-shaped dome arc:
 // Angles: 180°, 135°, 90°, 45°, 0°
@@ -153,76 +153,151 @@ const ARC_POINTS = [
   { xPercent: 50, yPercent: 16, angle: 90, rotAngle: 270 },
   { xPercent: 76, yPercent: 32, angle: 45, rotAngle: 315 },
   { xPercent: 92, yPercent: 78, angle: 0, rotAngle: 360 },
-];
+]
 
-/* ── Bubble gradient — lighter/brighter, matches section 2 button palette ── */
-const BUBBLE_GRAD = "linear-gradient(135deg, #a832a8 0%, #d42070 55%, #e8366f 100%)";
+/* ── Bubble gradient — light pastel gradient matching the website's signature #e91e63 to #9c27b0 palette ── */
+const BUBBLE_GRAD =
+  "linear-gradient(135deg, #ffffff 0%, #fde7f1 38%, #f5e8fa 75%, #ece3f9 100%)"
 
-/* Sizes: alternating large/medium for visual variety */
-const BUBBLE_SIZES = [158, 124, 144, 114];
+/* Sizes: bigger proportional bubble sizes with ample clearance */
+const BUBBLE_SIZES = [164, 138, 152, 132]
 
 /* Float offsets per index — gentle unique y rhythm, no x/rotate to avoid erratic motion */
-const FLOAT_Y = [-10, 8, -7, 10];
-const FLOAT_DUR = [4.2, 5.0, 4.6, 5.4];
+const FLOAT_Y = [-10, 8, -7, 10]
+const FLOAT_DUR = [4.2, 5.0, 4.6, 5.4]
 
-function BubbleCard({
+/* ── Static slot coordinate data — at module scope so they are never re-created per render ── */
+type SlotCoord = { top: number; pos: number; index: number; isUp: boolean; gi: number }
+
+const LEFT_SLOT_COORDS: SlotCoord[][] = [
+  // Step 0 — Journal
+  [
+    { top: 10, pos: 10, index: 0, isUp: true, gi: 0 },
+    { top: 40, pos: 245, index: 1, isUp: true, gi: 1 },
+    { top: 250, pos: 235, index: 2, isUp: false, gi: 0 },
+    { top: 330, pos: 16, index: 3, isUp: false, gi: 1 },
+  ],
+  // Step 1 — Talk
+  [
+    { top: 42, pos: 12, index: 0, isUp: true, gi: 0 },
+    { top: 10, pos: 240, index: 1, isUp: true, gi: 1 },
+    { top: 260, pos: 15, index: 2, isUp: false, gi: 0 },
+    { top: 315, pos: 250, index: 3, isUp: false, gi: 1 },
+  ],
+  // Step 2 — Wellness
+  [
+    { top: 10, pos: 20, index: 0, isUp: true, gi: 0 },
+    { top: 65, pos: 245, index: 1, isUp: true, gi: 1 },
+    { top: 255, pos: 235, index: 2, isUp: false, gi: 0 },
+    { top: 335, pos: 10, index: 3, isUp: false, gi: 1 },
+  ],
+  // Step 3 — Insights
+  [
+    { top: 60, pos: 240, index: 0, isUp: true, gi: 0 },
+    { top: 10, pos: 12, index: 1, isUp: true, gi: 1 },
+    { top: 250, pos: 10, index: 2, isUp: false, gi: 0 },
+    { top: 325, pos: 240, index: 3, isUp: false, gi: 1 },
+  ],
+  // Step 4 — Rest
+  [
+    { top: 18, pos: 12, index: 0, isUp: true, gi: 0 },
+    { top: 50, pos: 245, index: 1, isUp: true, gi: 1 },
+    { top: 255, pos: 235, index: 2, isUp: false, gi: 0 },
+    { top: 330, pos: 20, index: 3, isUp: false, gi: 1 },
+  ],
+]
+
+const RIGHT_SLOT_COORDS: SlotCoord[][] = [
+  // Step 0 — Journal
+  [
+    { top: 10, pos: 10, index: 0, isUp: true, gi: 0 },
+    { top: 40, pos: 245, index: 1, isUp: true, gi: 1 },
+    { top: 250, pos: 235, index: 2, isUp: false, gi: 0 },
+    { top: 330, pos: 16, index: 3, isUp: false, gi: 1 },
+  ],
+  // Step 1 — Talk
+  [
+    { top: 42, pos: 12, index: 0, isUp: true, gi: 0 },
+    { top: 10, pos: 240, index: 1, isUp: true, gi: 1 },
+    { top: 260, pos: 15, index: 2, isUp: false, gi: 0 },
+    { top: 315, pos: 250, index: 3, isUp: false, gi: 1 },
+  ],
+  // Step 2 — Wellness
+  [
+    { top: 10, pos: 20, index: 0, isUp: true, gi: 0 },
+    { top: 65, pos: 245, index: 1, isUp: true, gi: 1 },
+    { top: 255, pos: 235, index: 2, isUp: false, gi: 0 },
+    { top: 335, pos: 10, index: 3, isUp: false, gi: 1 },
+  ],
+  // Step 3 — Insights
+  [
+    { top: 60, pos: 240, index: 0, isUp: true, gi: 0 },
+    { top: 10, pos: 12, index: 1, isUp: true, gi: 1 },
+    { top: 250, pos: 10, index: 2, isUp: false, gi: 0 },
+    { top: 325, pos: 240, index: 3, isUp: false, gi: 1 },
+  ],
+  // Step 4 — Rest
+  [
+    { top: 18, pos: 12, index: 0, isUp: true, gi: 0 },
+    { top: 50, pos: 245, index: 1, isUp: true, gi: 1 },
+    { top: 255, pos: 235, index: 2, isUp: false, gi: 0 },
+    { top: 330, pos: 20, index: 3, isUp: false, gi: 1 },
+  ],
+]
+
+const BubbleCard = memo(function BubbleCard({
   item,
   side,
   index,
   isActive = false,
 }: {
-  item: TabItem;
-  side: "left" | "right";
-  index: number;
-  isActive?: boolean;
+  item: TabItem
+  side: "left" | "right"
+  index: number
+  isActive?: boolean
 }) {
-  const reduce = useReducedMotion();
-  const shouldAnimate = isActive && !reduce;
-  const size = BUBBLE_SIZES[index] ?? 114;
-  const floatY = FLOAT_Y[index] ?? -8;
-  const floatDur = FLOAT_DUR[index] ?? 4.8;
+  const reduce = useReducedMotion()
+  const shouldAnimate = isActive && !reduce
+  const size = BUBBLE_SIZES[index] ?? 136
+  const floatY = FLOAT_Y[index] ?? -8
+  const floatDur = FLOAT_DUR[index] ?? 4.8
 
   return (
     <motion.div
       className="relative select-none"
-      style={{ willChange: "transform" }}
-      /* Gentle pure-Y float — no x or rotate so it stays smooth */
+      /* GPU layer only when actively animating — avoids 160 concurrent composite layers */
+      style={isActive ? { willChange: "transform" } : undefined}
       animate={shouldAnimate ? { y: [0, floatY, 0] } : { y: 0 }}
       transition={
         shouldAnimate
-          ? { duration: floatDur, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" }
-          : { duration: 0.4, ease: "easeOut" }
+          ? {
+              duration: floatDur,
+              repeat: Infinity,
+              ease: "easeInOut",
+              repeatType: "mirror",
+            }
+          : { duration: 0.3, ease: "easeOut" }
       }
-      whileHover={{
-        scale: 1.07,
-        transition: { type: "spring", stiffness: 260, damping: 18 },
-      }}
+      whileHover={
+        isActive
+          ? {
+              scale: 1.07,
+              transition: { type: "spring", stiffness: 260, damping: 18 },
+            }
+          : undefined
+      }
     >
-      {/* ── Soft drop shadow glow behind sphere ── */}
+      {/* ── Main Gradient Sphere — glow via box-shadow only; no separate blur-2xl composite layer ── */}
       <div
-        className="pointer-events-none absolute rounded-full blur-2xl"
-        style={{
-          width: size,
-          height: size,
-          top: 6,
-          left: 0,
-          background: BUBBLE_GRAD,
-          opacity: 0.32,
-          transform: "scale(0.88)",
-        }}
-      />
-
-      {/* ── Main Gradient Sphere ── */}
-      <div
-        className="relative flex flex-col items-center justify-center text-center"
+        className="relative flex flex-col items-center justify-center text-center p-2"
         style={{
           width: size,
           height: size,
           borderRadius: "50%",
           background: BUBBLE_GRAD,
           boxShadow:
-            "0 10px 36px rgba(233,49,122,0.40), 0 3px 10px rgba(201,75,187,0.22), inset 0 -6px 16px rgba(150,20,80,0.22)",
-          border: "2px solid rgba(240,85,122,0.45)",
+            "0 14px 36px rgba(233,30,99,0.14), 0 6px 16px rgba(156,39,176,0.10), inset 0 2px 5px rgba(255,255,255,0.95), inset 0 -4px 10px rgba(233,30,99,0.06)",
+          border: "1.5px solid rgba(233,30,99,0.22)",
         }}
       >
         {/* Gloss sheen — top-left ellipse */}
@@ -234,18 +309,18 @@ function BubbleCard({
             top: "7%",
             left: "10%",
             background:
-              "radial-gradient(ellipse at 38% 28%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0) 68%)",
+              "radial-gradient(ellipse at 38% 28%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 68%)",
           }}
         />
 
-        {/* Tag pill */}
+        {/* Tag pill — solid background, no backdrop-filter composite layer */}
         <span
-          className="relative z-10 mb-1.5 inline-block rounded-full bg-white/18 px-2.5 py-[3px] text-[8.5px] font-bold uppercase tracking-widest text-white/85"
+          className="relative z-10 mb-1.5 inline-block rounded-full px-2.5 py-[3px] text-[9px] font-bold uppercase tracking-widest text-[#e91e63]"
           style={{
             fontFamily: "'Inter', sans-serif",
-            background: "rgba(255,255,255,0.15)",
-            backdropFilter: "blur(6px)",
-            border: "1px solid rgba(255,255,255,0.2)",
+            background: "rgba(255,255,255,0.94)",
+            border: "1px solid rgba(233,30,99,0.2)",
+            boxShadow: "0 1px 4px rgba(233,30,99,0.08)",
           }}
         >
           {item.tag}
@@ -253,219 +328,283 @@ function BubbleCard({
 
         {/* Feature text */}
         <span
-          className="relative z-10 px-4 text-[11.5px] font-semibold leading-[1.35] text-white drop-shadow-sm"
+          className="relative z-10 px-3 text-[12.5px] font-semibold leading-[1.35] text-slate-800"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
           {item.text}
         </span>
       </div>
 
-      {/* ── Satellite bubbles — fixed pixel offsets, gentle independent float ── */}
-      {/* Sat 1: top corner, larger */}
-      <motion.div
-        className="pointer-events-none absolute rounded-full"
-        style={{
-          width: Math.round(size * 0.26),
-          height: Math.round(size * 0.26),
-          top: -Math.round(size * 0.08),
-          [side === "left" ? "right" : "left"]: -Math.round(size * 0.06),
-          background: BUBBLE_GRAD,
-          boxShadow: "0 4px 14px rgba(156,39,176,0.32)",
-        }}
-        animate={shouldAnimate ? { y: [0, -6, 0] } : { y: 0 }}
-        transition={shouldAnimate ? { duration: floatDur * 0.78, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" } : { duration: 0 }}
-      >
-        <div
-          className="absolute rounded-full"
-          style={{
-            width: "52%", height: "38%", top: "10%", left: "14%",
-            background: "radial-gradient(ellipse at center, rgba(255,255,255,0.48) 0%, transparent 70%)",
-          }}
-        />
-      </motion.div>
+      {/* ── Satellite bubbles — only rendered when card is the active one ── */}
+      {isActive && (
+        <>
+          {/* Sat 1: top corner, larger */}
+          <motion.div
+            className="pointer-events-none absolute rounded-full"
+            style={{
+              width: Math.round(size * 0.2),
+              height: Math.round(size * 0.2),
+              top: -Math.round(size * 0.04),
+              [side === "left" ? "right" : "left"]: -Math.round(size * 0.02),
+              background: BUBBLE_GRAD,
+              border: "1px solid rgba(233,30,99,0.2)",
+              boxShadow:
+                "0 4px 12px rgba(233,30,99,0.12), inset 0 1px 2px rgba(255,255,255,0.9)",
+            }}
+            animate={shouldAnimate ? { y: [0, -5, 0] } : { y: 0 }}
+            transition={
+              shouldAnimate
+                ? {
+                    duration: floatDur * 0.78,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    repeatType: "mirror",
+                  }
+                : { duration: 0 }
+            }
+          >
+            <div
+              className="absolute rounded-full"
+              style={{
+                width: "52%",
+                height: "38%",
+                top: "10%",
+                left: "14%",
+                background:
+                  "radial-gradient(ellipse at center, rgba(255,255,255,0.8) 0%, transparent 70%)",
+              }}
+            />
+          </motion.div>
 
-      {/* Sat 2: bottom, small dot */}
-      <motion.div
-        className="pointer-events-none absolute rounded-full"
-        style={{
-          width: Math.round(size * 0.16),
-          height: Math.round(size * 0.16),
-          bottom: -Math.round(size * 0.04),
-          [side === "left" ? "left" : "right"]: Math.round(size * 0.12),
-          background: BUBBLE_GRAD,
-          boxShadow: "0 2px 8px rgba(233,30,99,0.28)",
-          opacity: 0.82,
-        }}
-        animate={shouldAnimate ? { y: [0, 5, 0] } : { y: 0 }}
-        transition={shouldAnimate ? { duration: floatDur * 0.92, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" } : { duration: 0 }}
-      />
+          {/* Sat 2: bottom dot */}
+          <motion.div
+            className="pointer-events-none absolute rounded-full"
+            style={{
+              width: Math.round(size * 0.13),
+              height: Math.round(size * 0.13),
+              bottom: -Math.round(size * 0.02),
+              [side === "left" ? "left" : "right"]: Math.round(size * 0.1),
+              background: BUBBLE_GRAD,
+              border: "1px solid rgba(156,39,176,0.18)",
+              boxShadow:
+                "0 2px 8px rgba(156,39,176,0.10), inset 0 1px 2px rgba(255,255,255,0.9)",
+              opacity: 0.9,
+            }}
+            animate={shouldAnimate ? { y: [0, 4, 0] } : { y: 0 }}
+            transition={
+              shouldAnimate
+                ? {
+                    duration: floatDur * 0.92,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    repeatType: "mirror",
+                  }
+                : { duration: 0 }
+            }
+          />
 
-      {/* Sat 3: side tiny pearl */}
-      <motion.div
-        className="pointer-events-none absolute rounded-full"
-        style={{
-          width: Math.round(size * 0.10),
-          height: Math.round(size * 0.10),
-          top: "42%",
-          [side === "left" ? "left" : "right"]: -Math.round(size * 0.1),
-          background: BUBBLE_GRAD,
-          opacity: 0.65,
-        }}
-        animate={shouldAnimate ? { y: [0, -4, 0] } : { y: 0 }}
-        transition={shouldAnimate ? { duration: floatDur * 1.1, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" } : { duration: 0 }}
-      />
+          {/* Sat 3: side pearl */}
+          <motion.div
+            className="pointer-events-none absolute rounded-full"
+            style={{
+              width: Math.round(size * 0.09),
+              height: Math.round(size * 0.09),
+              top: "44%",
+              [side === "left" ? "left" : "right"]: -Math.round(size * 0.03),
+              background: BUBBLE_GRAD,
+              border: "1px solid rgba(233,30,99,0.18)",
+              boxShadow: "0 2px 6px rgba(233,30,99,0.08)",
+              opacity: 0.8,
+            }}
+            animate={shouldAnimate ? { y: [0, -3, 0] } : { y: 0 }}
+            transition={
+              shouldAnimate
+                ? {
+                    duration: floatDur * 1.1,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    repeatType: "mirror",
+                  }
+                : { duration: 0 }
+            }
+          />
+        </>
+      )}
     </motion.div>
-  );
-}
+  )
+})
 
 export default function ThirdSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null)
+  const reduce = useReducedMotion()
 
-  const [activeIdx, setActiveIdx] = useState(0);
-  const currentStepRef = useRef(0);
-  const isLockedRef = useRef(false);
-  const quietTimerRef = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0)
+  const currentStepRef = useRef(0)
+  const isLockedRef = useRef(false)
+  const quietTimerRef = useRef<number | null>(null)
+  const touchStartY = useRef<number | null>(null)
+  /* ── rAF gate: coalesces burst wheel events into one step per frame ── */
+  const wheelRafRef = useRef<number | null>(null)
+  const pendingWheelDir = useRef<number | null>(null)
 
-  const TOTAL_STEPS = 5; // 5 models: 0-4
-  const LOCK_DURATION = 400; // ms — snappy transition without freezing scroll
+  const TOTAL_STEPS = 5 // 5 models: 0-4
+  /* Longer lock so trackpad inertia fully settles before the next step can fire */
+  const LOCK_DURATION = 900 // ms
 
   /* ── Compute the exact scroll Y for a given step ── */
   const getTargetScrollY = useCallback((step: number) => {
-    const el = sectionRef.current;
-    if (!el) return window.scrollY;
-    const rect = el.getBoundingClientRect();
-    const sectionTop = window.scrollY + rect.top;
-    const totalScrollable = el.offsetHeight - window.innerHeight;
-    return sectionTop + (step / (TOTAL_STEPS - 1)) * totalScrollable;
-  }, []);
+    const el = sectionRef.current
+    if (!el) return window.scrollY
+    const rect = el.getBoundingClientRect()
+    const sectionTop = window.scrollY + rect.top
+    const totalScrollable = el.offsetHeight - window.innerHeight
+    return sectionTop + (step / (TOTAL_STEPS - 1)) * totalScrollable
+  }, [])
 
   /* ── Check if viewport is pinned inside Section 3 sticky area ── */
   const getIsPinned = useCallback(() => {
-    const el = sectionRef.current;
-    if (!el) return false;
-    const rect = el.getBoundingClientRect();
-    return rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
-  }, []);
+    const el = sectionRef.current
+    if (!el) return false
+    const rect = el.getBoundingClientRect()
+    return rect.top <= 2 && rect.bottom >= window.innerHeight - 2
+  }, [])
 
   /* ── Lock helper: sets lock and starts a FIXED timer (never reset) ── */
-  const lockStep = useCallback((step: number) => {
-    currentStepRef.current = step;
-    setActiveIdx(step);
-    isLockedRef.current = true;
-    const targetY = getTargetScrollY(step);
-    window.scrollTo({ top: targetY, behavior: "smooth" });
+  const lockStep = useCallback(
+    (step: number) => {
+      currentStepRef.current = step
+      setActiveIdx(step)
+      isLockedRef.current = true
+      const targetY = getTargetScrollY(step)
+      window.scrollTo({ top: targetY, behavior: "smooth" })
 
-    // Fixed timer — NOT reset by inertia so user is never stuck
-    if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
-    quietTimerRef.current = window.setTimeout(() => {
-      isLockedRef.current = false;
-    }, LOCK_DURATION);
-  }, [getTargetScrollY]);
+      // Fixed timer — NOT reset by inertia so user is never stuck
+      if (quietTimerRef.current) clearTimeout(quietTimerRef.current)
+      quietTimerRef.current = window.setTimeout(() => {
+        isLockedRef.current = false
+      }, LOCK_DURATION)
+    },
+    [getTargetScrollY],
+  )
 
   /* ── Advance to a specific step (used by arc buttons) ── */
   const handleSelectStep = useCallback(
     (idx: number) => {
-      lockStep(Math.max(0, Math.min(TOTAL_STEPS - 1, idx)));
+      lockStep(Math.max(0, Math.min(TOTAL_STEPS - 1, idx)))
     },
-    [lockStep]
-  );
+    [lockStep],
+  )
 
   useEffect(() => {
-    /* ── WHEEL HANDLER ── */
+    /* ── WHEEL HANDLER — rAF-gated so burst events collapse to one step per frame ── */
     const handleWheel = (e: WheelEvent) => {
-      if (!getIsPinned()) return;
+      if (!getIsPinned()) return
 
-      const delta = e.deltaY;
-      if (Math.abs(delta) < 4) return;
+      const delta = e.deltaY
+      /* Require a deliberate scroll — ignores tiny inertia trickle events */
+      if (Math.abs(delta) < 14) return
 
-      const dir = delta > 0 ? 1 : -1;
-      const current = currentStepRef.current;
+      const dir = delta > 0 ? 1 : -1
+      const current = currentStepRef.current
 
       // At boundaries, release to let native scroll continue
-      if (dir === 1 && current >= TOTAL_STEPS - 1) return;
-      if (dir === -1 && current <= 0) return;
+      if (dir === 1 && current >= TOTAL_STEPS - 1) return
+      if (dir === -1 && current <= 0) return
 
       // Block native scroll
-      e.preventDefault();
+      e.preventDefault()
 
-      // If locked, just absorb — do NOT reset timer
-      if (isLockedRef.current) return;
+      // If locked, absorb — do NOT reset timer
+      if (isLockedRef.current) return
 
-      // Advance exactly ONE step
-      lockStep(Math.max(0, Math.min(TOTAL_STEPS - 1, current + dir)));
-    };
+      // Latch the direction; only the first unprocessed direction per rAF wins
+      pendingWheelDir.current = pendingWheelDir.current ?? dir
+
+      // Schedule exactly one step advance per animation frame
+      if (wheelRafRef.current !== null) return
+      wheelRafRef.current = requestAnimationFrame(() => {
+        wheelRafRef.current = null
+        const d = pendingWheelDir.current
+        pendingWheelDir.current = null
+        if (d === null || isLockedRef.current) return
+        lockStep(Math.max(0, Math.min(TOTAL_STEPS - 1, currentStepRef.current + d)))
+      })
+    }
 
     /* ── TOUCH HANDLERS ── */
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length === 1) {
-        touchStartY.current = e.touches[0].clientY;
+        touchStartY.current = e.touches[0].clientY
       }
-    };
+    }
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (touchStartY.current === null) return;
-      if (!getIsPinned()) return;
+      if (touchStartY.current === null) return
+      if (!getIsPinned()) return
 
-      const currentY = e.touches[0].clientY;
-      const deltaY = touchStartY.current - currentY;
+      const currentY = e.touches[0].clientY
+      const deltaY = touchStartY.current - currentY
 
-      if (Math.abs(deltaY) < 25) return;
+      if (Math.abs(deltaY) < 25) return
 
-      const dir = deltaY > 0 ? 1 : -1;
-      const current = currentStepRef.current;
+      const dir = deltaY > 0 ? 1 : -1
+      const current = currentStepRef.current
 
-      if (dir === 1 && current >= TOTAL_STEPS - 1) return;
-      if (dir === -1 && current <= 0) return;
+      if (dir === 1 && current >= TOTAL_STEPS - 1) return
+      if (dir === -1 && current <= 0) return
 
-      e.preventDefault();
+      e.preventDefault()
 
-      if (isLockedRef.current) return;
+      if (isLockedRef.current) return
 
-      touchStartY.current = currentY;
-      lockStep(Math.max(0, Math.min(TOTAL_STEPS - 1, current + dir)));
-    };
+      touchStartY.current = currentY
+      lockStep(Math.max(0, Math.min(TOTAL_STEPS - 1, current + dir)))
+    }
 
     const handleTouchEnd = () => {
-      touchStartY.current = null;
-    };
+      touchStartY.current = null
+    }
 
     /* ── KEYBOARD HANDLER ── */
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!getIsPinned()) return;
+      if (!getIsPinned()) return
 
       if (e.key === "ArrowDown" || e.key === "PageDown") {
         if (currentStepRef.current < TOTAL_STEPS - 1) {
-          e.preventDefault();
-          handleSelectStep(currentStepRef.current + 1);
+          e.preventDefault()
+          handleSelectStep(currentStepRef.current + 1)
         }
       } else if (e.key === "ArrowUp" || e.key === "PageUp") {
         if (currentStepRef.current > 0) {
-          e.preventDefault();
-          handleSelectStep(currentStepRef.current - 1);
+          e.preventDefault()
+          handleSelectStep(currentStepRef.current - 1)
         }
       }
-    };
+    }
 
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("touchstart", handleTouchStart, { passive: true });
-    window.addEventListener("touchmove", handleTouchMove, { passive: false });
-    window.addEventListener("touchend", handleTouchEnd, { passive: true });
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("wheel", handleWheel, { passive: false })
+    window.addEventListener("touchstart", handleTouchStart, { passive: true })
+    window.addEventListener("touchmove", handleTouchMove, { passive: false })
+    window.addEventListener("touchend", handleTouchEnd, { passive: true })
+    window.addEventListener("keydown", handleKeyDown)
 
     return () => {
-      window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("touchend", handleTouchEnd);
-      window.removeEventListener("keydown", handleKeyDown);
-      if (quietTimerRef.current) clearTimeout(quietTimerRef.current);
-    };
-  }, [getIsPinned, lockStep, handleSelectStep]);
+      window.removeEventListener("wheel", handleWheel)
+      window.removeEventListener("touchstart", handleTouchStart)
+      window.removeEventListener("touchmove", handleTouchMove)
+      window.removeEventListener("touchend", handleTouchEnd)
+      window.removeEventListener("keydown", handleKeyDown)
+      if (quietTimerRef.current) clearTimeout(quietTimerRef.current)
+      if (wheelRafRef.current !== null) cancelAnimationFrame(wheelRafRef.current)
+    }
+  }, [getIsPinned, lockStep, handleSelectStep])
 
   return (
-    <section ref={sectionRef} className="relative h-[650vh] bg-white">
+    <section
+      ref={sectionRef}
+      id="features"
+      className="relative h-[650vh] bg-white"
+    >
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-6 py-6">
         {/* Background Solace Emblem */}
         <div className="pointer-events-none absolute left-[3%] top-[10%] z-0 hidden opacity-60 xl:block">
@@ -477,10 +616,14 @@ export default function ThirdSection() {
           className="rounded-[12px] border border-[#e91e63] px-4 py-[5px] text-[11px] font-semibold uppercase"
           style={{
             fontFamily: "'Montserrat', sans-serif",
-            backgroundImage: "linear-gradient(131deg, rgba(233,30,99,0.12), rgba(156,39,176,0.12))",
+            backgroundImage:
+              "linear-gradient(131deg, rgba(233,30,99,0.12), rgba(156,39,176,0.12))",
           }}
         >
-          <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+          <span
+            className="bg-clip-text text-transparent"
+            style={{ backgroundImage: GRAD }}
+          >
             Features
           </span>
         </span>
@@ -490,11 +633,17 @@ export default function ThirdSection() {
         >
           Highlighted
           <br />
-          <span className="bg-clip-text text-transparent" style={{ backgroundImage: GRAD }}>
+          <span
+            className="bg-clip-text text-transparent"
+            style={{ backgroundImage: GRAD }}
+          >
             Features
           </span>
         </h2>
-        <div className="mt-1.5 h-[4px] w-[52px] rounded-full" style={{ background: GRAD }} />
+        <div
+          className="mt-1.5 h-[4px] w-[52px] rounded-full"
+          style={{ background: GRAD }}
+        />
 
         {/* ───── D-Shaped 180-Degree Arc Controller with 5 Milestone Points ───── */}
         <div className="relative mt-12 mb-3 h-[130px] w-[min(620px,94vw)]">
@@ -503,22 +652,58 @@ export default function ThirdSection() {
             {/* Halo */}
             <motion.div
               className="absolute left-1/2 top-1/2 h-[80px] w-[80px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-xl"
-              style={{ background: "radial-gradient(circle, rgba(233,30,99,0.35), rgba(156,39,176,0) 70%)" }}
-              animate={reduce ? undefined : { scale: [1, 1.15, 1], opacity: [0.6, 0.9, 0.6] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(233,30,99,0.35), rgba(156,39,176,0) 70%)",
+              }}
+              animate={
+                reduce
+                  ? undefined
+                  : { scale: [1, 1.15, 1], opacity: [0.6, 0.9, 0.6] }
+              }
+              transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             />
 
             {/* Rotating Pointer Arrow Indicator */}
             <motion.div
               className="absolute left-1/2 top-1/2 h-[92px] w-[92px] -translate-x-1/2 -translate-y-1/2"
               animate={{ rotate: reduce ? 0 : ARC_POINTS[activeIdx].rotAngle }}
-              transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 65, damping: 14 }}
+              transition={
+                reduce
+                  ? { duration: 0 }
+                  : { type: "spring", stiffness: 65, damping: 14 }
+              }
             >
-              <svg className="absolute right-0 top-1/2 h-[34px] w-[17px] -translate-y-1/2" viewBox="0 0 22 45" fill="none">
-                <path d="M3 5 Q18 22.5 3 40" stroke="url(#arcStrokeGrad2)" strokeWidth="3" strokeLinecap="round" />
-                <path d="M18 22.5 L9 16 M18 22.5 L9 29" stroke="url(#arcStrokeGrad2)" strokeWidth="3" strokeLinecap="round" />
+              <svg
+                className="absolute right-0 top-1/2 h-[34px] w-[17px] -translate-y-1/2"
+                viewBox="0 0 22 45"
+                fill="none"
+              >
+                <path
+                  d="M3 5 Q18 22.5 3 40"
+                  stroke="url(#arcStrokeGrad2)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M18 22.5 L9 16 M18 22.5 L9 29"
+                  stroke="url(#arcStrokeGrad2)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
                 <defs>
-                  <linearGradient id="arcStrokeGrad2" x1="0" y1="0" x2="22" y2="45" gradientUnits="userSpaceOnUse">
+                  <linearGradient
+                    id="arcStrokeGrad2"
+                    x1="0"
+                    y1="0"
+                    x2="22"
+                    y2="45"
+                    gradientUnits="userSpaceOnUse"
+                  >
                     <stop stopColor="#e91e63" />
                     <stop offset="1" stopColor="#9c27b0" />
                   </linearGradient>
@@ -546,9 +731,9 @@ export default function ThirdSection() {
 
           {/* 5 Milestone Points along the 180° Arc (Top points have label ABOVE to prevent overlap) */}
           {FEATURES.map((feat, i) => {
-            const pt = ARC_POINTS[i];
-            const isActive = activeIdx === i;
-            const isTopArc = i >= 1 && i <= 3; // Points 02, 03, 04
+            const pt = ARC_POINTS[i]
+            const isActive = activeIdx === i
+            const isTopArc = i >= 1 && i <= 3 // Points 02, 03, 04
 
             return (
               <button
@@ -565,7 +750,9 @@ export default function ThirdSection() {
                   className={`flex items-center transition-transform duration-300 ${
                     isTopArc ? "flex-col-reverse" : "flex-col"
                   } ${
-                    isActive ? "scale-110" : "scale-95 opacity-70 group-hover:opacity-100 group-hover:scale-105"
+                    isActive
+                      ? "scale-110"
+                      : "scale-95 opacity-70 group-hover:opacity-100 group-hover:scale-105"
                   }`}
                 >
                   {/* Pin Orb */}
@@ -578,7 +765,9 @@ export default function ThirdSection() {
                   >
                     <span
                       className={`text-[11px] font-bold ${
-                        isActive ? "bg-clip-text text-transparent" : "text-[#666]"
+                        isActive
+                          ? "bg-clip-text text-transparent"
+                          : "text-[#666]"
                       }`}
                       style={isActive ? { backgroundImage: GRAD } : undefined}
                     >
@@ -597,7 +786,10 @@ export default function ThirdSection() {
                     }`}
                     style={
                       isActive
-                        ? { fontFamily: "'Montserrat', sans-serif", backgroundImage: GRAD }
+                        ? {
+                            fontFamily: "'Montserrat', sans-serif",
+                            backgroundImage: GRAD,
+                          }
                         : { fontFamily: "'Montserrat', sans-serif" }
                     }
                   >
@@ -605,74 +797,65 @@ export default function ThirdSection() {
                   </span>
                 </div>
               </button>
-            );
+            )
           })}
         </div>
 
         {/* ───── Stage: Freely-scattered Bubble Clusters & Central Screen ───── */}
-        <div className="relative mt-2 flex w-full max-w-[1440px] h-[440px] items-center justify-between px-0">
-
-          {/* ── LEFT cluster — 5 unique layouts, one per feature step ── */}
-          <div className="relative z-20 w-[340px] h-[440px] shrink-0">
+        <div className="relative mt-1 flex w-full max-w-[1520px] h-[500px] items-center justify-between px-2 sm:px-4">
+          {/* ── LEFT cluster — uses static LEFT_SLOT_COORDS (no per-render object creation) ── */}
+          <div className="relative z-20 w-[400px] lg:w-[440px] h-[490px] shrink-0">
             {FEATURES.map((feat, fIdx) => {
-              const isActive = activeIdx === fIdx;
-              const ease = [0.22, 1, 0.36, 1] as const;
-
-              // 5 unique left-side arrangements — position varies per step
-              const LEFT_LAYOUTS = [
-                // Step 0 — Journal: medium top-right, large top-left, large mid-left, medium lower-right
-                [ { top: 8,   left: 155, index: 1, group: feat.leftUp,   gi: 0 },
-                  { top: 55,  left: 10,  index: 0, group: feat.leftUp,   gi: 1 },
-                  { top: 215, left: 25,  index: 2, group: feat.leftDown, gi: 0 },
-                  { top: 310, left: 165, index: 3, group: feat.leftDown, gi: 1 } ],
-                // Step 1 — Talk: large top-left, medium top-right offset, medium mid-right, large lower-left
-                [ { top: 20,  left: 15,  index: 0, group: feat.leftUp,   gi: 0 },
-                  { top: 10,  left: 175, index: 1, group: feat.leftUp,   gi: 1 },
-                  { top: 200, left: 160, index: 3, group: feat.leftDown, gi: 0 },
-                  { top: 285, left: 10,  index: 2, group: feat.leftDown, gi: 1 } ],
-                // Step 2 — Wellness: medium top-far-right, large top-center, large lower-left, medium lower-far-right
-                [ { top: 5,   left: 190, index: 1, group: feat.leftUp,   gi: 0 },
-                  { top: 60,  left: 55,  index: 0, group: feat.leftUp,   gi: 1 },
-                  { top: 205, left: 5,   index: 2, group: feat.leftDown, gi: 0 },
-                  { top: 320, left: 155, index: 3, group: feat.leftDown, gi: 1 } ],
-                // Step 3 — Insights: large top-left, small top-far-right, medium mid-center, large lower-right
-                [ { top: 30,  left: 5,   index: 0, group: feat.leftUp,   gi: 0 },
-                  { top: 15,  left: 180, index: 3, group: feat.leftUp,   gi: 1 },
-                  { top: 210, left: 90,  index: 2, group: feat.leftDown, gi: 0 },
-                  { top: 305, left: 175, index: 1, group: feat.leftDown, gi: 1 } ],
-                // Step 4 — Rest: medium top-left, large top-right, large mid-left, medium lower-center
-                [ { top: 10,  left: 30,  index: 1, group: feat.leftUp,   gi: 0 },
-                  { top: 45,  left: 160, index: 0, group: feat.leftUp,   gi: 1 },
-                  { top: 220, left: 10,  index: 2, group: feat.leftDown, gi: 0 },
-                  { top: 300, left: 130, index: 3, group: feat.leftDown, gi: 1 } ],
-              ];
-
-              const slots = LEFT_LAYOUTS[fIdx] ?? LEFT_LAYOUTS[0];
+              const isActive = activeIdx === fIdx
+              const ease = [0.22, 1, 0.36, 1] as const
+              const slots = LEFT_SLOT_COORDS[fIdx] ?? LEFT_SLOT_COORDS[0]
 
               return (
-                <div key={`${feat.key}-left-col`} className="absolute inset-0 pointer-events-none">
-                  {slots.map(({ top, left, index, group, gi }, si) => (
-                    <motion.div
-                      key={`${feat.key}-l-${si}`}
-                      className="absolute"
-                      style={{ top, left, pointerEvents: isActive ? "auto" : "none" }}
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: isActive ? 1 : 0, scale: isActive ? 1 : 0.5 }}
-                      transition={{ duration: 0.55, ease, delay: isActive ? si * 0.07 : 0 }}
-                    >
-                      <BubbleCard item={group[gi]} side="left" index={index} isActive={isActive} />
-                    </motion.div>
-                  ))}
+                <div
+                  key={`${feat.key}-left-col`}
+                  className="absolute inset-0 pointer-events-none"
+                >
+                  {slots.map(({ top, pos, index, isUp, gi }, si) => {
+                    const group = isUp ? feat.leftUp : feat.leftDown
+                    return (
+                      <motion.div
+                        key={`${feat.key}-l-${si}`}
+                        className="absolute"
+                        style={{
+                          top,
+                          left: pos,
+                          pointerEvents: isActive ? "auto" : "none",
+                        }}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{
+                          opacity: isActive ? 1 : 0,
+                          scale: isActive ? 1 : 0.5,
+                        }}
+                        transition={{
+                          duration: 0.55,
+                          ease,
+                          delay: isActive ? si * 0.07 : 0,
+                        }}
+                      >
+                        <BubbleCard
+                          item={group[gi]}
+                          side="left"
+                          index={index}
+                          isActive={isActive}
+                        />
+                      </motion.div>
+                    )
+                  })}
                 </div>
-              );
+              )
             })}
           </div>
 
           {/* Central Screen Frame */}
-          <div className="relative z-10 mx-auto w-full max-w-[650px] mt-16 rounded-[22px] bg-[#0b0b14] p-2 shadow-[0px_32px_80px_rgba(20,10,40,0.32)]">
+          <div className="relative z-10 mx-auto w-full max-w-[560px] lg:max-w-[610px] mt-8 rounded-[22px] bg-[#0b0b14] p-2 shadow-[0px_32px_80px_rgba(20,10,40,0.32)] shrink">
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[16px]">
               {FEATURES.map((feat, i) => {
-                const isActive = activeIdx === i;
+                const isActive = activeIdx === i
                 return (
                   <motion.img
                     key={feat.key}
@@ -680,73 +863,67 @@ export default function ThirdSection() {
                     alt={feat.label}
                     className="absolute inset-0 h-full w-full object-cover object-top"
                     initial={{ opacity: 0, scale: 0.97 }}
-                    animate={{ opacity: isActive ? 1 : 0, scale: isActive ? 1 : 0.97, zIndex: isActive ? 2 : 1 }}
+                    animate={{
+                      opacity: isActive ? 1 : 0,
+                      scale: isActive ? 1 : 0.97,
+                      zIndex: isActive ? 2 : 1,
+                    }}
                     transition={{ duration: 0.55, ease: EASE }}
                   />
-                );
+                )
               })}
             </div>
           </div>
 
-          {/* ── RIGHT cluster — 5 unique layouts, one per feature step ── */}
-          <div className="relative z-20 w-[340px] h-[440px] shrink-0">
+          {/* ── RIGHT cluster — uses static RIGHT_SLOT_COORDS (no per-render object creation) ── */}
+          <div className="relative z-20 w-[400px] lg:w-[440px] h-[490px] shrink-0">
             {FEATURES.map((feat, fIdx) => {
-              const isActive = activeIdx === fIdx;
-              const ease = [0.22, 1, 0.36, 1] as const;
-
-              // 5 unique right-side arrangements
-              const RIGHT_LAYOUTS = [
-                // Step 0 — Journal: medium top-left, large top-right, medium mid-left, large lower-right
-                [ { top: 5,   right: 155, index: 1, group: feat.rightUp,   gi: 0 },
-                  { top: 55,  right: 10,  index: 0, group: feat.rightUp,   gi: 1 },
-                  { top: 215, right: 150, index: 2, group: feat.rightDown, gi: 0 },
-                  { top: 305, right: 5,   index: 3, group: feat.rightDown, gi: 1 } ],
-                // Step 1 — Talk: large top-right, medium top-left, large mid-right, medium lower-left
-                [ { top: 15,  right: 10,  index: 0, group: feat.rightUp,   gi: 0 },
-                  { top: 10,  right: 170, index: 1, group: feat.rightUp,   gi: 1 },
-                  { top: 200, right: 5,   index: 2, group: feat.rightDown, gi: 0 },
-                  { top: 295, right: 155, index: 3, group: feat.rightDown, gi: 1 } ],
-                // Step 2 — Wellness: large top-left-of-right, medium top-far-right, medium mid-right, large lower-left
-                [ { top: 50,  right: 170, index: 0, group: feat.rightUp,   gi: 0 },
-                  { top: 8,   right: 10,  index: 1, group: feat.rightUp,   gi: 1 },
-                  { top: 210, right: 10,  index: 3, group: feat.rightDown, gi: 0 },
-                  { top: 300, right: 155, index: 2, group: feat.rightDown, gi: 1 } ],
-                // Step 3 — Insights: medium top-right, large top-center-right, large lower-right, medium lower-left
-                [ { top: 10,  right: 15,  index: 1, group: feat.rightUp,   gi: 0 },
-                  { top: 40,  right: 160, index: 0, group: feat.rightUp,   gi: 1 },
-                  { top: 215, right: 5,   index: 2, group: feat.rightDown, gi: 0 },
-                  { top: 305, right: 160, index: 3, group: feat.rightDown, gi: 1 } ],
-                // Step 4 — Rest: large top-right, small top-left-of-right, medium mid-center, large lower-right
-                [ { top: 45,  right: 5,   index: 0, group: feat.rightUp,   gi: 0 },
-                  { top: 5,   right: 170, index: 3, group: feat.rightUp,   gi: 1 },
-                  { top: 205, right: 100, index: 2, group: feat.rightDown, gi: 0 },
-                  { top: 310, right: 10,  index: 1, group: feat.rightDown, gi: 1 } ],
-              ];
-
-              const slots = RIGHT_LAYOUTS[fIdx] ?? RIGHT_LAYOUTS[0];
+              const isActive = activeIdx === fIdx
+              const ease = [0.22, 1, 0.36, 1] as const
+              const slots = RIGHT_SLOT_COORDS[fIdx] ?? RIGHT_SLOT_COORDS[0]
 
               return (
-                <div key={`${feat.key}-right-col`} className="absolute inset-0 pointer-events-none">
-                  {slots.map(({ top, right, index, group, gi }, si) => (
-                    <motion.div
-                      key={`${feat.key}-r-${si}`}
-                      className="absolute"
-                      style={{ top, right, pointerEvents: isActive ? "auto" : "none" }}
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: isActive ? 1 : 0, scale: isActive ? 1 : 0.5 }}
-                      transition={{ duration: 0.55, ease, delay: isActive ? si * 0.07 : 0 }}
-                    >
-                      <BubbleCard item={group[gi]} side="right" index={index} isActive={isActive} />
-                    </motion.div>
-                  ))}
+                <div
+                  key={`${feat.key}-right-col`}
+                  className="absolute inset-0 pointer-events-none"
+                >
+                  {slots.map(({ top, pos, index, isUp, gi }, si) => {
+                    const group = isUp ? feat.rightUp : feat.rightDown
+                    return (
+                      <motion.div
+                        key={`${feat.key}-r-${si}`}
+                        className="absolute"
+                        style={{
+                          top,
+                          right: pos,
+                          pointerEvents: isActive ? "auto" : "none",
+                        }}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{
+                          opacity: isActive ? 1 : 0,
+                          scale: isActive ? 1 : 0.5,
+                        }}
+                        transition={{
+                          duration: 0.55,
+                          ease,
+                          delay: isActive ? si * 0.07 : 0,
+                        }}
+                      >
+                        <BubbleCard
+                          item={group[gi]}
+                          side="right"
+                          index={index}
+                          isActive={isActive}
+                        />
+                      </motion.div>
+                    )
+                  })}
                 </div>
-              );
+              )
             })}
           </div>
-
         </div>
       </div>
     </section>
-  );
+  )
 }
-

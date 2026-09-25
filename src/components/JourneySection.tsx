@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useReducedMotion } from "motion/react";
-import svgPaths from "../imports/Section3-1/svg-jmap5htj3m";
-import SolaceEmblem from "./SolaceEmblem";
+import { useEffect, useRef, useState } from "react"
+import { motion, useScroll, useReducedMotion } from "motion/react"
+import svgPaths from "../imports/Section3-1/svg-jmap5htj3m"
+import SolaceEmblem from "./SolaceEmblem"
 
-const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)";
-const EASE = [0.22, 1, 0.36, 1] as const;
+const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)"
+const EASE = [0.22, 1, 0.36, 1] as const
 
 function JourneyCurvedArrow({ className = "" }: { className?: string }) {
   return (
@@ -16,19 +16,38 @@ function JourneyCurvedArrow({ className = "" }: { className?: string }) {
       transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
     >
       <path d={svgPaths.p3bf54f80} fill="url(#journey_arrow_fill)" />
-      <path d={svgPaths.p2b5e9b00} stroke="url(#journey_arrow_stroke)" strokeLinecap="round" strokeWidth="2.92366" />
+      <path
+        d={svgPaths.p2b5e9b00}
+        stroke="url(#journey_arrow_stroke)"
+        strokeLinecap="round"
+        strokeWidth="2.92366"
+      />
       <defs>
-        <linearGradient id="journey_arrow_fill" gradientUnits="userSpaceOnUse" x1="1.14138" x2="19.5851" y1="8.52298" y2="69.0184">
+        <linearGradient
+          id="journey_arrow_fill"
+          gradientUnits="userSpaceOnUse"
+          x1="1.14138"
+          x2="19.5851"
+          y1="8.52298"
+          y2="69.0184"
+        >
           <stop stopColor="#E91E63" />
           <stop offset="1" stopColor="#9C27B0" />
         </linearGradient>
-        <linearGradient id="journey_arrow_stroke" gradientUnits="userSpaceOnUse" x1="1.87185" x2="12.6787" y1="17.1867" y2="20.093">
+        <linearGradient
+          id="journey_arrow_stroke"
+          gradientUnits="userSpaceOnUse"
+          x1="1.87185"
+          x2="12.6787"
+          y1="17.1867"
+          y2="20.093"
+        >
           <stop stopColor="#E91E63" />
           <stop offset="1" stopColor="#9C27B0" />
         </linearGradient>
       </defs>
     </motion.svg>
-  );
+  )
 }
 
 const STEPS = [
@@ -46,7 +65,14 @@ const STEPS = [
           fill={active ? "url(#iconGrad1)" : "#d4d4d4"}
         />
         <defs>
-          <linearGradient id="iconGrad1" x1="3" y1="3" x2="25" y2="25" gradientUnits="userSpaceOnUse">
+          <linearGradient
+            id="iconGrad1"
+            x1="3"
+            y1="3"
+            x2="25"
+            y2="25"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop stopColor="#e91e63" />
             <stop offset="1" stopColor="#9c27b0" />
           </linearGradient>
@@ -58,16 +84,45 @@ const STEPS = [
     num: "02",
     label: "Reflect",
     subtitle: "Gain clarity on your thoughts",
-    quote: "Understanding where your emotions come from turns overwhelming thoughts into clear steps.",
+    quote:
+      "Understanding where your emotions come from turns overwhelming thoughts into clear steps.",
     metric: { val: "88%", desc: "Feel calmer after checking in" },
     tags: ["Mood Tracking", "Guided Prompts", "Daily Insights"],
     icon: (active: boolean) => (
       <svg viewBox="0 0 28 28" fill="none" className="h-[28px] w-[28px]">
-        <circle cx="14" cy="14" r="10" stroke={active ? "url(#iconGrad2)" : "#d4d4d4"} strokeWidth="2" fill="none" />
-        <path d="M14 8v6l4 2" stroke={active ? "url(#iconGrad2)" : "#d4d4d4"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="9" y1="4" x2="19" y2="4" stroke={active ? "url(#iconGrad2)" : "#d4d4d4"} strokeWidth="1.5" strokeLinecap="round" />
+        <circle
+          cx="14"
+          cy="14"
+          r="10"
+          stroke={active ? "url(#iconGrad2)" : "#d4d4d4"}
+          strokeWidth="2"
+          fill="none"
+        />
+        <path
+          d="M14 8v6l4 2"
+          stroke={active ? "url(#iconGrad2)" : "#d4d4d4"}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <line
+          x1="9"
+          y1="4"
+          x2="19"
+          y2="4"
+          stroke={active ? "url(#iconGrad2)" : "#d4d4d4"}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
         <defs>
-          <linearGradient id="iconGrad2" x1="4" y1="4" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+          <linearGradient
+            id="iconGrad2"
+            x1="4"
+            y1="4"
+            x2="24"
+            y2="24"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop stopColor="#e91e63" />
             <stop offset="1" stopColor="#9c27b0" />
           </linearGradient>
@@ -84,12 +139,36 @@ const STEPS = [
     tags: ["Gentle Pacing", "Mindful Tools", "Lasting Calm"],
     icon: (active: boolean) => (
       <svg viewBox="0 0 28 28" fill="none" className="h-[28px] w-[28px]">
-        <path d="M14 24V12" stroke={active ? "url(#iconGrad3)" : "#d4d4d4"} strokeWidth="2" strokeLinecap="round" />
-        <path d="M14 12C14 12 10 8 7 8c-3 0-4 3-3 5s4 4 10 4" fill={active ? "url(#iconGrad3)" : "#d4d4d4"} opacity={0.6} />
-        <path d="M14 12C14 12 18 8 21 8c3 0 4 3 3 5s-4 4-10 4" fill={active ? "url(#iconGrad3)" : "#d4d4d4"} opacity={0.8} />
-        <path d="M14 16c-2 2-5 5-5 8h10c0-3-3-6-5-8z" fill={active ? "url(#iconGrad3)" : "#d4d4d4"} opacity={0.3} />
+        <path
+          d="M14 24V12"
+          stroke={active ? "url(#iconGrad3)" : "#d4d4d4"}
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M14 12C14 12 10 8 7 8c-3 0-4 3-3 5s4 4 10 4"
+          fill={active ? "url(#iconGrad3)" : "#d4d4d4"}
+          opacity={0.6}
+        />
+        <path
+          d="M14 12C14 12 18 8 21 8c3 0 4 3 3 5s-4 4-10 4"
+          fill={active ? "url(#iconGrad3)" : "#d4d4d4"}
+          opacity={0.8}
+        />
+        <path
+          d="M14 16c-2 2-5 5-5 8h10c0-3-3-6-5-8z"
+          fill={active ? "url(#iconGrad3)" : "#d4d4d4"}
+          opacity={0.3}
+        />
         <defs>
-          <linearGradient id="iconGrad3" x1="4" y1="4" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+          <linearGradient
+            id="iconGrad3"
+            x1="4"
+            y1="4"
+            x2="24"
+            y2="24"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop stopColor="#e91e63" />
             <stop offset="1" stopColor="#9c27b0" />
           </linearGradient>
@@ -97,29 +176,33 @@ const STEPS = [
       </svg>
     ),
   },
-];
+]
 
 export default function JourneySection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null)
+  const reduce = useReducedMotion()
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
-  });
+  })
 
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(0)
 
   useEffect(() => {
     return scrollYProgress.on("change", (latest) => {
-      if (latest > 0.72) setActiveStep(2);
-      else if (latest > 0.38) setActiveStep(1);
-      else setActiveStep(0);
-    });
-  }, [scrollYProgress]);
+      if (latest > 0.72) setActiveStep(2)
+      else if (latest > 0.38) setActiveStep(1)
+      else setActiveStep(0)
+    })
+  }, [scrollYProgress])
 
   return (
-    <section ref={sectionRef} className="relative h-[400vh] bg-white">
+    <section
+      ref={sectionRef}
+      id="journey"
+      className="relative h-[400vh] bg-white"
+    >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden px-6">
         {/* Floating emblem in top-right empty space */}
         <div className="pointer-events-none absolute top-[6%] right-[3%] z-0 hidden xl:block opacity-40">
@@ -148,7 +231,10 @@ export default function JourneySection() {
             {/* Heading */}
             <h2
               className="mt-6 text-[clamp(34px,4.2vw,52px)] leading-[1.08] tracking-[-1.5px] text-black"
-              style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
+              style={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 400,
+              }}
             >
               Small conversations.
               <br />
@@ -164,7 +250,10 @@ export default function JourneySection() {
             {/* Description */}
             <p
               className="mt-5 max-w-[440px] text-[15px] leading-[1.65] text-[#444]"
-              style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
+              style={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 500,
+              }}
             >
               Every conversation becomes another step toward understanding
               yourself, building healthier habits, and growing over time.
@@ -180,7 +269,10 @@ export default function JourneySection() {
               </span>
               <p
                 className="mt-1 text-[clamp(17px,1.8vw,21px)] leading-[1.4] text-[#222]"
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 600,
+                }}
               >
                 Growth doesn&apos;t happen all at once.
                 <br />
@@ -215,9 +307,9 @@ export default function JourneySection() {
           <div className="flex items-center justify-center lg:justify-end">
             <div className="relative h-[430px] w-[min(430px,90vw)]">
               {STEPS.map((step, i) => {
-                const isCurrent = i === activeStep;
-                const isPast = i < activeStep;
-                const offsetBehind = i - activeStep; // 1 or 2 when behind
+                const isCurrent = i === activeStep
+                const isPast = i < activeStep
+                const offsetBehind = i - activeStep // 1 or 2 when behind
 
                 // High-visibility peeking 3D stack transforms:
                 // Front card: (0,0) scale 1, opacity 1
@@ -225,34 +317,34 @@ export default function JourneySection() {
                 // 2nd card behind: y: -40px, x: -16px, rotate: -4deg, scale: 0.89, opacity: 0.78
                 // Flipped / Past card: y: -150px, rotate: -8deg, opacity: 0
 
-                let animX = 0;
-                let animY = 0;
-                let animRotate = 0;
-                let animScale = 1;
-                let animOpacity = 1;
-                let animZIndex = 30;
+                let animX = 0
+                let animY = 0
+                let animRotate = 0
+                let animScale = 1
+                let animOpacity = 1
+                let animZIndex = 30
 
                 if (isCurrent) {
-                  animX = 0;
-                  animY = 0;
-                  animRotate = 0;
-                  animScale = 1;
-                  animOpacity = 1;
-                  animZIndex = 30;
+                  animX = 0
+                  animY = 0
+                  animRotate = 0
+                  animScale = 1
+                  animOpacity = 1
+                  animZIndex = 30
                 } else if (isPast) {
-                  animX = -20;
-                  animY = -150;
-                  animRotate = -8;
-                  animScale = 0.95;
-                  animOpacity = 0;
-                  animZIndex = 5;
+                  animX = -20
+                  animY = -150
+                  animRotate = -8
+                  animScale = 0.95
+                  animOpacity = 0
+                  animZIndex = 5
                 } else {
-                  animY = offsetBehind === 1 ? -22 : -40;
-                  animX = offsetBehind === 1 ? 20 : -16;
-                  animRotate = offsetBehind === 1 ? 5 : -4;
-                  animScale = offsetBehind === 1 ? 0.95 : 0.89;
-                  animOpacity = offsetBehind === 1 ? 0.90 : 0.78;
-                  animZIndex = 30 - offsetBehind * 10;
+                  animY = offsetBehind === 1 ? -22 : -40
+                  animX = offsetBehind === 1 ? 20 : -16
+                  animRotate = offsetBehind === 1 ? 5 : -4
+                  animScale = offsetBehind === 1 ? 0.95 : 0.89
+                  animOpacity = offsetBehind === 1 ? 0.9 : 0.78
+                  animZIndex = 30 - offsetBehind * 10
                 }
 
                 return (
@@ -289,7 +381,9 @@ export default function JourneySection() {
                             background: isCurrent
                               ? "linear-gradient(135deg, rgba(233,30,99,0.15), rgba(156,39,176,0.1))"
                               : "rgba(240,240,244,0.8)",
-                            border: isCurrent ? "1px solid rgba(233,30,99,0.25)" : "1px solid #eee",
+                            border: isCurrent
+                              ? "1px solid rgba(233,30,99,0.25)"
+                              : "1px solid #eee",
                           }}
                         >
                           {step.icon(isCurrent)}
@@ -328,7 +422,11 @@ export default function JourneySection() {
                               color: "transparent",
                             }}
                             animate={{ opacity: [0.4, 0.8, 0.4] }}
-                            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+                            transition={{
+                              duration: 2.2,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                            }}
                           >
                             {step.num}
                           </motion.span>
@@ -338,10 +436,16 @@ export default function JourneySection() {
                           style={{
                             fontFamily: "'Montserrat', sans-serif",
                             backgroundImage: isCurrent ? GRAD : undefined,
-                            WebkitBackgroundClip: isCurrent ? "text" : undefined,
-                            WebkitTextFillColor: isCurrent ? "transparent" : "#ddd",
+                            WebkitBackgroundClip: isCurrent
+                              ? "text"
+                              : undefined,
+                            WebkitTextFillColor: isCurrent
+                              ? "transparent"
+                              : "#ddd",
                             color: isCurrent ? "transparent" : "#ddd",
-                            filter: isCurrent ? "drop-shadow(0 0 10px rgba(233,30,99,0.4))" : undefined,
+                            filter: isCurrent
+                              ? "drop-shadow(0 0 10px rgba(233,30,99,0.4))"
+                              : undefined,
                           }}
                         >
                           {step.num}
@@ -354,10 +458,19 @@ export default function JourneySection() {
                       {i === 0 && (
                         <div className="flex flex-col gap-2.5">
                           <div className="rounded-[16px] border border-[#e91e63]/20 bg-gradient-to-r from-[#e91e63]/5 to-[#9c27b0]/5 p-3.5 shadow-sm">
-                            <p className="text-[13px] font-medium text-[#444]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                              💬 <span className="font-semibold text-[#1d1d1d]">&quot;{step.bubble}&quot;</span>
+                            <p
+                              className="text-[13px] font-medium text-[#444]"
+                              style={{ fontFamily: "'Montserrat', sans-serif" }}
+                            >
+                              💬{" "}
+                              <span className="font-semibold text-[#1d1d1d]">
+                                &quot;{step.bubble}&quot;
+                              </span>
                             </p>
-                            <p className="mt-1.5 text-[12px] leading-[1.45] text-[#666]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                            <p
+                              className="mt-1.5 text-[12px] leading-[1.45] text-[#666]"
+                              style={{ fontFamily: "'Montserrat', sans-serif" }}
+                            >
                               {step.response}
                             </p>
                           </div>
@@ -367,14 +480,27 @@ export default function JourneySection() {
                       {i === 1 && (
                         <div className="flex flex-col gap-2.5">
                           <div className="rounded-[16px] border border-[#e91e63]/20 bg-gradient-to-r from-[#e91e63]/5 to-[#9c27b0]/5 p-3.5 shadow-sm">
-                            <p className="text-[12.5px] italic leading-[1.5] text-[#333]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                            <p
+                              className="text-[12.5px] italic leading-[1.5] text-[#333]"
+                              style={{ fontFamily: "'Montserrat', sans-serif" }}
+                            >
                               &ldquo;{step.quote}&rdquo;
                             </p>
                             <div className="mt-2.5 flex items-center gap-2">
-                              <span className="text-[16px] font-bold text-[#e91e63]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                              <span
+                                className="text-[16px] font-bold text-[#e91e63]"
+                                style={{
+                                  fontFamily: "'Montserrat', sans-serif",
+                                }}
+                              >
                                 {step.metric?.val}
                               </span>
-                              <span className="text-[11.5px] font-medium text-[#666]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                              <span
+                                className="text-[11.5px] font-medium text-[#666]"
+                                style={{
+                                  fontFamily: "'Montserrat', sans-serif",
+                                }}
+                              >
                                 {step.metric?.desc}
                               </span>
                             </div>
@@ -386,14 +512,22 @@ export default function JourneySection() {
                         <div className="flex flex-col gap-2.5">
                           <div className="rounded-[16px] border border-[#e91e63]/20 bg-gradient-to-r from-[#e91e63]/5 to-[#9c27b0]/5 p-3.5 shadow-sm">
                             <div className="flex items-center justify-between">
-                              <span className="text-[13px] font-semibold text-[#1d1d1d]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                              <span
+                                className="text-[13px] font-semibold text-[#1d1d1d]"
+                                style={{
+                                  fontFamily: "'Montserrat', sans-serif",
+                                }}
+                              >
                                 🌱 {step.habit}
                               </span>
                               <span className="rounded-full bg-[#e91e63]/10 px-2 py-0.5 text-[10.5px] font-bold text-[#e91e63]">
                                 Active
                               </span>
                             </div>
-                            <p className="mt-1.5 text-[12px] text-[#666]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                            <p
+                              className="mt-1.5 text-[12px] text-[#666]"
+                              style={{ fontFamily: "'Montserrat', sans-serif" }}
+                            >
                               {step.streak}
                             </p>
                           </div>
@@ -418,7 +552,10 @@ export default function JourneySection() {
                     {isCurrent ? (
                       <motion.div
                         className="h-[3.5px] w-full rounded-full"
-                        style={{ background: "linear-gradient(90deg, #e91e63, #9c27b0, transparent)" }}
+                        style={{
+                          background:
+                            "linear-gradient(90deg, #e91e63, #9c27b0, transparent)",
+                        }}
                         initial={{ scaleX: 0, originX: 0 }}
                         animate={{ scaleX: 1 }}
                         transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
@@ -427,13 +564,12 @@ export default function JourneySection() {
                       <div className="h-[2px] w-full rounded-full bg-[#eee]" />
                     )}
                   </motion.div>
-                );
+                )
               })}
             </div>
           </div>
         </div>
       </div>
     </section>
-  );
+  )
 }
-

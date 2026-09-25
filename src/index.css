@@ -1,5 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600&family=Montserrat+Alternates:wght@500&display=swap');
 @import 'tailwindcss';
+
+/* arrowBounce — CSS keyframe replaces the Framer Motion animated SVG in Navbar */
+@keyframes arrowBounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
 
 html,
 body,
