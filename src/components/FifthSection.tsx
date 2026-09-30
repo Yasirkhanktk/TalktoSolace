@@ -64,12 +64,12 @@ function TextSlide({
   const opacity = useTransform(
     smoothProgress,
     [start, peakIn, peakOut, end],
-    [0, 1, 1, 0],
+    [index === 0 ? 1 : 0, 1, 1, 0],
   )
   const y = useTransform(
     smoothProgress,
     [start, peakIn, peakOut, end],
-    [30, 0, 0, -30],
+    [index === 0 ? 0 : 30, 0, 0, -30],
   )
 
   return (
@@ -412,25 +412,25 @@ function StepCard({
   const end = (index + 1) / MODULES.length
 
   const y = useTransform(smoothProgress, [start, peakIn, peakOut, end], [
-    80,
+    index === 0 ? 0 : 80,
     0,
     0,
     isLast ? 0 : -50,
   ])
   const scale = useTransform(smoothProgress, [start, peakIn, peakOut, end], [
-    0.82,
+    index === 0 ? 1 : 0.82,
     1,
     1,
     isLast ? 1 : 0.92,
   ])
   const opacity = useTransform(smoothProgress, [start, peakIn, peakOut, end], [
-    0,
+    index === 0 ? 1 : 0,
     1,
     1,
     isLast ? 1 : 0.3,
   ])
   const rotateX = useTransform(smoothProgress, [start, peakIn, peakOut, end], [
-    8,
+    index === 0 ? 0 : 8,
     0,
     0,
     isLast ? 0 : -4,

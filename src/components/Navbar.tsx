@@ -1,36 +1,21 @@
 import { useEffect, useRef, useState } from "react"
 import { motion } from "motion/react"
 import { scrollToSection } from "../utils/scroll"
+import solaceLogoHorizontal from "../assets/solace-logo-horizontal.png"
 
 function Logo({ onClick }: { onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="group flex items-center gap-[1px] select-none cursor-pointer focus:outline-none transition-transform duration-200 hover:scale-[1.03]"
+      className="select-none cursor-pointer focus:outline-none transition-transform duration-200 hover:scale-[1.03]"
       aria-label="Solace Home"
     >
-      <span
-        className="text-[24px] sm:text-[27px] leading-none text-black"
-        style={{
-          fontFamily: "'Montserrat Alternates', sans-serif",
-          fontWeight: 500,
-        }}
-      >
-        S
-      </span>
-      <span className="relative -mx-[1px] inline-flex h-[14px] sm:h-[15px] w-[14px] sm:w-[15px] items-center justify-center">
-        <span className="block h-[13px] sm:h-[14px] w-[13px] sm:w-[14px] rounded-full border border-black bg-gradient-to-br from-[#e91e63] to-[#9c27b0] transition-transform duration-300 group-hover:scale-110 shadow-[0_0_8px_rgba(233,30,99,0.4)]" />
-      </span>
-      <span
-        className="text-[24px] sm:text-[27px] leading-none text-black"
-        style={{
-          fontFamily: "'Montserrat Alternates', sans-serif",
-          fontWeight: 500,
-        }}
-      >
-        lace.
-      </span>
+      <img
+        src={solaceLogoHorizontal}
+        alt="Solace"
+        className="h-[34px] sm:h-[40px] w-auto object-contain"
+      />
     </button>
   )
 }

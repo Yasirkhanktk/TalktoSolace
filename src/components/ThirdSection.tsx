@@ -159,91 +159,99 @@ const ARC_POINTS = [
 const BUBBLE_GRAD =
   "linear-gradient(135deg, #ffffff 0%, #fde7f1 38%, #f5e8fa 75%, #ece3f9 100%)"
 
-/* Sizes: bigger proportional bubble sizes with ample clearance */
-const BUBBLE_SIZES = [164, 138, 152, 132]
+/* Sizes: varied bubble sizes for organic feel */
+const BUBBLE_SIZES = [170, 144, 158, 136]
 
-/* Float offsets per index — gentle unique y rhythm, no x/rotate to avoid erratic motion */
-const FLOAT_Y = [-10, 8, -7, 10]
+/* Float offsets per index — gentle unique y rhythm */
+const FLOAT_Y = [-12, 9, -8, 11]
 const FLOAT_DUR = [4.2, 5.0, 4.6, 5.4]
 
 /* ── Static slot coordinate data — at module scope so they are never re-created per render ── */
 type SlotCoord = { top: number; pos: number; index: number; isUp: boolean; gi: number }
 
+// LEFT column: pos = left offset in the 400px panel
+// pos ~5-40  → outer edge (far from center device)
+// pos ~150-220 → mid/inner area of the panel
 const LEFT_SLOT_COORDS: SlotCoord[][] = [
-  // Step 0 — Journal
+  // Step 0 — Journal: Z-spread (outer-top, inner-top, outer-bottom, inner-bottom)
   [
-    { top: 10, pos: 10, index: 0, isUp: true, gi: 0 },
-    { top: 40, pos: 245, index: 1, isUp: true, gi: 1 },
-    { top: 250, pos: 235, index: 2, isUp: false, gi: 0 },
-    { top: 330, pos: 16, index: 3, isUp: false, gi: 1 },
+    { top: 10, pos: 8,   index: 0, isUp: true,  gi: 0 },
+    { top: 60, pos: 200, index: 1, isUp: true,  gi: 1 },
+    { top: 270, pos: 190, index: 2, isUp: false, gi: 0 },
+    { top: 340, pos: 12,  index: 3, isUp: false, gi: 1 },
   ],
-  // Step 1 — Talk
+  // Step 1 — Talk: diagonal inner-top to outer-bottom
   [
-    { top: 42, pos: 12, index: 0, isUp: true, gi: 0 },
-    { top: 10, pos: 240, index: 1, isUp: true, gi: 1 },
-    { top: 260, pos: 15, index: 2, isUp: false, gi: 0 },
-    { top: 315, pos: 250, index: 3, isUp: false, gi: 1 },
+    { top: 20, pos: 195, index: 0, isUp: true,  gi: 0 },
+    { top: 10, pos: 15,  index: 1, isUp: true,  gi: 1 },
+    { top: 275, pos: 12,  index: 2, isUp: false, gi: 0 },
+    { top: 310, pos: 210, index: 3, isUp: false, gi: 1 },
   ],
-  // Step 2 — Wellness
+  // Step 2 — Wellness: four-corner spread (no overlaps)
   [
-    { top: 10, pos: 20, index: 0, isUp: true, gi: 0 },
-    { top: 65, pos: 245, index: 1, isUp: true, gi: 1 },
-    { top: 255, pos: 235, index: 2, isUp: false, gi: 0 },
-    { top: 335, pos: 10, index: 3, isUp: false, gi: 1 },
+    { top: 8,   pos: 8,   index: 0, isUp: true,  gi: 0 },
+    { top: 15,  pos: 215, index: 1, isUp: true,  gi: 1 },
+    { top: 280, pos: 205, index: 2, isUp: false, gi: 0 },
+    { top: 315, pos: 10,  index: 3, isUp: false, gi: 1 },
   ],
-  // Step 3 — Insights
+  // Step 3 — Insights: outer-top, inner-mid, inner-mid, outer-bottom (X pattern)
   [
-    { top: 60, pos: 240, index: 0, isUp: true, gi: 0 },
-    { top: 10, pos: 12, index: 1, isUp: true, gi: 1 },
-    { top: 250, pos: 10, index: 2, isUp: false, gi: 0 },
-    { top: 325, pos: 240, index: 3, isUp: false, gi: 1 },
+    { top: 8,   pos: 12,  index: 0, isUp: true,  gi: 0 },
+    { top: 90,  pos: 200, index: 1, isUp: true,  gi: 1 },
+    { top: 265, pos: 195, index: 2, isUp: false, gi: 0 },
+    { top: 340, pos: 8,   index: 3, isUp: false, gi: 1 },
   ],
-  // Step 4 — Rest
+  // Step 4 — Rest: asymmetric scatter
   [
-    { top: 18, pos: 12, index: 0, isUp: true, gi: 0 },
-    { top: 50, pos: 245, index: 1, isUp: true, gi: 1 },
-    { top: 255, pos: 235, index: 2, isUp: false, gi: 0 },
-    { top: 330, pos: 20, index: 3, isUp: false, gi: 1 },
+    { top: 30,  pos: 180, index: 0, isUp: true,  gi: 0 },
+    { top: 15,  pos: 15,  index: 1, isUp: true,  gi: 1 },
+    { top: 280, pos: 20,  index: 2, isUp: false, gi: 0 },
+    { top: 315, pos: 195, index: 3, isUp: false, gi: 1 },
   ],
 ]
 
+// RIGHT column: pos = right offset in the 400px panel
+// pos ~5-40  → outer edge (far from center device)
+// pos ~150-220 → mid/inner area of the panel
 const RIGHT_SLOT_COORDS: SlotCoord[][] = [
-  // Step 0 — Journal
+  // Step 0 — Journal: mirrored Z (inner-top, outer-top, inner-bottom, outer-bottom)
   [
-    { top: 10, pos: 10, index: 0, isUp: true, gi: 0 },
-    { top: 40, pos: 245, index: 1, isUp: true, gi: 1 },
-    { top: 250, pos: 235, index: 2, isUp: false, gi: 0 },
-    { top: 330, pos: 16, index: 3, isUp: false, gi: 1 },
+    { top: 10,  pos: 195, index: 0, isUp: true,  gi: 0 },
+    { top: 60,  pos: 10,  index: 1, isUp: true,  gi: 1 },
+    { top: 270, pos: 15,  index: 2, isUp: false, gi: 0 },
+    { top: 340, pos: 200, index: 3, isUp: false, gi: 1 },
   ],
-  // Step 1 — Talk
+  // Step 1 — Talk: outer-top, inner-top, outer-bottom, inner-bottom
   [
-    { top: 42, pos: 12, index: 0, isUp: true, gi: 0 },
-    { top: 10, pos: 240, index: 1, isUp: true, gi: 1 },
-    { top: 260, pos: 15, index: 2, isUp: false, gi: 0 },
-    { top: 315, pos: 250, index: 3, isUp: false, gi: 1 },
+    { top: 10,  pos: 12,  index: 0, isUp: true,  gi: 0 },
+    { top: 50,  pos: 200, index: 1, isUp: true,  gi: 1 },
+    { top: 265, pos: 205, index: 2, isUp: false, gi: 0 },
+    { top: 325, pos: 10,  index: 3, isUp: false, gi: 1 },
   ],
-  // Step 2 — Wellness
+  // Step 2 — Wellness: outer-heavy layout
   [
-    { top: 10, pos: 20, index: 0, isUp: true, gi: 0 },
-    { top: 65, pos: 245, index: 1, isUp: true, gi: 1 },
-    { top: 255, pos: 235, index: 2, isUp: false, gi: 0 },
-    { top: 335, pos: 10, index: 3, isUp: false, gi: 1 },
+    { top: 15,  pos: 10,  index: 0, isUp: true,  gi: 0 },
+    { top: 80,  pos: 200, index: 1, isUp: true,  gi: 1 },
+    { top: 270, pos: 190, index: 2, isUp: false, gi: 0 },
+    { top: 330, pos: 12,  index: 3, isUp: false, gi: 1 },
   ],
-  // Step 3 — Insights
+  // Step 3 — Insights: inner-top, outer-top, outer-bottom, inner-bottom
   [
-    { top: 60, pos: 240, index: 0, isUp: true, gi: 0 },
-    { top: 10, pos: 12, index: 1, isUp: true, gi: 1 },
-    { top: 250, pos: 10, index: 2, isUp: false, gi: 0 },
-    { top: 325, pos: 240, index: 3, isUp: false, gi: 1 },
+    { top: 15,  pos: 205, index: 0, isUp: true,  gi: 0 },
+    { top: 10,  pos: 12,  index: 1, isUp: true,  gi: 1 },
+    { top: 265, pos: 8,   index: 2, isUp: false, gi: 0 },
+    { top: 325, pos: 210, index: 3, isUp: false, gi: 1 },
   ],
-  // Step 4 — Rest
+  // Step 4 — Rest: spread all four corners
   [
-    { top: 18, pos: 12, index: 0, isUp: true, gi: 0 },
-    { top: 50, pos: 245, index: 1, isUp: true, gi: 1 },
-    { top: 255, pos: 235, index: 2, isUp: false, gi: 0 },
-    { top: 330, pos: 20, index: 3, isUp: false, gi: 1 },
+    { top: 12,  pos: 15,  index: 0, isUp: true,  gi: 0 },
+    { top: 70,  pos: 195, index: 1, isUp: true,  gi: 1 },
+    { top: 275, pos: 12,  index: 2, isUp: false, gi: 0 },
+    { top: 330, pos: 200, index: 3, isUp: false, gi: 1 },
   ],
 ]
+
+
 
 const BubbleCard = memo(function BubbleCard({
   item,

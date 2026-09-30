@@ -1,6 +1,8 @@
 import { motion } from "motion/react"
+import solaceLogoVertical from "../assets/solace-logo-vertical.png"
 
 const GRAD = "linear-gradient(135deg, #e91e63 8%, #9c27b0 92%)"
+
 
 export default function Footer() {
   return (
@@ -11,49 +13,15 @@ export default function Footer() {
       <div className="mx-auto max-w-[1260px] flex flex-col">
         {/* Main Row: Logo on Left, Contact Pills on Right */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-10 pb-12">
-          {/* Left Brand Element: Orb and Text are vertically stacked and centered together */}
+          {/* Left Brand Element: Vertical logo image */}
           <div className="flex flex-col items-center gap-3 w-fit">
-            {/* Big Circular Logo Orb */}
-            <div className="relative flex items-center justify-center">
-              <div className="relative w-[114px] h-[114px] flex items-center justify-center">
-                {/* Accent orbital curves */}
-                <svg
-                  className="absolute inset-0 w-full h-full pointer-events-none"
-                  viewBox="0 0 114 114"
-                  fill="none"
-                >
-                  <path
-                    d="M 14 30 A 54 54 0 0 1 100 24"
-                    stroke="#030303"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M 102 88 A 54 54 0 0 1 20 94"
-                    stroke="#030303"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-
-                {/* Inner Gradient Circle */}
-                <div
-                  className="w-[98px] h-[98px] rounded-full border-[5px] border-[#030303] shadow-[0px_10px_24px_rgba(233,30,99,0.28)]"
-                  style={{ background: GRAD }}
-                />
-              </div>
-            </div>
-
-            {/* Logo Text */}
-            <div className="flex items-center justify-center">
-              <span
-                className="text-[46px] md:text-[52px] font-medium leading-none text-[#030303] tracking-tight text-center"
-                style={{ fontFamily: "'Montserrat Alternates', sans-serif" }}
-              >
-                Solace.
-              </span>
-            </div>
+            <img
+              src={solaceLogoVertical}
+              alt="Solace"
+              className="w-[140px] md:w-[160px] object-contain"
+            />
           </div>
+
 
           {/* Right Contact Capsule Pills */}
           <div className="flex flex-col gap-4 w-full max-w-[340px]">
